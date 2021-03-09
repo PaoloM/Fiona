@@ -163,6 +163,7 @@
     <Compile Include="Services\NavigationService.cs" />
     <Compile Include="Services\ThemeSelectorService.cs" />
     <Compile Include="ViewModels\AlbumDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ArtistDetailsViewModel.cs" />
     <Compile Include="ViewModels\FavoritesViewModel.cs" />
     <Compile Include="ViewModels\ArtistsViewModel.cs" />
     <Compile Include="ViewModels\AppsViewModel.cs" />
@@ -172,6 +173,9 @@
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="Views\AlbumDetailsPage.xaml.cs">
       <DependentUpon>AlbumDetailsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ArtistDetailsPage.xaml.cs">
+      <DependentUpon>ArtistDetailsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FavoritesPage.xaml.cs">
       <DependentUpon>FavoritesPage.xaml</DependentUpon>
@@ -228,6 +232,10 @@
     <Page Include="Views\AlbumDetailsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ArtistDetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\FavoritesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
