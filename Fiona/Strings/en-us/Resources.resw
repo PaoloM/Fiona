@@ -202,7 +202,7 @@ Please enter the address and port of your Logitech Media Server (or your Squeeze
   <data name="Album_AddToQueue.Text" xml:space="preserve">
     <value>Add to queue</value>
   </data>
-  <data name="Album_GenreSeparator" xml:space="preserve">
+  <data name="GenreSeparator" xml:space="preserve">
     <value> / </value>
   </data>
   <data name="Album_GoToArtist.Text" xml:space="preserve">

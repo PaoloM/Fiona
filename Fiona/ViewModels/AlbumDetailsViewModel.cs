@@ -28,7 +28,7 @@ namespace Fiona.ViewModels
                 foreach (Genre gg in value.Genres)
                 {
                     if (!string.IsNullOrEmpty(AllGenres))
-                        AllGenres += ResourceExtensions.GetLocalized("Album_GenreSeparator");
+                        AllGenres += ResourceExtensions.GetLocalized("GenreSeparator");
                     AllGenres += gg.Name;
                 }
                 SetProperty(ref _currentAlbum, value);
@@ -43,18 +43,18 @@ namespace Fiona.ViewModels
             }
         }
 
-        private RelayCommand _PlayAllCommand;
-        public RelayCommand PlayAllCommand => _PlayAllCommand ?? (_PlayAllCommand = new RelayCommand(PlayAll));
-        private void PlayAll()
+        private RelayCommand<Album> _PlayAllCommand;
+        public RelayCommand<Album> PlayAlbumCommand => _PlayAllCommand ?? (_PlayAllCommand = new RelayCommand<Album>(param => PlayAll((Album)param)));
+        private void PlayAll(Album album)
         {
-            FionaDataService.PlaylistLoadAndPlayAlbum(FionaDataService.CurrentPlayer, CurrentAlbum);
+            FionaDataService.PlaylistLoadAndPlayAlbum(FionaDataService.CurrentPlayer, album);
         }
 
-        private RelayCommand _AddToQueueCommand;
-        public RelayCommand AddToQueueCommand => _AddToQueueCommand ?? (_AddToQueueCommand = new RelayCommand(AddToQueue));
-        private void AddToQueue()
+        private RelayCommand<Album> _AddToQueueCommand;
+        public RelayCommand<Album> QueueAlbumCommand => _AddToQueueCommand ?? (_AddToQueueCommand = new RelayCommand<Album>(param => AddToQueue((Album)param)));
+        private void AddToQueue(Album album)
         {
-            FionaDataService.PlaylistAppendAlbum(FionaDataService.CurrentPlayer, CurrentAlbum);
+            FionaDataService.PlaylistAppendAlbum(FionaDataService.CurrentPlayer, album);
         }
 
         private RelayCommand _GoToArtistCommand;

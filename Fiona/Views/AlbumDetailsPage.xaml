@@ -53,13 +53,13 @@
             <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1"
                         VerticalAlignment="Bottom" HorizontalAlignment="Left"
                         Margin="-12,0,0,0">
-                <Button CornerRadius="4" Background="{x:Null}" Command="{x:Bind ViewModel.PlayAllCommand}" Margin="4,0,4,0">
+                <Button CornerRadius="4" Background="{x:Null}" Command="{x:Bind ViewModel.PlayAlbumCommand}" CommandParameter="{x:Bind ViewModel.CurrentAlbum}" Margin="4,0,4,0">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE102;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
                         <TextBlock x:Uid="Album_PlayAll" FontSize="{StaticResource SmallFontSize}"/>
                     </StackPanel>
                 </Button>
-                <Button CornerRadius="4" Background="{x:Null}" Command="{x:Bind ViewModel.AddToQueueCommand}" Margin="4,0,4,0">
+                <Button CornerRadius="4" Background="{x:Null}" Command="{x:Bind ViewModel.QueueAlbumCommand}" CommandParameter="{x:Bind ViewModel.CurrentAlbum}" Margin="4,0,4,0">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE109;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
                         <TextBlock x:Uid="Album_AddToQueue" FontSize="{StaticResource SmallFontSize}"/>
