@@ -54,7 +54,7 @@ namespace Fiona.ViewModels
                     st += gg.Name;
                 }
                 AllGenres = st;
-
+                //TODO get artist images and bio
                 SetProperty(ref _currentArtist, value);
             }
         }

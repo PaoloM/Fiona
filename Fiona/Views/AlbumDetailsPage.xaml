@@ -97,13 +97,13 @@
                         <StackPanel Grid.Column="1" Orientation="Horizontal" x:Name="TrackControls"
                                     HorizontalAlignment="Right" Visibility="Collapsed">
                             <Button VerticalAlignment="Center" Margin="4,0,4,0"
-                                Style="{StaticResource ButtonRevealStyle}" Background="Transparent"
+                                Background="Transparent"
                                 Command="{x:Bind AlbumDetailsVM.PlayTrackCommand}"
                                 CommandParameter="{x:Bind}">
                                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE102;" FontSize="16" />
                             </Button>
                             <Button VerticalAlignment="Center" Margin="4,0,4,0"
-                                Style="{StaticResource ButtonRevealStyle}" Background="Transparent"
+                                Background="Transparent"
                                 Command="{x:Bind AlbumDetailsVM.QueueTrackCommand}"
                                 CommandParameter="{x:Bind}">
                                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE109;" FontSize="16" />
