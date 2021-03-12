@@ -43,16 +43,16 @@ namespace Fiona.ViewModels
             }
         }
 
-        private RelayCommand<Album> _PlayAllCommand;
-        public RelayCommand<Album> PlayAlbumCommand => _PlayAllCommand ?? (_PlayAllCommand = new RelayCommand<Album>(param => PlayAll((Album)param)));
-        private void PlayAll(Album album)
+        private RelayCommand<Album> _PlayAlbumCommand;
+        public RelayCommand<Album> PlayAlbumCommand => _PlayAlbumCommand ?? (_PlayAlbumCommand = new RelayCommand<Album>(param => PlayAlbum((Album)param)));
+        private void PlayAlbum(Album album)
         {
             FionaDataService.PlaylistLoadAndPlayAlbum(FionaDataService.CurrentPlayer, album);
         }
 
-        private RelayCommand<Album> _AddToQueueCommand;
-        public RelayCommand<Album> QueueAlbumCommand => _AddToQueueCommand ?? (_AddToQueueCommand = new RelayCommand<Album>(param => AddToQueue((Album)param)));
-        private void AddToQueue(Album album)
+        private RelayCommand<Album> _QueueAlbumCommand;
+        public RelayCommand<Album> QueueAlbumCommand => _QueueAlbumCommand ?? (_QueueAlbumCommand = new RelayCommand<Album>(param => QueueAlbum((Album)param)));
+        private void QueueAlbum(Album album)
         {
             FionaDataService.PlaylistAppendAlbum(FionaDataService.CurrentPlayer, album);
         }

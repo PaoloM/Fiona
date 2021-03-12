@@ -22,8 +22,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,8">
-            <Button x:Uid="AlbumsShuffleAll" Style="{StaticResource ButtonRevealStyle}"
-                    Background="Transparent" Command="{x:Bind ViewModel.ShuffleAllCommand}">
+            <Button x:Uid="AlbumsShuffleAll" Background="{x:Null}" Command="{x:Bind ViewModel.ShuffleAllAlbumsCommand}">
                 <ContentControl>
                     <StackPanel Orientation="Horizontal">
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE14B;" Margin="0,0,8,0"/>
@@ -34,6 +33,14 @@
                     </StackPanel>
                 </ContentControl>
             </Button>
+            <!--<TextBlock x:Uid="Albums_SortBy" VerticalAlignment="Center" Margin="24,0,8,0"/>
+            <ComboBox VerticalAlignment="Center" Background="{x:Null}" SelectionChanged="SortBy_SelectionChanged">
+                <ComboBox.Items>
+                    <ComboBoxItem x:Uid="Albums_SortBy_Title"></ComboBoxItem>
+                    <ComboBoxItem x:Uid="Albums_SortBy_Year"></ComboBoxItem>
+                    <ComboBoxItem x:Uid="Albums_SortBy_DateAdded"></ComboBoxItem>
+                </ComboBox.Items>
+            </ComboBox>-->
         </StackPanel>
 
         <controls:AdaptiveGridView Grid.Row="1"                       

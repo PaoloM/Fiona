@@ -14,6 +14,7 @@ namespace Fiona.Services
     {
         private static bool shown = false;
 
+
         internal static async Task ShowIfAppropriateAsync()
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(

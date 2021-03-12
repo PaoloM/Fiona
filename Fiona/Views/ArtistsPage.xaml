@@ -4,15 +4,58 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Fiona.Core.Models"
+    xmlns:helpers="using:Fiona.Helpers"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:viewmodels="using:Fiona.ViewModels"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
+
+    <Page.DataContext>
+        <viewmodels:ArtistsViewModel x:Name="ArtistsVM"/>
+    </Page.DataContext>
+
     <Grid x:Name="ContentArea" Margin="{StaticResource MediumLeftRightMargin}">
-        <Grid
-            Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">
-            <!--
-                The SystemControlPageBackgroundChromeLowBrush background represents where you should place your content. 
-                Place your content here.
-            -->
-        </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,8">
+
+            <Button x:Uid="AlbumsShuffleAll" Background="{x:Null}" Command="{x:Bind ViewModel.ShuffleAllArtistsCommand}">
+                <ContentControl>
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE14B;" Margin="0,0,8,0"/>
+                        <TextBlock x:Uid="Artists_ShuffleAll" Margin="0,0,8,0"></TextBlock>
+                        <TextBlock Text="("></TextBlock>
+                        <TextBlock Text="{x:Bind ViewModel.Artists.Count}"></TextBlock>
+                        <TextBlock Text=")"></TextBlock>
+                    </StackPanel>
+                </ContentControl>
+            </Button>
+
+        </StackPanel>
+
+        <ListView Grid.Column="0" Grid.Row="1" x:Name="ArtistsListBox"
+            ItemsSource="{x:Bind ViewModel.Artists, Mode=OneWay}" Margin="28,28,28,28">
+            <interactivity:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="SelectionChanged">
+                    <core:InvokeCommandAction Command="{x:Bind ViewModel.ViewArtistDetailsCommand}"
+                                              CommandParameter="{Binding SelectedItem, ElementName=ArtistsListBox}" />
+                </core:EventTriggerBehavior>
+            </interactivity:Interaction.Behaviors>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="models:Artist">
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{x:Bind Name, Mode=OneWay}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>
