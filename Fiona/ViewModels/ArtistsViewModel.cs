@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using Fiona.Core.Models;
 using Fiona.Core.Services;
 using Fiona.Helpers;
@@ -9,26 +12,47 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 namespace Fiona.ViewModels
 {
-    public class ArtistsViewModel : ObservableObject
+    public class ArtistsViewModel : BaseViewModel
     {
-        public List<Artist> Artists { get => FionaDataService.GetAllArtists().Artists; }
-
-        private RelayCommand _ShuffleAllArtistsCommand;
-        public RelayCommand ShuffleAllArtistsCommand => _ShuffleAllArtistsCommand ?? (_ShuffleAllArtistsCommand = new RelayCommand(ShuffleAllArtists));
-        private void ShuffleAllArtists()
+        private ObservableCollection<GroupInfosList> _artists = new ObservableCollection<GroupInfosList>();
+        public ObservableCollection<GroupInfosList> GroupedArtists
         {
-            //TODO
+            get => _artists;
+            set => _artists = value;
         }
 
-        private RelayCommand<Artist> _ViewArtistDetailsCommand;
-        public RelayCommand<Artist> ViewArtistDetailsCommand => _ViewArtistDetailsCommand ?? (_ViewArtistDetailsCommand = new RelayCommand<Artist>(param => ViewArtistDetails((Artist)param)));
-        private void ViewArtistDetails(Artist _Artist)
+        public void GroupArtistsByInitial(List<Artist> artists)
         {
-            NavigationService.Navigate(typeof(Views.ArtistDetailsPage), _Artist, null);
+            var query = from item in artists
+                        group item by item.TextKey into g
+                        orderby g.Key
+                        select new { GroupName = g.Key, Items = g };
+
+            foreach (var g in query)
+            {
+                GroupInfosList info = new GroupInfosList
+                {
+                    Key = g.GroupName + " (" + g.Items.Count() + ")"
+                };
+
+                foreach (var item in g.Items)
+                {
+                    info.Add(item);
+                }
+
+                GroupedArtists.Add(info);
+            }
         }
 
         public ArtistsViewModel()
         {
+            GroupArtistsByInitial(Artists);
         }
     }
+
+    public class GroupInfosList : List<object>
+    {
+        public object Key { get; set; }
+    }
+
 }

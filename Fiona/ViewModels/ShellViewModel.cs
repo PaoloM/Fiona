@@ -20,7 +20,7 @@ using WinUI = Microsoft.UI.Xaml.Controls;
 
 namespace Fiona.ViewModels
 {
-    public class ShellViewModel : ObservableObject
+    public class ShellViewModel : BaseViewModel
     {
         private PlayerStatus _CurrentPlayerStatus;
         public PlayerStatus CurrentPlayerStatus
@@ -81,6 +81,13 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _IsMuted, value);
         }
 
+        private Visibility _NowPlayingPageVisibility = Visibility.Collapsed;
+        public Visibility NowPlayingPageVisibility
+        {
+            get => _NowPlayingPageVisibility;
+            set => SetProperty(ref _NowPlayingPageVisibility, value);
+        }
+
         private DispatcherTimer dispatcherTimer;
 
         public void DispatcherTimerSetup()
@@ -112,8 +119,8 @@ namespace Fiona.ViewModels
         public RelayCommand TransportToggleRepeatCommand { get; set; }
         public RelayCommand TransportToggleShuffleCommand { get; set; }
         public RelayCommand ToggleMuteCommand { get; set; }
-
-        //TODO - command to display now playing page
+        public RelayCommand ShowNowPlayingCommand { get; set; }
+        public RelayCommand HideNowPlayingCommand { get; set; }
 
         public ShellViewModel()
         {
@@ -123,6 +130,8 @@ namespace Fiona.ViewModels
             TransportToggleRepeatCommand = new RelayCommand(() => FionaDataService.TransportRepeat(CurrentPlayer));
             TransportToggleShuffleCommand = new RelayCommand(() => FionaDataService.TransportShuffle(CurrentPlayer));
             ToggleMuteCommand = new RelayCommand(() => FionaDataService.ToggleMuteVolume(CurrentPlayer));
+            ShowNowPlayingCommand = new RelayCommand(() => NowPlayingPageVisibility = Visibility.Visible);
+            HideNowPlayingCommand = new RelayCommand(() => NowPlayingPageVisibility = Visibility.Collapsed);
         }
 
         #region Template implementation

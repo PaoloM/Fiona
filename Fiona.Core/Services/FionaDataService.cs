@@ -41,7 +41,7 @@ namespace Fiona.Core.Services
                 var msg = FionaMessage.CreateMessage(FionaCommand.ServerStatus);
                 var res = QueryWebServiceWithPost<ServerStatus>(RemoteUrlJson, msg);
                 return true;
-            } catch (Exception ex)
+            } catch 
             {
                 return false;
             }

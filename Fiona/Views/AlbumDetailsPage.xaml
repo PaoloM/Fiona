@@ -7,14 +7,15 @@
     xmlns:models="using:Fiona.Core.Models"
     xmlns:viewmodels="using:Fiona.ViewModels"
     xmlns:helpers="using:Fiona.Helpers"
+    xmlns:controls="using:Fiona.Controls"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
 
     <Page.DataContext>
-        <viewmodels:AlbumDetailsViewModel x:Name="AlbumDetailsVM"/>
+        <viewmodels:BaseViewModel x:Name="BaseVM"/>
     </Page.DataContext>
-    
-    <Grid x:Name="ContentArea" Margin="0,-114,0,0">
+
+    <Grid x:Name="ContentArea" Margin="0,-62,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -65,7 +66,7 @@
                         <TextBlock x:Uid="Album_AddToQueue" FontSize="{StaticResource SmallFontSize}"/>
                     </StackPanel>
                 </Button>
-                <Button Background="{x:Null}" Command="{x:Bind ViewModel.GoToArtistCommand}" Margin="4,0,4,0">
+                <Button Background="{x:Null}" Command="{x:Bind ViewModel.GoToArtistCommand}" CommandParameter="{x:Bind ViewModel.CurrentArtist}" Margin="4,0,4,0">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE13D;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
                         <TextBlock x:Uid="Album_GoToArtist" FontSize="{StaticResource SmallFontSize}"/>
@@ -74,15 +75,17 @@
             </StackPanel>
         </Grid>
 
-        <ListView Grid.Column="0" Grid.Row="1"
+        <controls:AlternatingRowListView Grid.Column="0" Grid.Row="1"
             ItemsSource="{x:Bind ViewModel.CurrentAlbum.Tracks, Mode=OneWay}" Margin="28,28,28,28"
-                  >
-            <ListView.ItemContainerStyle>
+            EvenRowBackground="{ThemeResource MyEvenRowBrush}"
+            OddRowBackground="{ThemeResource MyOddRowBrush}">
+
+            <controls:AlternatingRowListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
                 </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemTemplate>
+            </controls:AlternatingRowListView.ItemContainerStyle>
+            <controls:AlternatingRowListView.ItemTemplate>
                 <DataTemplate x:DataType="models:Track">
                     <Grid ColumnSpacing="8" VerticalAlignment="Center"
                           helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=TrackControls}">
@@ -96,15 +99,15 @@
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{x:Bind Title, Mode=OneWay}"/>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" x:Name="TrackControls"
                                     HorizontalAlignment="Right" Visibility="Collapsed">
-                            <Button VerticalAlignment="Center" Margin="4,0,4,0"
+                            <Button VerticalAlignment="Stretch" Margin="4,0,4,0"
                                 Background="Transparent"
-                                Command="{x:Bind AlbumDetailsVM.PlayTrackCommand}"
+                                Command="{x:Bind BaseVM.PlayTrackCommand}"
                                 CommandParameter="{x:Bind}">
                                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE102;" FontSize="16" />
                             </Button>
-                            <Button VerticalAlignment="Center" Margin="4,0,4,0"
+                            <Button VerticalAlignment="Stretch" Margin="4,0,4,0"
                                 Background="Transparent"
-                                Command="{x:Bind AlbumDetailsVM.QueueTrackCommand}"
+                                Command="{x:Bind BaseVM.QueueTrackCommand}"
                                 CommandParameter="{x:Bind}">
                                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE109;" FontSize="16" />
                             </Button>
@@ -113,8 +116,8 @@
                         <TextBlock Grid.Column="3" VerticalAlignment="Center" Text="{x:Bind DurationText, Mode=OneWay}"/>
                     </Grid>
                 </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            </controls:AlternatingRowListView.ItemTemplate>
+        </controls:AlternatingRowListView>
 
     </Grid>
 

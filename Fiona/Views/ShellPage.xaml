@@ -18,9 +18,9 @@
         </ic:EventTriggerBehavior>
     </i:Interaction.Behaviors>
 
-    <Page.Resources>
+    <!--<Page.Resources>
         <Thickness x:Key="NavigationViewHeaderMargin">12,10,0,24</Thickness>
-    </Page.Resources>
+    </Page.Resources>-->
 
     <Grid>
         <Grid.RowDefinitions>
@@ -28,7 +28,7 @@
             <RowDefinition Height="90"/>
         </Grid.RowDefinitions>
 
-        <winui:NavigationView
+        <winui:NavigationView PaneDisplayMode="Top" Grid.Row="0"
             x:Name="navigationView" 
             IsBackButtonVisible="Visible"
             IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
@@ -62,7 +62,7 @@
                     </winui:NavigationViewItem.Icon>
                 </winui:NavigationViewItem>-->
             </winui:NavigationView.MenuItems>
-            
+
             <!--<winui:NavigationView.AutoSuggestBox>
                 <AutoSuggestBox QueryIcon="Find" AutomationProperties.Name="Search" />
             </winui:NavigationView.AutoSuggestBox>-->
@@ -103,29 +103,31 @@
         </Grid>
 
         <!-- PLAYER AREA -->
-        <Grid Grid.Row="1" Background="{ThemeResource SystemChromeMediumLowColor}">
+        <Grid Grid.Row="1" x:Name="PlayerArea" Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
 
-            <!-- NOW PLAYING -->
-            <Grid>
-                <!-- TODO enter NowPlaying page if tapped -->
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="90"/>
-                    <ColumnDefinition Width="280"/>
-                </Grid.ColumnDefinitions>
-                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
-                Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"/>
-                <!-- TODO enable text scrolling if long text -->
-                <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom"
-                           Margin="{StaticResource SmallLeftRightMargin}" 
-                           Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}" FontSize="18"/>
-                <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"
-                           Margin="{StaticResource SmallLeftRightMargin}"
-                           Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" FontSize="16" FontWeight="Bold"/>
-            </Grid>
+            <!-- CURRENT TRACK -->
+            <Button Width="244" HorizontalAlignment="Left" Background="Transparent"
+                Command="{x:Bind ViewModel.ShowNowPlayingCommand}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="90"/>
+                        <ColumnDefinition Width="280"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+                    Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"/>
+                    <!-- TODO enable text scrolling if long text -->
+                    <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom"
+                               Margin="{StaticResource SmallLeftRightMargin}" 
+                               Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}" FontSize="18"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1" VerticalAlignment="Top"
+                               Margin="{StaticResource SmallLeftRightMargin}"
+                               Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" FontSize="16" FontWeight="Bold"/>
+                </Grid>
+            </Button>
 
             <!-- TRANSPORT CONTROLS -->
             <Grid HorizontalAlignment="Center">
@@ -193,6 +195,60 @@
                 </ComboBox>
             </Grid>
 
+        </Grid>
+
+        <!-- NOW PLAYING PAGE -->
+        <Grid x:Name="NowPlayingPage" Background="black" Grid.RowSpan="2" Visibility="{x:Bind ViewModel.NowPlayingPageVisibility, Mode=OneWay}">
+            <Button VerticalAlignment="Top" HorizontalAlignment="Left"
+                    Width="44" Height="32"  Margin="0,32,0,0"
+                    Background="Transparent"
+                    Command="{x:Bind ViewModel.HideNowPlayingCommand}" Canvas.ZIndex="99">
+                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" />
+            </Button>
+            <Image Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"
+                      Stretch="UniformToFill" Opacity="0.2"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="32,0,0,32">
+                <Image Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"
+                      Width="160" Height="160" Stretch="UniformToFill" HorizontalAlignment="Left"/>
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="32,0,0,0">
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}" FontSize="24" FontWeight="Bold"/>
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" FontSize="18"/>
+                    <TextBlock HorizontalAlignment="Left"
+                               Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Album, Mode=OneWay}" FontSize="18"/>
+                </StackPanel>
+            </StackPanel>
+            <Grid HorizontalAlignment="right" VerticalAlignment="Bottom" Margin="0,0,32,32">
+                <StackPanel Orientation="Vertical" Margin="0,12,0,0">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Style="{StaticResource ButtonRevealStyle}" Margin="{StaticResource SmallLeftRightMargin}"
+                                HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="Transparent"
+                                Command="{x:Bind ViewModel.TransportPreviousTrackCommand}">
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
+                        </Button>
+                        <Button Style="{StaticResource ButtonRevealStyle}" Margin="{StaticResource SmallLeftRightMargin}"
+                                HorizontalAlignment="Center" Height="46" Width="46" CornerRadius="23" Background="Transparent"
+                                BorderBrush="{ThemeResource ButtonBorderThemeBrush}"
+                                Command="{x:Bind ViewModel.TransportPauseCommand}">
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="14" />
+                        </Button>
+                        <Button Style="{StaticResource ButtonRevealStyle}" Margin="{StaticResource SmallLeftRightMargin}"
+                                HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="Transparent"
+                                Command="{x:Bind ViewModel.TransportNextTrackCommand}">
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0" HorizontalAlignment="Center">
+                        <TextBlock Text="{x:Bind ViewModel.CurrentPlayerStatus.TimeText, Mode=OneWay}"
+                                   Margin="{StaticResource SmallLeftRightMargin}" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                        <ProgressBar Width="100" Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
+                                     Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}" />
+                        <TextBlock Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.DurationText, Mode=OneWay}"
+                                   Margin="{StaticResource SmallLeftRightMargin}" Style="{ThemeResource CaptionTextBlockStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

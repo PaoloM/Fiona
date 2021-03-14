@@ -10,13 +10,13 @@
   <Identity
     Name="FBAEEA49-4402-430F-8A08-A92FACA8E490"
     Publisher="CN=pmarc"
-    Version="1.0.0.0" />
+    Version="0.1.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="FBAEEA49-4402-430F-8A08-A92FACA8E490" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>Fiona</DisplayName>
-    <PublisherDisplayName>pmarc</PublisherDisplayName>
+    <PublisherDisplayName>Paolo Marcucci</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -39,7 +39,7 @@
         Description="ms-resource:AppDescription"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\SplashScreen.png"  BackgroundColor="#ff9966"/>
       </uap:VisualElements>
 
       <Extensions>

@@ -24,15 +24,14 @@ namespace Fiona
         {
             InitializeComponent();
 
-            // TODO WTS: Add your app in the app center and set your secret here. More at https://docs.microsoft.com/appcenter/sdk/getting-started/uwp
-            AppCenter.Start("{Your App Secret}", typeof(Analytics), typeof(Crashes));
+            AppCenter.Start("54dfa498-199b-4fd4-b97a-5a9714f248a3", typeof(Analytics), typeof(Crashes));
             UnhandledException += OnAppUnhandledException;
 
             //HACK
             FionaDataService.ServerIP = "lofwyr";
             FionaDataService.ServerPort = 9000;
 
-            //
+            //HACK
             FionaDataService.GetAllAlbums();
             FionaDataService.GetAllArtists();
 

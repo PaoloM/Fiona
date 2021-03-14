@@ -5,7 +5,7 @@ using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Fiona.ViewModels
 {
-    public class RadioViewModel : ObservableObject
+    public class RadioViewModel : BaseViewModel
     {
         public RadioViewModel()
         {

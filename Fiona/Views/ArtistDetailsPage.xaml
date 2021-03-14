@@ -12,10 +12,10 @@
     mc:Ignorable="d">
 
     <Page.DataContext>
-        <viewmodels:ArtistDetailsViewModel x:Name="ArtistDetailsVM"/>
+        <viewmodels:BaseViewModel x:Name="BaseVM"/>
     </Page.DataContext>
 
-    <Grid x:Name="ContentArea" Margin="0,-114,0,0">
+    <Grid x:Name="ContentArea" Margin="0,-62,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -74,10 +74,11 @@
 
                 <!-- ALBUMS -->
                 <controls:AdaptiveGridView Grid.Row="1"                       
-            IsItemClickEnabled="True"
-            ItemsSource="{x:Bind ViewModel.CurrentArtist.Albums}"
-            SelectionMode="None"
-            ItemClickCommand="{x:Bind ArtistDetailsVM.ViewAlbumDetailsCommand}">
+                    IsItemClickEnabled="True"
+                    ItemsSource="{x:Bind ViewModel.CurrentArtist.Albums}"
+                    SelectionMode="None"
+                    ItemClickCommand="{x:Bind BaseVM.ViewAlbumDetailsCommand}"
+                    Margin="28,28,28,28">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="models:Album">
                             <Grid x:Name="itemThumbnail" Width="160" Height="215" 
@@ -100,11 +101,11 @@
                                     HorizontalAlignment="Center" VerticalAlignment="Top"
                                     Visibility="Collapsed" Margin="0,64,0,0">
                                     <Button x:Name="PlayAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0"
-                                    Command="{x:Bind ArtistDetailsVM.PlayAlbumCommand}" CommandParameter="{x:Bind}">
+                                    Command="{x:Bind BaseVM.PlayAlbumCommand}" CommandParameter="{x:Bind}">
                                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE102;" FontSize="14"/>
                                     </Button>
                                     <Button x:Name="QueueAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0"
-                                    Command="{x:Bind ArtistDetailsVM.QueueAlbumCommand}" CommandParameter="{x:Bind}">
+                                    Command="{x:Bind BaseVM.QueueAlbumCommand}" CommandParameter="{x:Bind}">
                                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE109;" FontSize="14"/>
                                     </Button>
                                 </StackPanel>
