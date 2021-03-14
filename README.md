@@ -7,6 +7,27 @@
 
 # Notes
 
+## API Keys
+
+Create a __APIKeys.local.cs__ class in the Fiona.Core/Helpers folder
+
+    namespace Fiona.Core.Helpers
+    {
+        public static partial class APIKeys
+        {
+            static APIKeys()
+            {
+                AppCenter = "";
+                LMSServerName = "";
+                LMSServerPort = 9000;
+                DiscogsConsumerKey = "";
+                DiscogsConsumerSecret = "";
+            }
+        }
+    }
+
+And add your keys.
+
 ## Acrylic fix
 
 Found a fix for Acrylic not appearing in the NavigationView on https://edi.wang/post/2018/10/9/fix-acrylicbrush-missing-navigationview-windows-10-17763 

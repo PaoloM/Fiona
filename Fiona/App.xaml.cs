@@ -24,14 +24,14 @@ namespace Fiona
         {
             InitializeComponent();
 
-            AppCenter.Start(Helpers.APIKeys.AppCenter, typeof(Analytics), typeof(Crashes));
+            AppCenter.Start(Fiona.Core.Helpers.APIKeys.AppCenter, typeof(Analytics), typeof(Crashes));
             UnhandledException += OnAppUnhandledException;
 
-            //HACK
-            FionaDataService.ServerIP = "lofwyr";
-            FionaDataService.ServerPort = 9000;
+            //HACK - should retrieve these from LocalSettings and - if not valid - do not proceed with the initialization
+            FionaDataService.ServerIP = Fiona.Core.Helpers.APIKeys.LMSServerName;
+            FionaDataService.ServerPort = Fiona.Core.Helpers.APIKeys.LMSServerPort;
 
-            //HACK
+            //HACK - is this the right place to load ALL the large data?
             FionaDataService.GetAllAlbums();
             FionaDataService.GetAllArtists();
 
