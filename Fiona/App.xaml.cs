@@ -24,7 +24,7 @@ namespace Fiona
         {
             InitializeComponent();
 
-            AppCenter.Start("54dfa498-199b-4fd4-b97a-5a9714f248a3", typeof(Analytics), typeof(Crashes));
+            AppCenter.Start(Helpers.APIKeys.AppCenter, typeof(Analytics), typeof(Crashes));
             UnhandledException += OnAppUnhandledException;
 
             //HACK

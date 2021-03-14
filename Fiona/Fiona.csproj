@@ -152,6 +152,8 @@
     <Compile Include="Behaviors\NavigationViewHeaderBehavior.cs" />
     <Compile Include="Behaviors\NavigationViewHeaderMode.cs" />
     <Compile Include="Controls\AlternatingRowListView.cs" />
+    <Compile Include="Helpers\APIKeys.local.cs" />
+    <Compile Include="Helpers\APIKeys.cs" />
     <Compile Include="Helpers\EnumToBooleanConverter.cs" />
     <Compile Include="Helpers\NavHelper.cs" />
     <Compile Include="Helpers\SettingsStorageExtensions.cs" />
