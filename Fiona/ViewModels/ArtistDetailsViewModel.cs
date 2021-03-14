@@ -42,10 +42,18 @@ namespace Fiona.ViewModels
             get { return _currentArtist; }
             set
             {
-                var e = FionaDataService.GetAllAlbumsByArtist(value);
-                var g = FionaDataService.GetAllGenresByArtist(value);
-                value.Albums = (from s in e.Albums orderby s.Year select s).ToList<Album>();
-                value.Genres = (from t in g.Genres orderby t.TextKey select t).ToList<Genre>();
+                if (value.Albums.Count == 0)
+                {
+                    var e = FionaDataService.GetAllAlbumsByArtist(value);
+                    value.Albums = (from s in e.Albums orderby s.Year select s).ToList<Album>();
+                }
+
+                if (value.Genres.Count == 0)
+                {
+                    var g = FionaDataService.GetAllGenresByArtist(value);
+                    value.Genres = (from t in g.Genres orderby t.TextKey select t).ToList<Genre>();
+                }
+
                 string st = "";
                 foreach (Genre gg in value.Genres)
                 {
@@ -54,7 +62,22 @@ namespace Fiona.ViewModels
                     st += gg.Name;
                 }
                 AllGenres = st;
-                //TODO get artist images and bio
+                
+                if (string.IsNullOrEmpty(value.Profile))
+                {
+                    DiscogsArtist da = DiscogsDataService.GetArtistInfo(value.Name);
+                    value.Profile = da.Profile;
+                    value.Images = new List<string>();
+                    if (da.Images.Count > 0)
+                    {
+                        foreach (var i in da.Images)
+                            value.Images.Add(i.ImageUrl);
+                    }
+                }
+
+                ArtistBio = value.Profile;
+                ArtistImageUrl = value.Images[0];
+
                 SetProperty(ref _currentArtist, value);
             }
         }

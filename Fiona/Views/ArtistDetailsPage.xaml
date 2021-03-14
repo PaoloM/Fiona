@@ -21,10 +21,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Column="0" Grid.Row="0" Padding="36,36,36,36"
+        <Grid Grid.Column="0" Grid.Row="0" Height="308" Padding="36,36,36,36"
               Background="{ThemeResource SystemChromeMediumLowColor}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -34,12 +34,12 @@
             </Grid.ColumnDefinitions>
 
             <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" x:Name="itemHero"
-            Height="236" Width="236" Stretch="UniformToFill"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-            <!--Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}" />-->
+                Height="236" Width="236" Stretch="UniformToFill"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}" />
 
-            <StackPanel Grid.Column="2" Grid.Row="0">
+            <StackPanel Grid.Column="2" Grid.Row="0" Margin="0,-12,0,0">
                 <TextBlock
                     x:Name="title"
                     Margin="{StaticResource XXSmallTopMargin}"
@@ -47,8 +47,8 @@
                     RelativePanel.RightOf="itemHero"
                     FontSize="{StaticResource XLargeFontSize}"
                     Text="{x:Bind ViewModel.CurrentArtist.Name, Mode=OneWay}" FontWeight="Light" TextWrapping="Wrap" />
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.AllGenres, Mode=OneWay}" TextWrapping="Wrap"/>
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.ArtistBio, Mode=OneWay}" TextWrapping="Wrap"/>
+                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Text="{x:Bind ViewModel.AllGenres, Mode=OneWay}" TextTrimming="CharacterEllipsis"/>
+                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.ArtistBio, Mode=OneWay}" TextWrapping="Wrap" Height="150" Margin="0,24,0,0"/>
             </StackPanel>
 
             <!--<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1"

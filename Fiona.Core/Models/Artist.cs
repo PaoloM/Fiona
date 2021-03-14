@@ -23,6 +23,10 @@ namespace Fiona.Core.Models
 
         public List<Track> Tracks { get; set; } = new List<Track>();
 
+        public string Profile { get; set; }
+
+        public List<string>Images { get; set; }
+
         public override string ToString()
         {
             return string.Format("{0}", Name);

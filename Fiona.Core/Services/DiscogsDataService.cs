@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Fiona.Core.Models;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -10,61 +11,66 @@ namespace Fiona.Core.Services
 {
     public static class DiscogsDataService
     {
-
+        public static DiscogsArtist GetArtistInfo(string name)
+        {
+            DiscogsSearchResult res = SearchDiscogs<DiscogsSearchResult>(name);
+            DiscogsArtist artist = QueryDiscogsEntity<DiscogsArtist>("artists", res.ID.ToString());
+            return artist;
+        }
 
         #region Plumbing
-        public static string RemoteUrl
+        public static string RemoteUrl = "https://api.discogs.com/";
+
+        public static string QueryUrl(string param)
         {
-            get
-            {
-                return string.IsNullOrEmpty(ServerIP) ? "" : $"http://{ServerIP}:{ServerPort}/";
-            }
+                return $"{RemoteUrl}database/search?q={param}";
         }
 
-        public static string RemoteUrlJson
+        public static string EntityUrl(string entity, string id)
         {
-            get
-            {
-                return string.IsNullOrEmpty(ServerIP) ? "" : $"{RemoteUrl}jsonrpc.js";
-            }
-        }
-
-        public static int BigImageSize { get => 350; }
-        public static int SmallImageSize { get => 75; }
-
-        public static string DefaultArtworkUrl
-        {
-            get => $"{RemoteUrl}music/0/cover_{BigImageSize}x{BigImageSize}.jpg";
+                return $"{RemoteUrl}{entity}/{id}";
         }
 
         private static HttpClient client = new HttpClient();
 
-        private static T QueryWebServiceWithPost<T>(string url, string msg)
+        private static T SearchDiscogs<T>(string param)
         {
-            if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(ServerIP))
-            {
-                return default(T);
-            }
-            else
-            {
-                //TODO authentication
-                var content = new StringContent(msg, Encoding.UTF8, "application/json");
-                // send the message and wait for the response
-                var response = client.PostAsync(url, content);
-                // read the response
-                string res = "";
+            string url = $"{QueryUrl(param)}&key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
+            client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (paolo@paolomarcucci.com)");
 
-                using (HttpContent c = response.Result.Content)
-                {
-                    Task<string> result = c.ReadAsStringAsync();
-                    res = result.Result;
-                }
+            var response = client.GetAsync(url);
+            string res = "";
 
-                JObject o = JObject.Parse(res);
-                var jsonResult = o["result"];
-                var outval = JsonConvert.DeserializeObject<T>(jsonResult.ToString());
-                return outval;
+            using (HttpContent c = response.Result.Content)
+            {
+                Task<string> result = c.ReadAsStringAsync();
+                res = result.Result;
             }
+
+            JObject o = JObject.Parse(res);
+            var jsonResult = o["results"];
+            var outval = JsonConvert.DeserializeObject<List<T>>(jsonResult.ToString());
+            return outval[0];
+        }
+
+        private static T QueryDiscogsEntity<T>(string entitytype, string id)
+        {
+            string url = $"{EntityUrl(entitytype, id)}?key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
+            client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (paolo@paolomarcucci.com)");
+
+            var response = client.GetAsync(url);
+            string res = "";
+
+            using (HttpContent c = response.Result.Content)
+            {
+                Task<string> result = c.ReadAsStringAsync();
+                res = result.Result;
+            }
+
+            JObject o = JObject.Parse(res);
+            var jsonResult = o; //["results"];
+            var outval = JsonConvert.DeserializeObject<T>(jsonResult.ToString());
+            return outval;
         }
         #endregion
 
