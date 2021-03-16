@@ -36,7 +36,7 @@ namespace Fiona.Core.Services
         private static T SearchDiscogs<T>(string param)
         {
             string url = $"{QueryUrl(param)}&key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
-            client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (paolo@paolomarcucci.com)");
+            client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (fiona@thatpaolo.com)");
 
             var response = client.GetAsync(url);
             string res = "";
@@ -56,7 +56,7 @@ namespace Fiona.Core.Services
         private static T QueryDiscogsEntity<T>(string entitytype, string id)
         {
             string url = $"{EntityUrl(entitytype, id)}?key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
-            client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (paolo@paolomarcucci.com)");
+            client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (fiona@thatpaolo)");
 
             var response = client.GetAsync(url);
             string res = "";

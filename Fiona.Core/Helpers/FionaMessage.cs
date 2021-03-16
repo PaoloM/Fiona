@@ -90,7 +90,17 @@ namespace Fiona.Core.Helpers
 
         public static string CreateMessage(Player player, string command, string arg0, string arg1, string arg2, string arg3)
         {
-            return JsonConvert.SerializeObject(new FionaMessage(new object[2] { player.ID, new List<string>(4) { command, arg0, arg1, arg2, arg3 } }));
+            return JsonConvert.SerializeObject(new FionaMessage(new object[2] { player.ID, new List<string>(5) { command, arg0, arg1, arg2, arg3 } }));
+        }
+
+        public static string CreateMessage(Player player, string command, string arg0, string arg1, string arg2, string arg3, string arg4)
+        {
+            return JsonConvert.SerializeObject(new FionaMessage(new object[2] { player.ID, new List<string>(6) { command, arg0, arg1, arg2, arg3, arg4 } }));
+        }
+
+        public static string CreateMessage(Player player, string command, string arg0, string arg1, string arg2, string arg3, string arg4, string arg5)
+        {
+            return JsonConvert.SerializeObject(new FionaMessage(new object[2] { player.ID, new List<string>(7) { command, arg0, arg1, arg2, arg3, arg4, arg5 } }));
         }
 
         #endregion

@@ -3,9 +3,30 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Fiona.Core</RootNamespace>
+    <Version>0.1.0</Version>
+    <Authors>Paolo Marcucci</Authors>
+    <Company>thatpaolo.com</Company>
+    <Product>Fiona</Product>
+    <Copyright>Copyright Paolo Marcucci 2021</Copyright>
+    <PackageProjectUrl>http://www.thatpaolo.com/apps/fiona</PackageProjectUrl>
   </PropertyGroup>
 
    <ItemGroup>
      <PackageReference Include="Newtonsoft.Json" Version="13.0.1-beta2" />
+   </ItemGroup>
+
+   <ItemGroup>
+     <Compile Update="Properties\Resources.Designer.cs">
+       <DesignTime>True</DesignTime>
+       <AutoGen>True</AutoGen>
+       <DependentUpon>Resources.resx</DependentUpon>
+     </Compile>
+   </ItemGroup>
+
+   <ItemGroup>
+     <EmbeddedResource Update="Properties\Resources.resx">
+       <Generator>ResXFileCodeGenerator</Generator>
+       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+     </EmbeddedResource>
    </ItemGroup>
 </Project>

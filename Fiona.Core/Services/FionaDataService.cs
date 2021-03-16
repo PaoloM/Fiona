@@ -205,25 +205,37 @@ namespace Fiona.Core.Services
         #endregion
 
         #region Apps
-        public static AppletList GetApps()
+        public static AppletList GetAllApps(Player player)
         {
-            var msg = FionaMessage.CreateMessage("apps", "0", FionaCommand.MaxItems);
+            var msg = FionaMessage.CreateMessage(player, "myapps", "items", "0", FionaCommand.MaxItems, "menu:1");
             AllApps = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
             return AllApps;
         }
 
-        public static AppletList GetApps(Player player, string app)
+        public static AppletList GetApps(Player player, string cmd1, string cmd2, string menu, string item_id)
         {
-            var msg = FionaMessage.CreateMessage(player, app, "items", "0", FionaCommand.MaxItems);
+            var msg = FionaMessage.CreateMessage(player, cmd1, cmd2, "0", FionaCommand.MaxItems, "menu:" + menu, "item_id:" + item_id);
             return QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
         }
 
-        public static AppletList GetApps(Player player, string app, string id)
+        public static void PlayPlaylistFromApp(Player player, string appname, string menu, string item_id)
         {
-            var msg = FionaMessage.CreateMessage(player, app, "items", "0", FionaCommand.MaxItems, "item_id:" + id);
+            var msg = FionaMessage.CreateMessage(player, appname, "playlist", "play", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id);
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
-            return res;
         }
+
+        //public static AppletList GetApps(Player player, string app)
+        //{
+        //    var msg = FionaMessage.CreateMessage(player, app, "items", "0", FionaCommand.MaxItems);
+        //    return QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+        //}
+
+        //public static AppletList GetApps(Player player, string app, string id)
+        //{
+        //    var msg = FionaMessage.CreateMessage(player, app, "items", "0", FionaCommand.MaxItems, "item_id:" + id);
+        //    var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+        //    return res;
+        //}
         #endregion
 
         #region Misc
