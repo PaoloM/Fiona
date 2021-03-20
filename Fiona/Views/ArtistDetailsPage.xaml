@@ -15,14 +15,14 @@
         <viewmodels:BaseViewModel x:Name="BaseVM"/>
     </Page.DataContext>
 
-    <Grid x:Name="ContentArea" Margin="0,-62,0,0">
+    <Grid x:Name="ContentArea" Margin="0,-114,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Column="0" Grid.Row="0" Height="308" Padding="36,36,36,36"
-              Background="{ThemeResource SystemChromeMediumLowColor}">
+        <Grid Grid.Column="0" Grid.Row="0" Height="308" Padding="44,44,44,44"
+              Background="{StaticResource CardBackground}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -48,7 +48,7 @@
                     FontSize="{StaticResource XLargeFontSize}"
                     Text="{x:Bind ViewModel.CurrentArtist.Name, Mode=OneWay}" FontWeight="Light" TextWrapping="Wrap" />
                 <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Text="{x:Bind ViewModel.AllGenres, Mode=OneWay}" TextTrimming="CharacterEllipsis"/>
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.ArtistBio, Mode=OneWay}" TextWrapping="Wrap" Height="150" Margin="0,24,0,0"/>
+                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.ArtistBio, Mode=OneWay}" TextWrapping="Wrap" Height="150" Margin="0,20,0,0"/>
             </StackPanel>
 
             <!--<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1"
@@ -78,20 +78,21 @@
                     ItemsSource="{x:Bind ViewModel.CurrentArtist.Albums}"
                     SelectionMode="None"
                     ItemClickCommand="{x:Bind BaseVM.ViewAlbumDetailsCommand}"
-                    Margin="28,28,28,28">
+                    Margin="36,36,36,36">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="models:Album">
-                            <Grid x:Name="itemThumbnail" Width="160" Height="215" 
-                        Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
+                            <Grid x:Name="itemThumbnail" Width="160" Height="196" Margin="8,8,8,8"
+                        Background="Transparent"
                         helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=AlbumControls}">
+
                                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
                                     <Image Source="{x:Bind ArtworkUrl, Mode=OneWay}" Width="160" Height="160" Stretch="UniformToFill"/>
                                     <TextBlock
-                                Margin="{StaticResource XXSmallTopMargin}"
+                                Margin="4,4,4,0"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="{x:Bind Name}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                                Text="{x:Bind Name}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
                                     <TextBlock
-                                Margin="{StaticResource XXSmallTopMargin}"
+                                Margin="4,0,4,4"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
                                 Text="{x:Bind ArtistName}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
                                 Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />

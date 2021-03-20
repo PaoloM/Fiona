@@ -238,4 +238,7 @@ Please enter the address and port of your Logitech Media Server (or your Squeeze
   <data name="Artists_ShuffleAll.Text" xml:space="preserve">
     <value>Shuffle all</value>
   </data>
+  <data name="Shell_QueueTitle.Text" xml:space="preserve">
+    <value>Queue</value>
+  </data>
 </root>

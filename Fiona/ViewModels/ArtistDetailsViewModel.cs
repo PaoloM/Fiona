@@ -76,7 +76,7 @@ namespace Fiona.ViewModels
                 }
 
                 ArtistBio = value.Profile;
-                ArtistImageUrl = value.Images[0];
+                ArtistImageUrl = value.Images.Count > 0 ? value.Images[0] : null;
 
                 SetProperty(ref _currentArtist, value);
             }

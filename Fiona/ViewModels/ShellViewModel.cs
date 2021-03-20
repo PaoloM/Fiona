@@ -29,6 +29,13 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _CurrentPlayerStatus, value);
         }
 
+        private List<Track> _Queue;
+        public List<Track> Queue
+        {
+            get => _Queue;
+            set => SetProperty(ref _Queue, value);
+        }
+
         public PlayerList PlayersList
         {
             get
@@ -88,6 +95,19 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _NowPlayingPageVisibility, value);
         }
 
+        //private string _ArtistImageUrl = null;
+        //public string ArtistImageUrl
+        //{
+        //    get
+        //    {
+        //        if (_ArtistImageUrl is null)
+        //        {
+        //            _ArtistImageUrl = DiscogsDataService.GetArtistInfo(CurrentPlayerStatus.CurrentSong.Artist).Images?[0].ImageUrl;
+        //        }
+        //        return _ArtistImageUrl;
+        //    }
+        //}
+
         private DispatcherTimer dispatcherTimer;
 
         public void DispatcherTimerSetup()
@@ -105,11 +125,20 @@ namespace Fiona.ViewModels
                 IsPlayingGlyph = "\xE103";
             else
                 IsPlayingGlyph = "\xE768";
+
             IsMuted = CurrentPlayerStatus.IsMuted;
+
             if (CurrentPlayerStatus.CurrentSong != null)
             {
                 if (NowPlayingAlbumArt != CurrentPlayerStatus.CurrentSong?.ArtworkUrl)
+                {
                     NowPlayingAlbumArt = CurrentPlayerStatus.CurrentSong.ArtworkUrl;
+                }
+            }
+
+            if ((CurrentPlayerStatus.Playlist.Count - CurrentPlayerStatus.PlaylistCurrentIndex) != Queue?.Count)
+            {
+                Queue = CurrentPlayerStatus.Playlist.Skip(CurrentPlayerStatus.PlaylistCurrentIndex).ToList<Track>();
             }
         }
 

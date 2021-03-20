@@ -33,7 +33,7 @@
                     </StackPanel>
                 </ContentControl>
             </Button>-->
-            
+
             <!--<TextBlock x:Uid="Albums_SortBy" VerticalAlignment="Center" Margin="24,0,8,0"/>
             <ComboBox VerticalAlignment="Center" Background="{x:Null}" SelectionChanged="SortBy_SelectionChanged">
                 <ComboBox.Items>
@@ -44,24 +44,25 @@
             </ComboBox>-->
         </StackPanel>
 
-        <controls:AdaptiveGridView Grid.Row="1"                       
+        <controls:AdaptiveGridView Grid.Row="1" Margin="24,0,36,36"                                   
             IsItemClickEnabled="True"
             ItemsSource="{x:Bind ViewModel.Albums}"
             SelectionMode="None"
             ItemClickCommand="{x:Bind BaseVM.ViewAlbumDetailsCommand}">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:Album">
-                    <Grid x:Name="itemThumbnail" Width="160" Height="215" 
-                        Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}"
+                    <Grid x:Name="itemThumbnail" Width="160" Height="196" Margin="8,8,8,8"
+                        Background="Transparent"
                         helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=AlbumControls}">
+
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
                             <Image Source="{x:Bind ArtworkUrl, Mode=OneWay}" Width="160" Height="160" Stretch="UniformToFill"/>
                             <TextBlock
-                                Margin="{StaticResource XXSmallTopMargin}"
+                                Margin="4,4,4,0"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="{x:Bind Name}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                                Text="{x:Bind Name}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
                             <TextBlock
-                                Margin="{StaticResource XXSmallTopMargin}"
+                                Margin="4,0,4,4"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
                                 Text="{x:Bind ArtistName}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
                                 Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
@@ -83,7 +84,6 @@
                     </Grid>
                 </DataTemplate>
             </GridView.ItemTemplate>
-
         </controls:AdaptiveGridView>
 
     </Grid>

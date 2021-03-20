@@ -15,14 +15,14 @@
         <viewmodels:BaseViewModel x:Name="BaseVM"/>
     </Page.DataContext>
 
-    <Grid x:Name="ContentArea" Margin="0,-62,0,0">
+    <Grid x:Name="ContentArea" Margin="0,-114,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Column="0" Grid.Row="0" Padding="36,36,36,36"
-              Background="{ThemeResource SystemChromeMediumLowColor}">
+        <Grid Grid.Column="0" Grid.Row="0" Padding="44,44,44,44"
+              Background="{StaticResource CardBackground}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -76,7 +76,7 @@
         </Grid>
 
         <controls:AlternatingRowListView Grid.Column="0" Grid.Row="1"
-            ItemsSource="{x:Bind ViewModel.CurrentAlbum.Tracks, Mode=OneWay}" Margin="28,28,28,28"
+            ItemsSource="{x:Bind ViewModel.CurrentAlbum.Tracks, Mode=OneWay}" Margin="44,44,44,44"
             EvenRowBackground="{ThemeResource MyEvenRowBrush}"
             OddRowBackground="{ThemeResource MyOddRowBrush}">
 
