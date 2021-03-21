@@ -22,7 +22,7 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _artistBio, value);
         }
 
-        private string _artistImageUrl = "";
+        private string _artistImageUrl = FionaDataService.DefaultArtworkUrl;
         public string ArtistImageUrl
         {
             get => _artistImageUrl;
@@ -62,22 +62,27 @@ namespace Fiona.ViewModels
                     st += gg.Name;
                 }
                 AllGenres = st;
-                
+
                 if (string.IsNullOrEmpty(value.Profile))
                 {
-                    DiscogsArtist da = DiscogsDataService.GetArtistInfo(value.Name);
-                    value.Profile = da.Profile;
-                    value.Images = new List<string>();
-                    if (da.Images.Count > 0)
+                    string ca = value.Name;
+                    if (ca.IndexOf(',') > 0)
+                        ca = ca.Substring(0, ca.IndexOf(',')); // if there is a comma, take the first artist
+
+                    DiscogsArtist da = DiscogsDataService.GetArtistInfo(ca);
+                    if (da != null)
                     {
-                        foreach (var i in da.Images)
-                            value.Images.Add(i.ImageUrl);
+                        value.Profile = da.Profile;
+                        value.Images = new List<string>();
+                        if (da.Images.Count > 0)
+                        {
+                            foreach (var i in da.Images)
+                                value.Images.Add(i.ImageUrl);
+                        }
                     }
                 }
-
                 ArtistBio = value.Profile;
                 ArtistImageUrl = value.Images.Count > 0 ? value.Images[0] : null;
-
                 SetProperty(ref _currentArtist, value);
             }
         }

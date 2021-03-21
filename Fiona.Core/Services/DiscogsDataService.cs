@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Fiona.Core.Services
 {
@@ -13,12 +14,25 @@ namespace Fiona.Core.Services
     {
         public static DiscogsArtist GetArtistInfo(string name)
         {
-            DiscogsSearchResult res = SearchDiscogs<DiscogsSearchResult>(name);
-            DiscogsArtist artist = QueryDiscogsEntity<DiscogsArtist>("artists", res.ID.ToString());
-            return artist;
+            if (HaveKeys())
+            {
+                IEnumerable<DiscogsSearchResult> res = SearchDiscogs<DiscogsSearchResult>(name);
+
+                DiscogsSearchResult a = (from aa in res where aa.EntityType == "artist" select aa).First<DiscogsSearchResult>();
+
+                DiscogsArtist artist = QueryDiscogsEntity<DiscogsArtist>("artists", a.ID.ToString());
+                return artist;
+            }
+            else
+                return null;
         }
 
         #region Plumbing
+        private static bool HaveKeys()
+        {
+            return !string.IsNullOrEmpty(Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey);
+        }
+
         public static string RemoteUrl = "https://api.discogs.com/";
 
         public static string QueryUrl(string param)
@@ -33,7 +47,7 @@ namespace Fiona.Core.Services
 
         private static HttpClient client = new HttpClient();
 
-        private static T SearchDiscogs<T>(string param)
+        private static IEnumerable<T> SearchDiscogs<T>(string param)
         {
             string url = $"{QueryUrl(param)}&key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
             client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (fiona@thatpaolo.com)");
@@ -49,8 +63,8 @@ namespace Fiona.Core.Services
 
             JObject o = JObject.Parse(res);
             var jsonResult = o["results"];
-            var outval = JsonConvert.DeserializeObject<List<T>>(jsonResult.ToString());
-            return outval[0];
+            var outval = JsonConvert.DeserializeObject<IEnumerable<T>>(jsonResult.ToString());
+            return outval;
         }
 
         private static T QueryDiscogsEntity<T>(string entitytype, string id)

@@ -8,6 +8,7 @@
     xmlns:helpers="using:Fiona.Helpers"
     xmlns:viewmodels="using:Fiona.ViewModels"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:uc="using:Fiona.Controls"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
 
@@ -15,7 +16,7 @@
         <viewmodels:BaseViewModel x:Name="BaseVM"/>
     </Page.DataContext>
 
-    <Grid x:Name="ContentArea" Margin="{StaticResource MediumLeftRightMargin}">
+    <Grid x:Name="ContentArea">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -44,13 +45,18 @@
             </ComboBox>-->
         </StackPanel>
 
-        <controls:AdaptiveGridView Grid.Row="1" Margin="24,0,36,36"                                   
+        <controls:AdaptiveGridView Grid.Row="1" Margin="44,0,36,36"                                   
             IsItemClickEnabled="True"
             ItemsSource="{x:Bind ViewModel.Albums}"
             SelectionMode="None"
             ItemClickCommand="{x:Bind BaseVM.ViewAlbumDetailsCommand}">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:Album">
+                    <!--<uc:AlbumCard AlbumName="{x:Bind Name, Mode=OneWay}"
+                                  ArtistName="{x:Bind ArtistName, Mode=OneWay}"
+                                  Artwork="{x:Bind ArtworkUrl, Mode=OneWay}"
+                                  PlayAlbumCommand="{x:Bind BaseVM.PlayAlbumCommand}"
+                                  QueueAlbumCommand="{x:Bind BaseVM.QueueAlbumCommand}"/>-->
                     <Grid x:Name="itemThumbnail" Width="160" Height="196" Margin="8,8,8,8"
                         Background="Transparent"
                         helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=AlbumControls}">
@@ -80,7 +86,6 @@
                                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE109;" FontSize="14"/>
                             </Button>
                         </StackPanel>
-
                     </Grid>
                 </DataTemplate>
             </GridView.ItemTemplate>

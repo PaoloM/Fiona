@@ -91,6 +91,7 @@ namespace Fiona.Core.Models
                 }
             }
         }
+
         public string PlaylistIndexSort
         {
             get
@@ -124,7 +125,7 @@ namespace Fiona.Core.Models
 
             if (string.IsNullOrEmpty(ArtworkID))
             {
-                artworkurl = RemoteArtworkUrl;
+                artworkurl = RemoteArtworkUrl != null ? RemoteArtworkUrl : FionaDataService.DefaultArtworkUrl;
             }
             else
             {

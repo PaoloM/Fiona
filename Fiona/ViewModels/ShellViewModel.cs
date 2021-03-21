@@ -29,7 +29,7 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _CurrentPlayerStatus, value);
         }
 
-        private List<Track> _Queue;
+        private List<Track> _Queue = new List<Track>();
         public List<Track> Queue
         {
             get => _Queue;
@@ -95,18 +95,19 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _NowPlayingPageVisibility, value);
         }
 
-        //private string _ArtistImageUrl = null;
-        //public string ArtistImageUrl
-        //{
-        //    get
-        //    {
-        //        if (_ArtistImageUrl is null)
-        //        {
-        //            _ArtistImageUrl = DiscogsDataService.GetArtistInfo(CurrentPlayerStatus.CurrentSong.Artist).Images?[0].ImageUrl;
-        //        }
-        //        return _ArtistImageUrl;
-        //    }
-        //}
+        private string _artistBio = "";
+        public string ArtistBio
+        {
+            get => _artistBio;
+            set => SetProperty(ref _artistBio, value);
+        }
+
+        private string _artistImageUrl = "";
+        public string ArtistImageUrl
+        {
+            get => string.IsNullOrEmpty(_artistImageUrl) ? FionaDataService.DefaultArtworkUrl : _artistImageUrl;
+            set => SetProperty(ref _artistImageUrl, value);
+        }
 
         private DispatcherTimer dispatcherTimer;
 
@@ -121,6 +122,7 @@ namespace Fiona.ViewModels
         void dispatcherTimer_Tick(object sender, object e)
         {
             CurrentPlayerStatus = FionaDataService.GetPlayerStatus(this.CurrentPlayer);
+
             if (CurrentPlayerStatus.Mode == PlayerMode.play)
                 IsPlayingGlyph = "\xE103";
             else
@@ -132,13 +134,58 @@ namespace Fiona.ViewModels
             {
                 if (NowPlayingAlbumArt != CurrentPlayerStatus.CurrentSong?.ArtworkUrl)
                 {
-                    NowPlayingAlbumArt = CurrentPlayerStatus.CurrentSong.ArtworkUrl;
+                    NowPlayingAlbumArt = string.IsNullOrEmpty(CurrentPlayerStatus.CurrentSong.ArtworkUrl) ? FionaDataService.DefaultArtworkUrl : CurrentPlayerStatus.CurrentSong.ArtworkUrl;
+
+
+                    if (CurrentPlayerStatus.CurrentSong.Artist != null)
+                    {
+                        string ca = CurrentPlayerStatus.CurrentSong.Artist;
+                        if (ca.IndexOf(',') > 0)
+                            ca = ca.Substring(0, ca.IndexOf(',')); // if there is a comma, take the first artist
+
+                        var aa = (from a in FionaDataService.AllArtists.Artists where a.Name == ca select a);
+                        if (aa.Count<Artist>() > 0)
+                        {
+                            var artist = aa.First<Artist>();
+                            if (string.IsNullOrEmpty(artist.Profile))
+                            {
+                                DiscogsArtist da = DiscogsDataService.GetArtistInfo(artist.Name);
+                                if (da != null)
+                                {
+                                    artist.Profile = da.Profile;
+                                    artist.Images = new List<string>();
+                                    if (da.Images.Count > 0)
+                                    {
+                                        foreach (var i in da.Images)
+                                            artist.Images.Add(i.ImageUrl);
+                                    }
+                                }
+                            }
+
+                            ArtistBio = artist.Profile;
+                            ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[0] : FionaDataService.DefaultArtworkUrl;
+                            
+                        }
+                    }
                 }
             }
 
-            if ((CurrentPlayerStatus.Playlist.Count - CurrentPlayerStatus.PlaylistCurrentIndex) != Queue?.Count)
-            {
-                Queue = CurrentPlayerStatus.Playlist.Skip(CurrentPlayerStatus.PlaylistCurrentIndex).ToList<Track>();
+            //TODO change the queue even if it has the same number of entries as the current playlist
+            if (CurrentPlayerStatus.Playlist != null) {
+                if (CurrentPlayerStatus.Playlist.Count > 0)
+                {
+                    if ((CurrentPlayerStatus.Playlist.Count - CurrentPlayerStatus.PlaylistCurrentIndex) != Queue?.Count)
+                    {
+                        //if (Queue.Count > 0)
+                        {
+                            //    if (CurrentPlayerStatus.Playlist[0].ID != Queue?[0].ID)
+                            //        Queue = CurrentPlayerStatus.Playlist.Skip(CurrentPlayerStatus.PlaylistCurrentIndex).ToList<Track>();
+                            //} else
+                            //{
+                            Queue = CurrentPlayerStatus.Playlist.Skip(CurrentPlayerStatus.PlaylistCurrentIndex).ToList<Track>();
+                        }
+                    }
+                }
             }
         }
 

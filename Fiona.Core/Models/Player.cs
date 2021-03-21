@@ -33,6 +33,9 @@ namespace Fiona.Core.Models
         [JsonProperty(PropertyName = "model")]
         public string Model { get; set; }
 
+        [JsonProperty(PropertyName = "modelname")]
+        public string ModelName { get; set; }
+
         [JsonProperty(PropertyName = "isplaying")]
         public bool IsPlaying { get; set; }
 
@@ -41,12 +44,19 @@ namespace Fiona.Core.Models
             return Name;
         }
 
-        public string ArtworkUrl
+        public string IconGlyph
         {
             get
             {
-                string imageLocation = string.Format(@"html/images/Players/{0}_75x75_ffffff.png", Model);
-                return string.Format("{0}{1}", FionaDataService.RemoteUrl, imageLocation);
+                string iconglyph = "\u0042"; // default, just to make sure
+                switch (ModelName.ToLower())
+                {
+                    case "hifiberry": iconglyph = "\u0055"; break;
+                    case "castbridge": iconglyph = "\u004A"; break;
+                    case "squeezeplay": iconglyph = "\u0042"; break;
+                    default: iconglyph = "\u0042"; break;
+                }
+                return iconglyph;
             }
         }
     }

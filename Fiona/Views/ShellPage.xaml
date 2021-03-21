@@ -21,7 +21,7 @@
     <Page.DataContext>
         <viewmodels:BaseViewModel x:Name="BaseVM"/>
     </Page.DataContext>
-    
+
     <Page.Resources>
         <Thickness x:Key="NavigationViewHeaderMargin">44,10,0,24</Thickness>
     </Page.Resources>
@@ -46,14 +46,13 @@
 
             <winui:NavigationView.HeaderTemplate>
                 <DataTemplate>
-                        <TextBlock x:Name="appTitle" Style="{StaticResource TitleTextBlockStyle}"
+                    <TextBlock x:Name="appTitle" Style="{StaticResource TitleTextBlockStyle}"
                             FontSize="28" Margin="0,8,0,0"
                             VerticalAlignment="Center"
-                                   
                             Text="{Binding}"/>
                 </DataTemplate>
             </winui:NavigationView.HeaderTemplate>
-            
+
             <winui:NavigationView.MenuItems>
                 <winui:NavigationViewItem x:Uid="Shell_Albums" helpers:NavHelper.NavigateTo="views:AlbumsPage">
                     <winui:NavigationViewItem.Icon>
@@ -110,18 +109,6 @@
             </Grid>
         </winui:NavigationView>
 
-        <!-- TITLE BAR -->
-        <Grid x:Name="TitleBar" Background="Transparent" Height="44" VerticalAlignment="Top" Margin="0,0,220,0" Canvas.ZIndex="99">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="36"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" Source="ms-appx:///Assets/Square44x44Logo.targetsize-24_altform-unplated.png"
-               Height="24" Width="24" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,4,0,0"  />
-            <TextBlock Grid.Column="1" x:Uid="Shell_AppTitle" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                   Margin="8,0,0,0" Style="{ThemeResource CaptionTextBlockStyle}"/>
-        </Grid>
-
         <!-- PLAYER AREA -->
         <Grid Grid.Column="2" x:Name="PlayerArea"
               Padding="36,44,36,44" Background="{StaticResource PlayerAreaBackground}">
@@ -134,12 +121,12 @@
 
                 <!-- CURRENT TRACK -->
                 <Button Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent"
-                Padding="0,0,0,0" BorderThickness="0" BorderBrush="Transparent"
+                Padding="0,0,0,0" BorderThickness="0" BorderBrush="Transparent" 
                 Command="{x:Bind ViewModel.ShowNowPlayingCommand}">
-                    <Grid>
+                    <Grid HorizontalAlignment="Stretch" Width="208" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0"
                                Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"/>
@@ -177,7 +164,7 @@
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:Track">
                                 <StackPanel Orientation="Horizontal" Margin="0,4,0,4">
-                                    <Image Source="{x:Bind ArtworkUrl_Small, Mode=OneWay}" Width="36" Height="36"/>
+                                    <Image Source="{x:Bind ArtworkUrl, Mode=OneWay}" Width="36" Height="36"/>
                                     <StackPanel Orientation="Vertical" Margin="8,0,0,0">
                                         <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
                                        TextTrimming="CharacterEllipsis"
@@ -186,54 +173,87 @@
                                                     Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                        TextTrimming="CharacterEllipsis"
                                        Text="{x:Bind Artist, Mode=OneWay}" />
-                                </StackPanel>
+                                    </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    
+
                 </Grid>
 
                 <!-- VOLUME, TRANSPORT AND PLAYERS -->
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="2">
+                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="2">
                     <StackPanel Orientation="Vertical">
-                        <ComboBox x:Name="PlayersComboBox" Margin="0,0,0,16"
-                          HorizontalAlignment="Stretch"
+                        <ComboBox x:Name="PlayersComboBox" Margin="0,16,0,0"
+                          HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent"
                           ItemsSource="{x:Bind ViewModel.PlayersList.Players, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.CurrentPlayer, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:Player">
+                                    <Grid Margin="-8,4,0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="40"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <FontIcon Glyph="{x:Bind IconGlyph, Mode=OneWay}"
+                                            FontFamily="ms-appx:/Assets/FionaIcons.ttf#FionaIcons"
+                                            FontSize="24" HorizontalAlignment="Center"/>
+
+                                        <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}"></TextBlock>
+                                        </StackPanel>
+
+                                    </Grid>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
                         </ComboBox>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button 
+                        <Grid HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0"
                                 HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{StaticResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportPreviousTrackCommand}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
                             </Button>
-                            <Button Margin="{StaticResource XSmallLeftTopRightBottomMargin}"
+                            <Button Grid.Column="1" Margin="8,0,8,0"
                                 HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{StaticResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportPauseCommand}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18" />
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
                             </Button>
-                            <Button
+                            <Button Grid.Column="2"
                                 HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{StaticResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportNextTrackCommand}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
                             </Button>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0" HorizontalAlignment="Center">
-                            <TextBlock Text="{x:Bind ViewModel.CurrentPlayerStatus.TimeText, Mode=OneWay}"
-                                   Margin="{StaticResource SmallLeftRightMargin}" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                            <ProgressBar Width="100" Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
-                                     Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}" />
-                            <TextBlock Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.DurationText, Mode=OneWay}"
-                                   Margin="{StaticResource SmallLeftRightMargin}" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                        </StackPanel>
-                        <Slider Maximum="100" HorizontalAlignment="Stretch" Margin="0,24,0,0"
-                        Value="{x:Bind ViewModel.CurrentPlayerStatus.MixerVolume, Mode=TwoWay}"/>
+
+                            <winui:ProgressRing Width="52" Grid.Column="1" IsIndeterminate="False" Background="Transparent"
+                                Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
+                                Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}"/>
+                        </Grid>
+                        <Slider Maximum="100" Margin="0,8,0,0"
+                                Value="{x:Bind ViewModel.CurrentPlayerStatus.MixerVolume, Mode=TwoWay}"/>
                     </StackPanel>
+
                 </Grid>
             </Grid>
+        </Grid>
 
+        <!-- TITLE BAR -->
+        <Grid x:Name="TitleBar" Background="Transparent" Height="44" VerticalAlignment="Top" Margin="0,0,220,0" Canvas.ZIndex="99">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
+            <Image Grid.Column="0" Source="ms-appx:///Assets/Square44x44Logo.png"
+               Height="24" Width="24" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,4,0,0"  />
+            <TextBlock Grid.Column="1" x:Uid="Shell_AppTitle" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                   Margin="8,0,0,0" Style="{ThemeResource CaptionTextBlockStyle}"/>
         </Grid>
 
         <!-- NOW PLAYING PAGE -->
@@ -244,10 +264,11 @@
                     Command="{x:Bind ViewModel.HideNowPlayingCommand}" Canvas.ZIndex="99">
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" Height="19" VerticalAlignment="Top" />
             </Button>
-            <Image Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"
+            <Image Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}"
                       Stretch="UniformToFill" Opacity="0.2"
                    Margin="-16"/>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="32,0,0,32">
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="64,0,0,64">
                 <Image Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"
                       Width="160" Height="160" Stretch="UniformToFill" HorizontalAlignment="Left"/>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="32,0,0,0">
@@ -259,38 +280,42 @@
                                Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Album, Mode=OneWay}" FontSize="18"/>
                 </StackPanel>
             </StackPanel>
-            <Grid HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,44,36">
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button 
+            
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                        Width="208" Margin="0,0,36,44">
+                <Grid HorizontalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
                                 HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{StaticResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportPreviousTrackCommand}">
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
-                        </Button>
-                        <Button Margin="{StaticResource XSmallLeftTopRightBottomMargin}"
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
+                    </Button>
+                    <Button Grid.Column="1" Margin="8,0,8,0"
                                 HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{StaticResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportPauseCommand}">
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18" />
-                        </Button>
-                        <Button
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
+                    </Button>
+                    <Button Grid.Column="2"
                                 HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{StaticResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportNextTrackCommand}">
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
-                        </Button>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0" HorizontalAlignment="Center">
-                        <TextBlock Text="{x:Bind ViewModel.CurrentPlayerStatus.TimeText, Mode=OneWay}"
-                                   Margin="{StaticResource SmallLeftRightMargin}" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                        <ProgressBar Width="100" Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
-                                     Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}" />
-                        <TextBlock Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.DurationText, Mode=OneWay}"
-                                   Margin="{StaticResource SmallLeftRightMargin}" Style="{ThemeResource CaptionTextBlockStyle}"/>
-                    </StackPanel>
-                    <Slider Maximum="100" HorizontalAlignment="Stretch" Margin="0,24,0,0"
-                        Value="{x:Bind ViewModel.CurrentPlayerStatus.MixerVolume, Mode=TwoWay}"/>
-                </StackPanel>
-            </Grid>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
+                    </Button>
 
+                    <winui:ProgressRing Width="52" Grid.Column="1" IsIndeterminate="False" Background="Transparent"
+                                Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
+                                Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}"/>
+
+                </Grid>
+
+                <Slider Maximum="100" Margin="0,8,0,0"
+                                Value="{x:Bind ViewModel.CurrentPlayerStatus.MixerVolume, Mode=TwoWay}"/>
+            </StackPanel>
         </Grid>
+
     </Grid>
 </Page>

@@ -16,8 +16,10 @@
     </Page.DataContext>
     
     <Grid x:Name="ContentArea" Margin="{StaticResource MediumLeftRightMargin}">
-        <Button Command="{x:Bind BaseVM.AppletNavigationBackCommand}" Width="44" Height="32" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,-30,0,0">
-            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" />
+        <Button Command="{x:Bind BaseVM.AppletNavigationBackCommand}" Width="64" Height="32"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Margin="-80,-70,0,0" Canvas.ZIndex="99" >
+            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" FontSize="16" />
         </Button>
         <controls:AdaptiveGridView                      
             IsItemClickEnabled="True"

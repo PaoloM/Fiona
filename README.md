@@ -7,6 +7,10 @@
 
 # Notes
 
+## Server location
+
+To be able to run Fiona, you will need to add the location of your Squeezebox/Logitech Media Server in the class below.
+
 ## API Keys
 
 Create a __APIKeys.local.cs__ class in the Fiona.Core/Helpers folder
@@ -18,7 +22,7 @@ Create a __APIKeys.local.cs__ class in the Fiona.Core/Helpers folder
             static APIKeys()
             {
                 AppCenter = "";
-                LMSServerName = "";
+                LMSServerName = ""; // Add here the name/IP address of your LMS server
                 LMSServerPort = 9000;
                 DiscogsConsumerKey = "";
                 DiscogsConsumerSecret = "";
@@ -26,7 +30,7 @@ Create a __APIKeys.local.cs__ class in the Fiona.Core/Helpers folder
         }
     }
 
-And add your keys.
+And add your keys. Only __LMSServerName__ is mandatory.
 
 ## Acrylic fix
 
