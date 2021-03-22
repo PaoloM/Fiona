@@ -102,12 +102,23 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _artistBio, value);
         }
 
+        private List<string> _artistImageUrlList = new List<string>();
+        public List<string> ArtistImageUrlList
+        {
+            get => _artistImageUrlList;
+            set => SetProperty(ref _artistImageUrlList, value);
+        }
+
         private string _artistImageUrl = "";
         public string ArtistImageUrl
         {
             get => string.IsNullOrEmpty(_artistImageUrl) ? FionaDataService.DefaultArtworkUrl : _artistImageUrl;
             set => SetProperty(ref _artistImageUrl, value);
         }
+
+        private int CurrentArtistImageUrlIndex = 0;
+        private int Tick = 0;
+        private int NextImageDuration = 5;
 
         private DispatcherTimer dispatcherTimer;
 
@@ -116,11 +127,28 @@ namespace Fiona.ViewModels
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            CurrentArtistImageUrlIndex = 0;
+            Tick = 0;
             dispatcherTimer.Start();
         }
 
         void dispatcherTimer_Tick(object sender, object e)
         {
+            // move to the next artist image in the Now Playing screen
+            if (++Tick > NextImageDuration)
+            {
+                int c = ArtistImageUrlList.Count();
+                if (c > 0)
+                {
+                    if (CurrentArtistImageUrlIndex >= c - 1)
+                        CurrentArtistImageUrlIndex = 0;
+                    else
+                        CurrentArtistImageUrlIndex++;
+                    ArtistImageUrl = ArtistImageUrlList[CurrentArtistImageUrlIndex];
+                }
+                Tick = 0;
+            }
+
             CurrentPlayerStatus = FionaDataService.GetPlayerStatus(this.CurrentPlayer);
 
             if (CurrentPlayerStatus.Mode == PlayerMode.play)
@@ -136,42 +164,64 @@ namespace Fiona.ViewModels
                 {
                     NowPlayingAlbumArt = string.IsNullOrEmpty(CurrentPlayerStatus.CurrentSong.ArtworkUrl) ? FionaDataService.DefaultArtworkUrl : CurrentPlayerStatus.CurrentSong.ArtworkUrl;
 
-
                     if (CurrentPlayerStatus.CurrentSong.Artist != null)
                     {
                         string ca = CurrentPlayerStatus.CurrentSong.Artist;
                         if (ca.IndexOf(',') > 0)
                             ca = ca.Substring(0, ca.IndexOf(',')); // if there is a comma, take the first artist
 
+                        // look in the local artists list
                         var aa = (from a in FionaDataService.AllArtists.Artists where a.Name == ca select a);
                         if (aa.Count<Artist>() > 0)
                         {
                             var artist = aa.First<Artist>();
-                            if (string.IsNullOrEmpty(artist.Profile))
+
+                            DiscogsArtist da = DiscogsDataService.GetArtistInfo(artist.Name);
+                            if (da != null)
                             {
-                                DiscogsArtist da = DiscogsDataService.GetArtistInfo(artist.Name);
-                                if (da != null)
+                                artist.Profile = da.Profile;
+                                artist.Images = new List<string>();
+                                ArtistImageUrlList.Clear();
+
+                                if (da.Images.Count > 0)
                                 {
-                                    artist.Profile = da.Profile;
-                                    artist.Images = new List<string>();
-                                    if (da.Images.Count > 0)
+                                    foreach (var i in da.Images)
                                     {
-                                        foreach (var i in da.Images)
-                                            artist.Images.Add(i.ImageUrl);
+                                        artist.Images.Add(i.ImageUrl);
+                                        ArtistImageUrlList.Add(i.ImageUrl);
                                     }
                                 }
                             }
 
                             ArtistBio = artist.Profile;
-                            ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[0] : FionaDataService.DefaultArtworkUrl;
-                            
+                            Random rnd = new Random();
+                            ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[rnd.Next(0, artist.Images.Count - 1)] : FionaDataService.DefaultArtworkUrl;
+                        }
+                        else
+                        { // did not find it in the internal artist list, let's see if discogs has anything about the artist
+                            DiscogsArtist da = DiscogsDataService.GetArtistInfo(ca);
+                            if (da != null)
+                            {
+                                ArtistImageUrlList.Clear();
+                                if (da.Images.Count > 0)
+                                {
+                                    foreach (var i in da.Images)
+                                    {
+                                        ArtistImageUrlList.Add(i.ImageUrl);
+                                    }
+                                }
+                                ArtistBio = da.Profile;
+                                Random rnd = new Random();
+                                ArtistImageUrl = da.Images.Count > 0 ? da.Images[rnd.Next(0, da.Images.Count - 1)].ImageUrl : FionaDataService.DefaultArtworkUrl;
+                            }
                         }
                     }
                 }
             }
 
             //TODO change the queue even if it has the same number of entries as the current playlist
-            if (CurrentPlayerStatus.Playlist != null) {
+            if (CurrentPlayerStatus.Playlist != null)
+            {
                 if (CurrentPlayerStatus.Playlist.Count > 0)
                 {
                     if ((CurrentPlayerStatus.Playlist.Count - CurrentPlayerStatus.PlaylistCurrentIndex) != Queue?.Count)
@@ -221,6 +271,8 @@ namespace Fiona.ViewModels
         private ICommand _loadedCommand;
         private ICommand _itemInvokedCommand;
 
+        private Type CurrentPageType;
+
         public bool IsBackEnabled
         {
             get { return _isBackEnabled; }
@@ -265,12 +317,14 @@ namespace Fiona.ViewModels
             else if (args.InvokedItemContainer is WinUI.NavigationViewItem selectedItem)
             {
                 var pageType = selectedItem.GetValue(NavHelper.NavigateToProperty) as Type;
+                CurrentPageType = pageType;
                 NavigationService.Navigate(pageType, null, args.RecommendedNavigationTransitionInfo);
             }
         }
 
         private void OnBackRequested(WinUI.NavigationView sender, WinUI.NavigationViewBackRequestedEventArgs args)
         {
+
             NavigationService.GoBack();
         }
 

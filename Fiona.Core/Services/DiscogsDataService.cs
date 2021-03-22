@@ -18,9 +18,14 @@ namespace Fiona.Core.Services
             {
                 IEnumerable<DiscogsSearchResult> res = SearchDiscogs<DiscogsSearchResult>(name);
 
-                DiscogsSearchResult a = (from aa in res where aa.EntityType == "artist" select aa).First<DiscogsSearchResult>();
+                IEnumerable<DiscogsSearchResult> a = (from aa in res where aa.EntityType == "artist" select aa);
 
-                DiscogsArtist artist = QueryDiscogsEntity<DiscogsArtist>("artists", a.ID.ToString());
+                if (a.Count<DiscogsSearchResult>() == 0)
+                    return null;
+
+                DiscogsArtist artist = QueryDiscogsEntity<DiscogsArtist>("artists", 
+                    a.First<DiscogsSearchResult>().ID.ToString());
+
                 return artist;
             }
             else

@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Column="0" Grid.Row="0" Height="308" Padding="44,44,44,44"
-              Background="{StaticResource CardBackground}">
+              Background="{ThemeResource CardBackground}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>

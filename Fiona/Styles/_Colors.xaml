@@ -6,9 +6,6 @@
     <SolidColorBrush x:Key="MyEvenRowBrush" Color="{ThemeResource SystemChromeMediumLowColor}"></SolidColorBrush>
     <SolidColorBrush x:Key="MyOddRowBrush" Color="{ThemeResource SystemBaseLowColor}"></SolidColorBrush>
 
-    <SolidColorBrush x:Key="NavigationBackground" Color="#06090c"></SolidColorBrush>
-    <SolidColorBrush x:Key="MainAreaBackground" Color="#23272b"></SolidColorBrush>
-    <SolidColorBrush x:Key="PlayerAreaBackground" Color="#384148"></SolidColorBrush>
-    <SolidColorBrush x:Key="CardBackground" Color="#2d343a"></SolidColorBrush>
+
 
 </ResourceDictionary>

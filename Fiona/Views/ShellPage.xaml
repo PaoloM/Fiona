@@ -42,7 +42,7 @@
             SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
             IsSettingsVisible="True"
             CompactPaneLength="64"
-            Background="{StaticResource NavigationBackground}">
+            Background="{ThemeResource NavigationBackground}">
 
             <winui:NavigationView.HeaderTemplate>
                 <DataTemplate>
@@ -90,7 +90,7 @@
                 DefaultHeader="{x:Bind ViewModel.Selected.Content, Mode=OneWay}">
                     <behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
                         <DataTemplate>
-                            <Grid Background="{StaticResource MainAreaBackground}"
+                            <Grid Background="{ThemeResource MainAreaBackground}"
                                   Margin="-44,-44,0,-36">
                                 <TextBlock
                                 Text="{Binding}"
@@ -105,13 +105,13 @@
                 </ic:EventTriggerBehavior>
             </i:Interaction.Behaviors>
             <Grid>
-                <Frame x:Name="shellFrame" Background="{StaticResource MainAreaBackground}" />
+                <Frame x:Name="shellFrame" Background="{ThemeResource MainAreaBackground}" />
             </Grid>
         </winui:NavigationView>
 
         <!-- PLAYER AREA -->
         <Grid Grid.Column="2" x:Name="PlayerArea"
-              Padding="36,44,36,44" Background="{StaticResource PlayerAreaBackground}">
+              Padding="36,44,36,44" Background="{ThemeResource PlayerAreaBackground}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60"/>
@@ -131,7 +131,7 @@
                         <Image Grid.Column="0"
                                Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"/>
                         <!-- TODO enable text scrolling if long text -->
-                        <StackPanel Orientation="Vertical" Margin="8,0,0,0" Grid.Column="1">
+                        <StackPanel Orientation="Vertical" Margin="8,0,0,0" Grid.Column="1" VerticalAlignment="Center">
                             <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
                                        TextTrimming="CharacterEllipsis"
                                        Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}"/>
@@ -151,7 +151,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Uid="Shell_QueueTitle" Grid.Row="0" Style="{ThemeResource SubtitleTextBlockStyle}" Margin="0,24,0,12"/>
+                    <TextBlock x:Uid="Shell_QueueTitle" Grid.Row="0" Style="{ThemeResource SubtitleTextBlockStyle}" FontWeight="Light" Margin="0,24,0,12"/>
 
                     <ListView Margin="-8,0,0,0" Grid.Row="1"
                         ItemsSource="{x:Bind ViewModel.Queue, Mode=OneWay}">
@@ -185,7 +185,7 @@
                 <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="2">
                     <StackPanel Orientation="Vertical">
                         <ComboBox x:Name="PlayersComboBox" Margin="0,16,0,0"
-                          HorizontalAlignment="Stretch" BorderThickness="0" Background="Transparent"
+                          HorizontalAlignment="Center" BorderThickness="0" Background="Transparent"
                           ItemsSource="{x:Bind ViewModel.PlayersList.Players, Mode=OneWay}"
                           SelectedItem="{x:Bind ViewModel.CurrentPlayer, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
@@ -216,17 +216,17 @@
                             </Grid.ColumnDefinitions>
 
                             <Button Grid.Column="0"
-                                HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{StaticResource CardBackground}"
+                                HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportPreviousTrackCommand}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
                             </Button>
                             <Button Grid.Column="1" Margin="8,0,8,0"
-                                HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{StaticResource CardBackground}"
+                                HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportPauseCommand}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
                             </Button>
                             <Button Grid.Column="2"
-                                HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{StaticResource CardBackground}"
+                                HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportNextTrackCommand}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
                             </Button>
@@ -250,11 +250,30 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <Image Grid.Column="0" Source="ms-appx:///Assets/Square44x44Logo.png"
-               Height="24" Width="24" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,4,0,0"  />
+            <Image Source="ms-appx:///Assets/Square44x44Logo.png" 
+                   Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Width="32" Height="32" Margin="16,4"/>
             <TextBlock Grid.Column="1" x:Uid="Shell_AppTitle" HorizontalAlignment="Left" VerticalAlignment="Center" 
                    Margin="8,0,0,0" Style="{ThemeResource CaptionTextBlockStyle}"/>
         </Grid>
+
+        <!--<Grid x:Name="TitleBar" Background="Transparent">
+            --><!-- Width of the padding columns is set in LayoutMetricsChanged handler. -->
+            <!-- Using padding columns instead of Margin ensures that the background
+         paints the area under the caption control buttons (for transparent buttons). -->
+            <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
+                <ColumnDefinition/>
+                <ColumnDefinition x:Name="RightPaddingColumn" Width="0"/>
+            </Grid.ColumnDefinitions>--><!--
+            <Image Source="ms-appx:///Assets/Square44x44Logo.png" 
+                   Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                   Width="32" Height="32" Margin="16,4"/>
+            --><!--<TextBlock Text="Custom Title Bar" x:Uid="Shell_AppTitle"
+               Grid.Column="1" Width="200"
+               Style="{StaticResource CaptionTextBlockStyle}" 
+               Margin="64,8,0,0" Canvas.ZIndex="-1"/>--><!--
+        </Grid>-->
 
         <!-- NOW PLAYING PAGE -->
         <Grid x:Name="NowPlayingPage" Grid.ColumnSpan="3" Background="black" Visibility="{x:Bind ViewModel.NowPlayingPageVisibility, Mode=OneWay}">
@@ -265,7 +284,9 @@
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" Height="19" VerticalAlignment="Top" />
             </Button>
             <Image Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}"
-                      Stretch="UniformToFill" Opacity="0.2"
+                   VerticalAlignment="Top"
+                   HorizontalAlignment="Center"
+                   Stretch="UniformToFill" Opacity="0.2"
                    Margin="-16"/>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="64,0,0,64">

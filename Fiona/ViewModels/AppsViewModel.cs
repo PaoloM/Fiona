@@ -7,7 +7,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 
 namespace Fiona.ViewModels
 {
-    public class AppsViewModel : ObservableObject
+    public class AppsViewModel : BaseViewModel
     {
         private AppletList _Apps;
         public AppletList Apps
@@ -17,7 +17,8 @@ namespace Fiona.ViewModels
         }
 
         private string CurrentApp = "";
-        private Applet PreviousApplet;
+
+        private System.Collections.Generic.Stack<Applet> stack;
 
         private RelayCommand<Applet> _AppSelectedCommand;
         public RelayCommand<Applet> AppSelectedCommand => _AppSelectedCommand ?? (_AppSelectedCommand = new RelayCommand<Applet>(param => AppSelected((Applet)param)));
@@ -34,34 +35,45 @@ namespace Fiona.ViewModels
             }
             else
             {
-                PreviousApplet = applet;
+                if (applet.Style?.ToLower() != "itemnoaction")
+                {
+                    if (string.IsNullOrEmpty(applet.Actions.Go.Params.item_id))
+                    { // this is the first level of an app
+                        applet.Actions.Go.Params.item_id = "0";
+                        CurrentApp = applet.Actions.Go.Cmd[0];
+                    }
 
-                if (string.IsNullOrEmpty(applet.Actions.Go.Params.item_id))
-                { // this is the first level of an app
-                    applet.Actions.Go.Params.item_id = "0";
-                    CurrentApp = applet.Actions.Go.Cmd[0];
+                    Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
+                        applet.Actions.Go.Cmd[0], applet.Actions.Go.Cmd[1],
+                        applet.Actions.Go.Params.Menu, applet.Actions.Go.Params.item_id);
+
+                    stack.Push(applet);
                 }
-
-                Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
-                    applet.Actions.Go.Cmd[0], applet.Actions.Go.Cmd[1],
-                    applet.Actions.Go.Params.Menu, applet.Actions.Go.Params.item_id);
             }
+
         }
 
-        private RelayCommand _AppletNavigationBackCommand;
-        public RelayCommand AppletNavigationBackCommand => _AppletNavigationBackCommand ?? (_AppletNavigationBackCommand = new RelayCommand(AppletNavigationBack));
-        private void AppletNavigationBack()
+        private RelayCommand _GoBackCommand;
+        public RelayCommand GoBackCommand => _GoBackCommand ?? (_GoBackCommand = new RelayCommand(GoBack));
+        private void GoBack()
         {
-            if (PreviousApplet != null)
-                AppSelected(PreviousApplet);
+            if (stack.Count > 1)
+            {
+                var discard = stack.Pop();
+                AppSelected(stack.Pop());
+            }
             else
+            {
+                stack.Clear();
                 Apps = FionaDataService.GetAllApps(FionaDataService.CurrentPlayer);
+            }
         }
 
 
         public AppsViewModel()
         {
             Apps = FionaDataService.GetAllApps(FionaDataService.CurrentPlayer);
+            stack = new System.Collections.Generic.Stack<Applet>();
         }
     }
 }
