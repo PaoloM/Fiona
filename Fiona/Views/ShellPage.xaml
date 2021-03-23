@@ -279,7 +279,7 @@
         <Grid x:Name="NowPlayingPage" Grid.ColumnSpan="3" Background="black" Visibility="{x:Bind ViewModel.NowPlayingPageVisibility, Mode=OneWay}">
             <Button VerticalAlignment="Top" HorizontalAlignment="Left"
                     Width="64" Height="32"  Margin="0,32,0,0"
-                    Background="Transparent"
+                    Background="Transparent" Foreground="White"
                     Command="{x:Bind ViewModel.HideNowPlayingCommand}" Canvas.ZIndex="99">
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" Height="19" VerticalAlignment="Top" />
             </Button>
@@ -293,11 +293,11 @@
                 <Image Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"
                       Width="160" Height="160" Stretch="UniformToFill" HorizontalAlignment="Left"/>
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="32,0,0,0">
-                    <TextBlock HorizontalAlignment="Left"
+                    <TextBlock HorizontalAlignment="Left" Foreground="White"
                                Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}" FontSize="24" FontWeight="Bold"/>
-                    <TextBlock HorizontalAlignment="Left"
+                    <TextBlock HorizontalAlignment="Left" Foreground="White"
                                Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" FontSize="18"/>
-                    <TextBlock HorizontalAlignment="Left"
+                    <TextBlock HorizontalAlignment="Left" Foreground="White"
                                Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Album, Mode=OneWay}" FontSize="18"/>
                 </StackPanel>
             </StackPanel>
@@ -312,17 +312,17 @@
                     </Grid.ColumnDefinitions>
 
                     <Button Grid.Column="0"
-                                HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{StaticResource CardBackground}"
+                                HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportPreviousTrackCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
                     </Button>
                     <Button Grid.Column="1" Margin="8,0,8,0"
-                                HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{StaticResource CardBackground}"
+                                HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportPauseCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
                     </Button>
                     <Button Grid.Column="2"
-                                HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{StaticResource CardBackground}"
+                                HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.TransportNextTrackCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
                     </Button>
