@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using WinUI = Microsoft.UI.Xaml.Controls;
+using Windows.UI.Notifications;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace Fiona.ViewModels
 {
@@ -160,7 +162,7 @@ namespace Fiona.ViewModels
 
             if (CurrentPlayerStatus.CurrentSong != null)
             {
-                if (NowPlayingAlbumArt != CurrentPlayerStatus.CurrentSong?.ArtworkUrl)
+                if (NowPlayingAlbumArt != CurrentPlayerStatus.CurrentSong?.ArtworkUrl) //TODO find a better way to see if the track changed
                 {
                     NowPlayingAlbumArt = string.IsNullOrEmpty(CurrentPlayerStatus.CurrentSong.ArtworkUrl) ? FionaDataService.DefaultArtworkUrl : CurrentPlayerStatus.CurrentSong.ArtworkUrl;
 
@@ -216,24 +218,52 @@ namespace Fiona.ViewModels
                             }
                         }
                     }
+                    // update the live tile
+
+                    // Construct the tile content
+                    var content = new TileContent()
+                    {
+                        Visual = new TileVisual()
+                        {
+                            Branding = TileBranding.NameAndLogo,
+                            TileMedium = new TileBinding()
+                            {
+                                Content = new TileBindingContentAdaptive()
+                                {
+                                    BackgroundImage = new TileBackgroundImage()
+                                    {
+                                        Source = NowPlayingAlbumArt
+                                    }
+                                }
+                            },
+                            TileLarge = new TileBinding()
+                            {
+                                Content = new TileBindingContentAdaptive()
+                                {
+                                    BackgroundImage = new TileBackgroundImage()
+                                    {
+                                        Source = NowPlayingAlbumArt
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    // Then create the tile notification
+                    var notification = new TileNotification(content.GetXml());
+                    // Send the notification to the primary tile                    
+                    TileUpdateManager.CreateTileUpdaterForApplication().Update(notification);
                 }
             }
 
-            //TODO change the queue even if it has the same number of entries as the current playlist
             if (CurrentPlayerStatus.Playlist != null)
             {
                 if (CurrentPlayerStatus.Playlist.Count > 0)
                 {
+                    //TODO change the queue even if it has the same number of entries as the current playlist
                     if ((CurrentPlayerStatus.Playlist.Count - CurrentPlayerStatus.PlaylistCurrentIndex) != Queue?.Count)
                     {
-                        //if (Queue.Count > 0)
-                        {
-                            //    if (CurrentPlayerStatus.Playlist[0].ID != Queue?[0].ID)
-                            //        Queue = CurrentPlayerStatus.Playlist.Skip(CurrentPlayerStatus.PlaylistCurrentIndex).ToList<Track>();
-                            //} else
-                            //{
-                            Queue = CurrentPlayerStatus.Playlist.Skip(CurrentPlayerStatus.PlaylistCurrentIndex).ToList<Track>();
-                        }
+                        Queue = CurrentPlayerStatus.Playlist.Skip(CurrentPlayerStatus.PlaylistCurrentIndex).ToList<Track>();
                     }
                 }
             }

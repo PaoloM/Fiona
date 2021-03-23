@@ -13,62 +13,18 @@ namespace Fiona.Services
         // More about Live Tiles Notifications at https://docs.microsoft.com/windows/uwp/controls-and-patterns/tiles-and-notifications-sending-a-local-tile-notification
         public void SampleUpdate()
         {
-            // These would be initialized with actual data
-            string from = "Jennifer Parker";
-            string subject = "Photos from our trip";
-            string body = "Check out these awesome photos I took while in New Zealand!";
-
             // Construct the tile content
             var content = new TileContent()
             {
                 Visual = new TileVisual()
                 {
-                    Arguments = "Jennifer Parker",
                     TileMedium = new TileBinding()
                     {
                         Content = new TileBindingContentAdaptive()
                         {
-                            Children =
+                            BackgroundImage = new TileBackgroundImage()
                             {
-                                new AdaptiveText()
-                                {
-                                    Text = from
-                                },
-                                new AdaptiveText()
-                                {
-                                    Text = subject,
-                                    HintStyle = AdaptiveTextStyle.CaptionSubtle
-                                },
-                                new AdaptiveText()
-                                {
-                                    Text = body,
-                                    HintStyle = AdaptiveTextStyle.CaptionSubtle
-                                }
-                            }
-                        }
-                    },
-
-                    TileWide = new TileBinding()
-                    {
-                        Content = new TileBindingContentAdaptive()
-                        {
-                            Children =
-                            {
-                                new AdaptiveText()
-                                {
-                                    Text = from,
-                                    HintStyle = AdaptiveTextStyle.Subtitle
-                                },
-                                new AdaptiveText()
-                                {
-                                    Text = subject,
-                                    HintStyle = AdaptiveTextStyle.CaptionSubtle
-                                },
-                                new AdaptiveText()
-                                {
-                                    Text = body,
-                                    HintStyle = AdaptiveTextStyle.CaptionSubtle
-                                }
+                                Source = "Assets/LargeTile.png"
                             }
                         }
                     }
