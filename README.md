@@ -1,3 +1,5 @@
+![logo](https://github.com/PaoloM/Fiona/blob/main/Original%20assets/Fiona%20logo%20-%20small.png)
+
 # Fiona
  A Squeezebox/Logitech Media Server controller for Windows 10
 
