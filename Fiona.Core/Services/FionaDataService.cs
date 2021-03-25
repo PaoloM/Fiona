@@ -22,7 +22,7 @@ namespace Fiona.Core.Services
         public static Player CurrentPlayer { get; set; }
 
         public static Applet CurrentApplet { get; set; }
-        public static string CurrentAppletId { get; set; }
+        public static string CurrentAppletName { get; set; }
 
         public static AlbumList AllAlbums { get; set; }
         public static ArtistList AllArtists { get; set; }

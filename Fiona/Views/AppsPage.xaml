@@ -14,23 +14,32 @@
     <Page.DataContext>
         <viewmodels:AppsViewModel x:Name="BaseVM"/>
     </Page.DataContext>
-    
-    <Grid x:Name="ContentArea" Margin="{StaticResource MediumLeftRightMargin}">
-        <Button Command="{x:Bind BaseVM.GoBackCommand}" Width="64" Height="32"
-                HorizontalAlignment="Left" VerticalAlignment="Top"
-                Margin="-60,-70,0,0" Canvas.ZIndex="99" >
-            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" FontSize="16" />
-        </Button>
+
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="{x:Bind ViewModel.CurrentAppletName}"></TextBlock>
+
+        <StackPanel Visibility="{x:Bind ViewModel.PlaylistCommandsVisibility}" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <Button Background="{x:Null}" Command="{x:Bind ViewModel.PlayPlaylistCommand}" Margin="4,0,4,0">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE102;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
+                    <TextBlock x:Uid="Playlist_PlayAll" FontSize="{StaticResource SmallFontSize}"/>
+                </StackPanel>
+            </Button>
+            <Button Background="{x:Null}" Command="{x:Bind ViewModel.QueuePlaylistCommand}" Margin="4,0,4,0">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE109;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
+                    <TextBlock x:Uid="Playlist_AddToQueue" FontSize="{StaticResource SmallFontSize}"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        
+        <Grid x:Name="ContentArea">
         <controls:AdaptiveGridView                      
             IsItemClickEnabled="True"
             ItemsSource="{x:Bind BaseVM.Apps.Applets, Mode=OneWay}"
             SelectionMode="None"            
-            ItemClickCommand="{x:Bind BaseVM.AppSelectedCommand}">
-            <GridView.ItemContainerStyle>
-                <Style TargetType="FrameworkElement">
-                    <Setter Property="Margin" Value="0 0 20 20"/>
-                </Style>
-            </GridView.ItemContainerStyle>
+            ItemClickCommand="{x:Bind BaseVM.AppSelectedCommand}"
+            Margin="44,0,36,36" >
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:Applet">
                     <Grid x:Name="itemThumbnail" Width="160" Height="196" Margin="8,8,8,8"
@@ -64,4 +73,5 @@
         </controls:AdaptiveGridView>
         
     </Grid>
+    </StackPanel>
 </Page>
