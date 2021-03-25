@@ -1,15 +1,13 @@
 # Fiona
  A Squeezebox/Logitech Media Server controller for Windows 10
 
-
-
 [![Build status](https://build.appcenter.ms/v0.1/apps/c1bf4304-517e-47af-8e39-5e78f367f15b/branches/main/badge)](https://appcenter.ms)
 
 # Notes
 
 ## Server location
 
-To be able to run Fiona, you will need to add the location of your Squeezebox/Logitech Media Server in the class below.
+At this time, to be able to run Fiona, you will need to add the location of your Squeezebox/Logitech Media Server in the class below.
 
 ## API Keys
 
