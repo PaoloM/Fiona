@@ -41,14 +41,90 @@ namespace Fiona.Core.Models
         [JsonProperty(PropertyName = "type")]
         public string Type { get; set; }
 
+        // Loop properties
+
+        [JsonProperty(PropertyName = "id")]
+        public string ID { get; set; }
+
+        [JsonProperty(PropertyName = "name")]
+        public string Name { get; set; }
+
+        [JsonProperty(PropertyName = "image")]
+        public string Image { get; set; }
+
+        [JsonProperty(PropertyName = "isaudio")]
+        public int IsAudio { get; set; }
+
+        [JsonProperty(PropertyName = "hasitems")]
+        public int HasItems { get; set; }
+
+        public string GetText
+        {
+            get
+            {
+                if (Type != null)
+                {
+                    switch (Type.ToLower())
+                    {
+                        case "redirect":
+                        case "link":
+                        case "": return Name;
+                        case "playlist": return Text;
+                        default: return Text;
+                    }
+                }
+                else
+                {
+                    if (Style?.ToLower() == "itemplay" || Style == null)
+                        return Text;
+                    else
+                        return Name;
+                }
+            }
+        }
+
         public string GetIconUrl
         {
             get
             {
-                if (string.IsNullOrEmpty(Icon))
-                    return string.Format("{0}{1}", FionaDataService.RemoteUrl, IconID);
+                if (Type != null)
+                {
+                    switch (Type.ToLower())
+                    {
+                        case "redirect":
+                        case "": return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+                        case "link":
+                            if (string.IsNullOrEmpty(Icon))
+                                return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+                            else
+                                if (Icon.StartsWith("http"))
+                                return Icon;
+                            else
+                                return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
+                        case "playlist": 
+                            if (string.IsNullOrEmpty(Icon))
+                                return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+                            else
+                            if (Icon.StartsWith("http"))
+                                return Icon;
+                        else
+                                return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
+                        default: return FionaDataService.DefaultArtworkUrl; // string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
+                    }
+                }
                 else
-                    return Icon;
+                {
+                    if (Style?.ToLower() == "itemplay" || Style == null)
+                        if (string.IsNullOrEmpty(Icon))
+                            return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+                        else
+if (Icon.StartsWith("http"))
+                            return Icon;
+                        else
+                            return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
+                    else
+                        return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+                }
             }
         }
     }
@@ -71,6 +147,11 @@ namespace Fiona.Core.Models
 
         [JsonProperty(PropertyName = "item_loop")]
         public List<Applet> Applets { get; set; }
+    }
+
+    public class LoopApplet : FionaBase
+    {
+
     }
 
     public class AppletListWindow : FionaBase

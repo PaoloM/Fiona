@@ -26,9 +26,90 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _PlaylistCommandsVisibility, value);
         }
 
-        public string CurrentAppletName
+        private string _AppletTitle;
+        public string AppletTitle
         {
-            get => FionaDataService.CurrentAppletName;
+            get => _AppletTitle;
+            set => SetProperty(ref _AppletTitle, value);
+        }
+
+        private string _AppletIconUrl = FionaDataService.DefaultArtworkUrl;
+        public string AppletIconUrl
+        {
+            get => _AppletIconUrl;
+            set => SetProperty(ref _AppletIconUrl, value);
+        }
+
+        private string _TileTitle;
+        public string TileTitle
+        {
+            get => _TileTitle;
+            set => SetProperty(ref _TileTitle, value);
+        }
+
+        private Applet _CurrentApplet = new Applet();
+        public Applet CurrentApplet
+        {
+            get => _CurrentApplet;
+            set
+            {
+                FionaDataService.CurrentApplet = value;
+
+                if (value == null) // coming from the Shell, show all apps
+                {
+                    PlaylistCommandsVisibility = Visibility.Collapsed;
+                    Apps = FionaDataService.GetAllApps(FionaDataService.CurrentPlayer);
+                }
+                else
+                {
+                    if (value.Type == null)
+                        value.Type = "link";
+
+                    AppletTitle = FionaDataService.CurrentAppletName;
+                    AppletIconUrl = string.IsNullOrEmpty(FionaDataService.CurrentAppletIconUrl) ? FionaDataService.DefaultArtworkUrl : FionaDataService.CurrentAppletIconUrl;
+
+                    switch (value.Type.ToLower())
+                    {
+                        case "playlist": // show all tracks and the transport common bar
+                            PlaylistCommandsVisibility = Visibility.Visible;
+                            Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
+                                   FionaDataService.CurrentAppletName, "items",
+                                   FionaDataService.CurrentAppletName,
+                                   value.Params?.item_id != null ? value.Params.item_id : value.ID);
+                            TileTitle = Apps.Title;
+                            break;
+                        case "link":
+                            PlaylistCommandsVisibility = Visibility.Collapsed;
+                            if (value.ID != null)
+                                Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
+                                       FionaDataService.CurrentAppletName, "items",
+                                       FionaDataService.CurrentAppletName, value.ID);
+                            else
+                                if (value.Actions == null)
+                                Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
+                                       FionaDataService.CurrentAppletName, "items",
+                                       FionaDataService.CurrentAppletName, value.Params.item_id);
+                            else
+                            Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
+                                   value.Actions.Go.Cmd[0], value.Actions.Go.Cmd[1],
+                                   value.Actions.Go.Params.Menu, value.Actions.Go.Params.item_id);
+                            TileTitle = Apps.Title;
+                            break;
+                        case "redirect": // top level of an app
+                            PlaylistCommandsVisibility = Visibility.Collapsed;
+                            Apps = FionaDataService.GetAppTopLevel(FionaDataService.CurrentPlayer,
+                                value.Name.ToLower());
+                            FionaDataService.CurrentAppletName = value.Name.ToLower();
+                            FionaDataService.CurrentAppletIconUrl = value.GetIconUrl;
+                            AppletTitle = FionaDataService.CurrentAppletName;
+                            AppletIconUrl = FionaDataService.CurrentAppletIconUrl;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                SetProperty(ref _CurrentApplet, value);
+            }
         }
 
         private RelayCommand _PlayPlaylistCommand;
@@ -49,58 +130,11 @@ namespace Fiona.ViewModels
         public RelayCommand<Applet> AppSelectedCommand => _AppSelectedCommand ?? (_AppSelectedCommand = new RelayCommand<Applet>(param => AppSelected((Applet)param)));
         private void AppSelected(Applet applet)
         {
-            //TODO 1. in case of playlist, show tracks and affordances to play all, play track, queue all, queue track, shuffle all
-            //TODO 3. search? text? other types?
-
-            //if (applet.Action != null) CurrentAppName = applet.Actions?.Go.Cmd[0];
-
-            if (applet.Type.ToLower() == "playlist")
-            {
-                PlaylistCommandsVisibility = Visibility.Visible;
-                FionaDataService.CurrentApplet = applet;
-                NavigationService.Navigate<AppsPage>(applet);
-            }
-            else
-            {
-                PlaylistCommandsVisibility = Visibility.Collapsed;
-                if (applet.Style?.ToLower() != "itemnoaction")
-                {
-                    if (string.IsNullOrEmpty(applet.Actions.Go.Params.item_id))
-                    { // this is the first level of an app
-                        applet.Actions.Go.Params.item_id = "0";
-                        FionaDataService.CurrentAppletName = applet.Actions.Go.Cmd[0];
-                    }
-
-                    FionaDataService.CurrentApplet = applet;
-                    NavigationService.Navigate<AppsPage>(applet);
-
-                    //Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
-                    //    applet.Actions.Go.Cmd[0], applet.Actions.Go.Cmd[1],
-                    //    applet.Actions.Go.Params.Menu, applet.Actions.Go.Params.item_id);
-                }
-            }
-
+            NavigationService.Navigate<AppsPage>(applet);
         }
 
         public AppsViewModel()
         {
-            if (FionaDataService.CurrentApplet == null) // coming from the Shell, show all apps
-                Apps = FionaDataService.GetAllApps(FionaDataService.CurrentPlayer);
-            else
-            {
-                if (FionaDataService.CurrentApplet.Actions != null)
-                {
-                    Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
-                           FionaDataService.CurrentApplet.Actions.Go.Cmd[0], FionaDataService.CurrentApplet.Actions.Go.Cmd[1],
-                           FionaDataService.CurrentApplet.Actions.Go.Params.Menu, FionaDataService.CurrentApplet.Actions.Go.Params.item_id);
-                }
-                else
-                {
-                    Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
-                           FionaDataService.CurrentApplet.Actions.Go.Cmd[0], FionaDataService.CurrentApplet.Actions.Go.Cmd[1],
-                           FionaDataService.CurrentApplet.Actions.Go.Params.Menu, FionaDataService.CurrentApplet.Params.item_id);
-                }
-            }
         }
     }
 }

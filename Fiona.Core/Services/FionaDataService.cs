@@ -23,6 +23,7 @@ namespace Fiona.Core.Services
 
         public static Applet CurrentApplet { get; set; }
         public static string CurrentAppletName { get; set; }
+        public static string CurrentAppletIconUrl { get; set; }
 
         public static AlbumList AllAlbums { get; set; }
         public static ArtistList AllArtists { get; set; }
@@ -207,15 +208,29 @@ namespace Fiona.Core.Services
         #region Apps
         public static AppletList GetAllApps(Player player)
         {
-            var msg = FionaMessage.CreateMessage(player, "myapps", "items", "0", FionaCommand.MaxItems, "menu:1");
-            AllApps = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
-            return AllApps;
+            if (AllApps != null)
+                return AllApps;
+            else
+            {
+                var msg = FionaMessage.CreateMessage(player, "myapps", "items", "0", FionaCommand.MaxItems);
+                var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+                AllApps = res;
+                return res;
+            }
+        }
+
+        public static AppletList GetAppTopLevel(Player player, string cmd1)
+        {
+            var msg = FionaMessage.CreateMessage(player, cmd1, "items", "0", FionaCommand.MaxItems);
+            var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+            return res;
         }
 
         public static AppletList GetApps(Player player, string cmd1, string cmd2, string menu, string item_id)
         {
             var msg = FionaMessage.CreateMessage(player, cmd1, cmd2, "0", FionaCommand.MaxItems, "menu:" + menu, "item_id:" + item_id);
-            return QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+            var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+            return res;
         }
 
         public static void PlayPlaylistFromApp(Player player, string appname, string menu, string item_id)
@@ -311,7 +326,12 @@ namespace Fiona.Core.Services
               
                 JObject o = JObject.Parse(res);
                 var jsonResult = o["result"];
-                var outval = JsonConvert.DeserializeObject<T>(jsonResult.ToString());
+                string so = jsonResult.ToString();
+                
+                //HACK convert loop_loop into item_loop
+                so = so.Replace("loop_loop", "item_loop");
+
+                var outval = JsonConvert.DeserializeObject<T>(so);
                 return outval;
             }
         }

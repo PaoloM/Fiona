@@ -241,4 +241,10 @@ Please enter the address and port of your Logitech Media Server (or your Squeeze
   <data name="Shell_QueueTitle.Text" xml:space="preserve">
     <value>Queue</value>
   </data>
+  <data name="Playlist_AddAllToQueue.Text" xml:space="preserve">
+    <value>Add all to queue</value>
+  </data>
+  <data name="Playlist_PlayAll.Text" xml:space="preserve">
+    <value>Play all</value>
+  </data>
 </root>

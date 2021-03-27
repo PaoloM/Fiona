@@ -10,7 +10,7 @@ namespace Fiona.Views
 {
     public sealed partial class AppsPage : Page
     {
-        public AppsViewModel ViewModel { get; }// = new AppsViewModel();
+        public AppsViewModel ViewModel { get; } = new AppsViewModel();
 
         public AppsPage()
         {
@@ -20,7 +20,7 @@ namespace Fiona.Views
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            FionaDataService.CurrentApplet = (Applet)(e.Parameter);
+            ViewModel.CurrentApplet = (Applet)(e.Parameter);
         }
     }
 }

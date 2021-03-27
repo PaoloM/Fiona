@@ -64,11 +64,11 @@
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE902;" />
                     </winui:NavigationViewItem.Icon>
                 </winui:NavigationViewItem>
-                <winui:NavigationViewItem x:Uid="Shell_Radio" helpers:NavHelper.NavigateTo="views:RadioPage">
+                <!--<winui:NavigationViewItem x:Uid="Shell_Radio" helpers:NavHelper.NavigateTo="views:RadioPage">
                     <winui:NavigationViewItem.Icon>
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC05;" />
                     </winui:NavigationViewItem.Icon>
-                </winui:NavigationViewItem>
+                </winui:NavigationViewItem>-->
                 <winui:NavigationViewItem x:Uid="Shell_Apps" helpers:NavHelper.NavigateTo="views:AppsPage">
                     <winui:NavigationViewItem.Icon>
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE179;" />

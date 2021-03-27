@@ -15,31 +15,42 @@
         <viewmodels:AppsViewModel x:Name="BaseVM"/>
     </Page.DataContext>
 
-    <StackPanel Orientation="Vertical">
-        <TextBlock Text="{x:Bind ViewModel.CurrentAppletName}"></TextBlock>
+    <Grid Margin="44,0,36,36">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <StackPanel Visibility="{x:Bind ViewModel.PlaylistCommandsVisibility}" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-            <Button Background="{x:Null}" Command="{x:Bind ViewModel.PlayPlaylistCommand}" Margin="4,0,4,0">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Top">
+            <Image Source="{x:Bind ViewModel.AppletIconUrl, Mode=OneWay}" Width="32" Height="32" Stretch="UniformToFill" Margin="8,0,0,16"/>
+            <!--<TextBlock Text="{x:Bind ViewModel.AppletTitle, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>-->
+            <TextBlock Text="{x:Bind ViewModel.TileTitle, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" Margin="8,0,0,16"></TextBlock>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="1" Visibility="{x:Bind ViewModel.PlaylistCommandsVisibility, Mode=OneWay}"
+                    Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Button Background="{x:Null}" Command="{x:Bind ViewModel.PlayPlaylistCommand}" Margin="4,0,4,16">
                 <StackPanel Orientation="Horizontal">
                     <FontIcon Glyph="&#xE102;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
                     <TextBlock x:Uid="Playlist_PlayAll" FontSize="{StaticResource SmallFontSize}"/>
                 </StackPanel>
             </Button>
-            <Button Background="{x:Null}" Command="{x:Bind ViewModel.QueuePlaylistCommand}" Margin="4,0,4,0">
+            <Button Background="{x:Null}" Command="{x:Bind ViewModel.QueuePlaylistCommand}" Margin="4,0,4,16">
                 <StackPanel Orientation="Horizontal">
                     <FontIcon Glyph="&#xE109;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
-                    <TextBlock x:Uid="Playlist_AddToQueue" FontSize="{StaticResource SmallFontSize}"/>
+                    <TextBlock x:Uid="Playlist_AddAllToQueue" FontSize="{StaticResource SmallFontSize}"/>
                 </StackPanel>
             </Button>
         </StackPanel>
         
-        <Grid x:Name="ContentArea">
+        <Grid x:Name="ContentArea" Grid.Row="2">
         <controls:AdaptiveGridView                      
             IsItemClickEnabled="True"
-            ItemsSource="{x:Bind BaseVM.Apps.Applets, Mode=OneWay}"
+            ItemsSource="{x:Bind ViewModel.Apps.Applets, Mode=OneWay}"
             SelectionMode="None"            
-            ItemClickCommand="{x:Bind BaseVM.AppSelectedCommand}"
-            Margin="44,0,36,36" >
+            ItemClickCommand="{x:Bind ViewModel.AppSelectedCommand}"
+            >
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:Applet">
                     <Grid x:Name="itemThumbnail" Width="160" Height="196" Margin="8,8,8,8"
@@ -51,7 +62,7 @@
                             <TextBlock HorizontalAlignment="Center"
                                 Margin="{StaticResource XXSmallTopMargin}"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="{x:Bind Text}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                                Text="{x:Bind GetText, Mode=OneWay}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
                         </StackPanel>
                         <StackPanel x:Name="ItemControls" Orientation="Horizontal"
                                     HorizontalAlignment="Center" VerticalAlignment="Top"
@@ -73,5 +84,5 @@
         </controls:AdaptiveGridView>
         
     </Grid>
-    </StackPanel>
+    </Grid>
 </Page>
