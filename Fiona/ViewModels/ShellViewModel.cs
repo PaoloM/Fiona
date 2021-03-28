@@ -72,7 +72,7 @@ namespace Fiona.ViewModels
         private string _nowPlayingAlbumArt;
         public string NowPlayingAlbumArt
         {
-            get => string.IsNullOrEmpty(_nowPlayingAlbumArt) ? FionaDataService.DefaultArtworkUrl : _nowPlayingAlbumArt;
+            get => string.IsNullOrEmpty(_nowPlayingAlbumArt) ? FionaDataService.DefaultAlbumImageUrl : _nowPlayingAlbumArt;
             set => SetProperty(ref _nowPlayingAlbumArt, value);
         }
 
@@ -97,6 +97,13 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _NowPlayingPageVisibility, value);
         }
 
+        private Visibility _SetupPageVisibility = Visibility.Collapsed;
+        public Visibility SetupPageVisibility
+        {
+            get => _SetupPageVisibility;
+            set => SetProperty(ref _SetupPageVisibility, value);
+        }
+
         private string _artistBio = "";
         public string ArtistBio
         {
@@ -114,7 +121,7 @@ namespace Fiona.ViewModels
         private string _artistImageUrl = "";
         public string ArtistImageUrl
         {
-            get => string.IsNullOrEmpty(_artistImageUrl) ? FionaDataService.DefaultArtworkUrl : _artistImageUrl;
+            get => string.IsNullOrEmpty(_artistImageUrl) ? FionaDataService.DefaultAlbumImageUrl : _artistImageUrl;
             set => SetProperty(ref _artistImageUrl, value);
         }
 
@@ -164,7 +171,7 @@ namespace Fiona.ViewModels
             {
                 if (NowPlayingAlbumArt != CurrentPlayerStatus.CurrentSong?.ArtworkUrl) //TODO find a better way to see if the track changed
                 {
-                    NowPlayingAlbumArt = string.IsNullOrEmpty(CurrentPlayerStatus.CurrentSong.ArtworkUrl) ? FionaDataService.DefaultArtworkUrl : CurrentPlayerStatus.CurrentSong.ArtworkUrl;
+                    NowPlayingAlbumArt = string.IsNullOrEmpty(CurrentPlayerStatus.CurrentSong.ArtworkUrl) ? FionaDataService.DefaultAlbumImageUrl : CurrentPlayerStatus.CurrentSong.ArtworkUrl;
 
                     if (CurrentPlayerStatus.CurrentSong.Artist != null)
                     {
@@ -197,7 +204,7 @@ namespace Fiona.ViewModels
 
                             ArtistBio = artist.Profile;
                             Random rnd = new Random();
-                            ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[rnd.Next(0, artist.Images.Count - 1)] : FionaDataService.DefaultArtworkUrl;
+                            ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[rnd.Next(0, artist.Images.Count - 1)] : FionaDataService.DefaultAlbumImageUrl;
                         }
                         else
                         { // did not find it in the internal artist list, let's see if discogs has anything about the artist
@@ -214,13 +221,12 @@ namespace Fiona.ViewModels
                                 }
                                 ArtistBio = da.Profile;
                                 Random rnd = new Random();
-                                ArtistImageUrl = da.Images.Count > 0 ? da.Images[rnd.Next(0, da.Images.Count - 1)].ImageUrl : FionaDataService.DefaultArtworkUrl;
+                                ArtistImageUrl = da.Images.Count > 0 ? da.Images[rnd.Next(0, da.Images.Count - 1)].ImageUrl : FionaDataService.DefaultAlbumImageUrl;
                             }
                         }
                     }
-                    // update the live tile
 
-                    // Construct the tile content
+                    // Construct the live tile content
                     var content = new TileContent()
                     {
                         Visual = new TileVisual()
@@ -288,6 +294,7 @@ namespace Fiona.ViewModels
             ToggleMuteCommand = new RelayCommand(() => FionaDataService.ToggleMuteVolume(CurrentPlayer));
             ShowNowPlayingCommand = new RelayCommand(() => NowPlayingPageVisibility = Visibility.Visible);
             HideNowPlayingCommand = new RelayCommand(() => NowPlayingPageVisibility = Visibility.Collapsed);
+
         }
 
         #region Template implementation

@@ -23,6 +23,7 @@ namespace Fiona.Core.Services
 
         public static Applet CurrentApplet { get; set; }
         public static string CurrentAppletName { get; set; }
+        public static string CurrentAppletMenu { get; set; }
         public static string CurrentAppletIconUrl { get; set; }
 
         public static AlbumList AllAlbums { get; set; }
@@ -212,7 +213,7 @@ namespace Fiona.Core.Services
                 return AllApps;
             else
             {
-                var msg = FionaMessage.CreateMessage(player, "myapps", "items", "0", FionaCommand.MaxItems);
+                var msg = FionaMessage.CreateMessage(player, "myapps", "items", "0", FionaCommand.MaxItems, "menu:1");
                 var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
                 AllApps = res;
                 return res;
@@ -239,18 +240,11 @@ namespace Fiona.Core.Services
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
         }
 
-        //public static AppletList GetApps(Player player, string app)
-        //{
-        //    var msg = FionaMessage.CreateMessage(player, app, "items", "0", FionaCommand.MaxItems);
-        //    return QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
-        //}
-
-        //public static AppletList GetApps(Player player, string app, string id)
-        //{
-        //    var msg = FionaMessage.CreateMessage(player, app, "items", "0", FionaCommand.MaxItems, "item_id:" + id);
-        //    var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
-        //    return res;
-        //}
+        public static void QueuePlaylistFromApp(Player player, string appname, string menu, string item_id)
+        {
+            var msg = FionaMessage.CreateMessage(player, appname, "playlist", "add", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id);
+            var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+        }
         #endregion
 
         #region Misc
@@ -296,7 +290,17 @@ namespace Fiona.Core.Services
         public static int BigImageSize { get => 350; }
         public static int SmallImageSize { get => 75; }
 
-        public static string DefaultArtworkUrl
+        public static string DefaultAlbumImageUrl
+        {
+            get => $"{RemoteUrl}music/0/cover_{BigImageSize}x{BigImageSize}.jpg";
+        }
+
+        public static string DefaultArtistImageUrl
+        {
+            get => $"{RemoteUrl}music/0/cover_{BigImageSize}x{BigImageSize}.jpg";
+        }
+
+        public static string DefaultAppImageUrl
         {
             get => $"{RemoteUrl}music/0/cover_{BigImageSize}x{BigImageSize}.jpg";
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Fiona.Core.Services;
+using Fiona.Helpers;
 using Fiona.Services;
 
 using Microsoft.AppCenter;
@@ -26,6 +27,18 @@ namespace Fiona
 
             AppCenter.Start(Fiona.Core.Helpers.APIKeys.AppCenter, typeof(Analytics), typeof(Crashes));
             UnhandledException += OnAppUnhandledException;
+
+            //String server = Windows.Storage.ApplicationData.Current.LocalSettings.Values["ServerIP"]?.ToString();
+            //if (server != null)
+            //    server = server.Replace("\"", "");
+
+            //int port = 9000;
+            //var portobject = Windows.Storage.ApplicationData.Current.LocalSettings.Values["ServerPort"];
+            //if (portobject != null)
+            //    port = int.Parse(portobject.ToString());
+
+            //FionaDataService.ServerIP = server;
+            //FionaDataService.ServerPort = port;
 
             //HACK - should retrieve these from LocalSettings and - if not valid - do not proceed with the initialization
             FionaDataService.ServerIP = Fiona.Core.Helpers.APIKeys.LMSServerName;

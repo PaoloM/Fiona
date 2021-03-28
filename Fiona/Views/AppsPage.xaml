@@ -22,10 +22,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Top">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center">
             <Image Source="{x:Bind ViewModel.AppletIconUrl, Mode=OneWay}" Width="32" Height="32" Stretch="UniformToFill" Margin="8,0,0,16"/>
             <!--<TextBlock Text="{x:Bind ViewModel.AppletTitle, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>-->
-            <TextBlock Text="{x:Bind ViewModel.TileTitle, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" Margin="8,0,0,16"></TextBlock>
+            <TextBlock Text="{x:Bind ViewModel.TileTitle, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" Margin="8,0,0,16" TextTrimming="Clip"></TextBlock>
         </StackPanel>
         
         <StackPanel Grid.Row="1" Visibility="{x:Bind ViewModel.PlaylistCommandsVisibility, Mode=OneWay}"
@@ -58,7 +58,7 @@
                         helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=ItemControls}">
                         <!--Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">-->
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
-                            <Image Source="{x:Bind GetIconUrl, Mode=OneWay}" Width="160" Height="160" Stretch="UniformToFill"/>
+                            <Image Source="{x:Bind GetImageUrl, Mode=OneWay}" Width="160" Height="160" Stretch="UniformToFill"/>
                             <TextBlock HorizontalAlignment="Center"
                                 Margin="{StaticResource XXSmallTopMargin}"
                                 Style="{ThemeResource CaptionTextBlockStyle}"

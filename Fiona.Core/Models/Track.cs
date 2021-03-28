@@ -125,7 +125,7 @@ namespace Fiona.Core.Models
 
             if (string.IsNullOrEmpty(ArtworkID))
             {
-                artworkurl = RemoteArtworkUrl != null ? RemoteArtworkUrl : FionaDataService.DefaultArtworkUrl;
+                artworkurl = RemoteArtworkUrl != null ? RemoteArtworkUrl : FionaDataService.DefaultAlbumImageUrl;
             }
             else
             {

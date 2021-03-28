@@ -22,7 +22,7 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _artistBio, value);
         }
 
-        private string _artistImageUrl = FionaDataService.DefaultArtworkUrl;
+        private string _artistImageUrl = FionaDataService.DefaultAlbumImageUrl;
         public string ArtistImageUrl
         {
             get => _artistImageUrl;

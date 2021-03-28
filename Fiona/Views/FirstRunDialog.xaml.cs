@@ -27,16 +27,18 @@ namespace Fiona.Views
                     FionaDataService.ServerPort = int.Parse(Settings_LMS_ServerPort_TextBox.Text);
                     await Windows.Storage.ApplicationData.Current.LocalSettings.SaveAsync<string>("ServerIP", FionaDataService.ServerIP);
                     await Windows.Storage.ApplicationData.Current.LocalSettings.SaveAsync<int>("ServerPort", FionaDataService.ServerPort);
+
                 }
                 else
                 { // can't contact the server
-                    args.GetDeferral();
+                    //args.GetDeferral();
                     args.Cancel = true;
                 }
             }
             else
             { // empty values
-
+                //args.GetDeferral();
+                args.Cancel = true;
             }
         }
     }
