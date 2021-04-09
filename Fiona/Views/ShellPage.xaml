@@ -217,17 +217,17 @@
 
                             <Button Grid.Column="0"
                                 HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.TransportPreviousTrackCommand}">
+                                Command="{x:Bind ViewModel.PreviousTrackTransportCommand}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
                             </Button>
                             <Button Grid.Column="1" Margin="8,0,8,0"
                                 HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.TransportPauseCommand}">
+                                Command="{x:Bind ViewModel.PauseTransportCommand}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
                             </Button>
                             <Button Grid.Column="2"
                                 HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.TransportNextTrackCommand}">
+                                Command="{x:Bind ViewModel.NextTrackTransportCommand}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
                             </Button>
 
@@ -313,17 +313,17 @@
 
                     <Button Grid.Column="0"
                                 HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.TransportPreviousTrackCommand}">
+                                Command="{x:Bind ViewModel.PreviousTrackTransportCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
                     </Button>
                     <Button Grid.Column="1" Margin="8,0,8,0"
                                 HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.TransportPauseCommand}">
+                                Command="{x:Bind ViewModel.PauseTransportCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
                     </Button>
                     <Button Grid.Column="2"
                                 HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.TransportNextTrackCommand}">
+                                Command="{x:Bind ViewModel.NextTrackTransportCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
                     </Button>
 

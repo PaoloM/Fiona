@@ -275,26 +275,64 @@ namespace Fiona.ViewModels
             }
         }
 
-        public RelayCommand TransportPauseCommand { get; set; }
-        public RelayCommand TransportPreviousTrackCommand { get; set; }
-        public RelayCommand TransportNextTrackCommand { get; set; }
-        public RelayCommand TransportToggleRepeatCommand { get; set; }
-        public RelayCommand TransportToggleShuffleCommand { get; set; }
-        public RelayCommand ToggleMuteCommand { get; set; }
-        public RelayCommand ShowNowPlayingCommand { get; set; }
-        public RelayCommand HideNowPlayingCommand { get; set; }
+        private RelayCommand _PauseTransportCommand;
+        public RelayCommand PauseTransportCommand => _PauseTransportCommand ?? (_PauseTransportCommand = new RelayCommand(PauseTransport));
+        private void PauseTransport()
+        {
+            FionaDataService.TransportPause(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _PreviousTrackTransportCommand;
+        public RelayCommand PreviousTrackTransportCommand => _PreviousTrackTransportCommand ?? (_PreviousTrackTransportCommand = new RelayCommand(PreviousTrackTransport));
+        private void PreviousTrackTransport()
+        {
+            FionaDataService.TransportPrevious(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _NextTrackTransportCommand;
+        public RelayCommand NextTrackTransportCommand => _NextTrackTransportCommand ?? (_NextTrackTransportCommand = new RelayCommand(NextTrackTransport));
+        private void NextTrackTransport()
+        {
+            FionaDataService.TransportNext(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _ToggleRepeatTransportCommand;
+        public RelayCommand ToggleRepeatTransportCommand => _ToggleRepeatTransportCommand ?? (_ToggleRepeatTransportCommand = new RelayCommand(ToggleRepeatTransport));
+        private void ToggleRepeatTransport()
+        {
+            FionaDataService.TransportRepeat(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _ToggleShuffleTransportCommand;
+        public RelayCommand ToggleShuffleTransportCommand => _ToggleShuffleTransportCommand ?? (_ToggleShuffleTransportCommand = new RelayCommand(ToggleShuffleTransport));
+        private void ToggleShuffleTransport()
+        {
+            FionaDataService.TransportShuffle(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _ToggleMuteCommand;
+        public RelayCommand ToggleMuteCommand => _ToggleMuteCommand ?? (_ToggleMuteCommand = new RelayCommand(ToggleMute));
+        private void ToggleMute()
+        {
+            FionaDataService.ToggleMuteVolume(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _ShowNowPlayingCommand;
+        public RelayCommand ShowNowPlayingCommand => _ShowNowPlayingCommand ?? (_ShowNowPlayingCommand = new RelayCommand(ShowNowPlaying));
+        private void ShowNowPlaying()
+        {
+            NowPlayingPageVisibility = Visibility.Visible;
+        }
+
+        private RelayCommand _HideNowPlayingCommand;
+        public RelayCommand HideNowPlayingCommand => _HideNowPlayingCommand ?? (_HideNowPlayingCommand = new RelayCommand(HideNowPlaying));
+        private void HideNowPlaying()
+        {
+            NowPlayingPageVisibility = Visibility.Collapsed;
+        }
 
         public ShellViewModel()
         {
-            TransportPauseCommand = new RelayCommand(() => FionaDataService.TransportPause(CurrentPlayer));
-            TransportPreviousTrackCommand = new RelayCommand(() => FionaDataService.TransportPrevious(CurrentPlayer));
-            TransportNextTrackCommand = new RelayCommand(() => FionaDataService.TransportNext(CurrentPlayer));
-            TransportToggleRepeatCommand = new RelayCommand(() => FionaDataService.TransportRepeat(CurrentPlayer));
-            TransportToggleShuffleCommand = new RelayCommand(() => FionaDataService.TransportShuffle(CurrentPlayer));
-            ToggleMuteCommand = new RelayCommand(() => FionaDataService.ToggleMuteVolume(CurrentPlayer));
-            ShowNowPlayingCommand = new RelayCommand(() => NowPlayingPageVisibility = Visibility.Visible);
-            HideNowPlayingCommand = new RelayCommand(() => NowPlayingPageVisibility = Visibility.Collapsed);
-
         }
 
         #region Template implementation
