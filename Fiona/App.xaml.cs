@@ -20,7 +20,6 @@ namespace Fiona
     public sealed partial class App : Application
     {
         private Lazy<ActivationService> _activationService;
-        private string server;
 
         private ActivationService ActivationService
         {
@@ -34,8 +33,16 @@ namespace Fiona
             AppCenter.Start(Fiona.Core.Helpers.APIKeys.AppCenter, typeof(Analytics), typeof(Crashes));
             UnhandledException += OnAppUnhandledException;
 
+            LoadState();
+
+            // Deferred execution until used. Check https://docs.microsoft.com/dotnet/api/system.lazy-1 for further info on Lazy<T> class.
+            _activationService = new Lazy<ActivationService>(CreateActivationService);
+        }
+
+        private void LoadState()
+        {
             // Get server and port from local settings
-            server = Windows.Storage.ApplicationData.Current.LocalSettings.Values["ServerIP"]?.ToString();
+            string server = Windows.Storage.ApplicationData.Current.LocalSettings.Values["ServerIP"]?.ToString();
             if (server != null)
                 server = server.Replace("\"", "");
 
@@ -65,9 +72,6 @@ namespace Fiona
             //HACK - is this the right place to load ALL the large data?
             FionaDataService.GetAllAlbums();
             FionaDataService.GetAllArtists();
-
-            // Deferred execution until used. Check https://docs.microsoft.com/dotnet/api/system.lazy-1 for further info on Lazy<T> class.
-            _activationService = new Lazy<ActivationService>(CreateActivationService);
         }
 
         private async Task<string> GetSlimServerIP()
@@ -106,93 +110,5 @@ namespace Fiona
         {
             return new Views.ShellPage();
         }
-
-
-    }
-
-    public class PortSweep
-    {
-        private string BaseIP = "192.168.1.";
-        private int StartIP = 1;
-        private int StopIP = 255;
-        private string ip;
-
-        private int timeout = 50;
-        private int slimserverport = 3483;
-
-        private string slimServer = "";
-
-        public string GetServer()
-        {
-            return slimServer;
-        }
-
-        public async Task RunPortSweep_Async()
-        {
-            var tasks = new List<Task>();
-
-            // find the LAN 
-            string localip = GetLocalIPAddress();
-            BaseIP = localip.Substring(0, localip.LastIndexOf('.') + 1);
-
-            for (int i = StartIP; i <= StopIP; i++)
-            {
-                ip = BaseIP + i.ToString();
-                var task = CheckPort_Async(ip, slimserverport, timeout);
-                tasks.Add(task);
-            }
-
-            await Task.WhenAll(tasks);
-        }
-
-        private async Task CheckPort_Async(string ip, int port, int timeout)
-        {
-            bool b = IsPortOpen(ip, port, TimeSpan.FromMilliseconds(timeout));
-            if (b) Interlocked.Exchange<string>(ref slimServer, ip);
-        }
-
-        private string GetLocalIPAddress()
-        {
-            string localIP;
-            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
-            {
-                socket.Connect("8.8.8.8", 65530);
-                IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
-                localIP = endPoint.Address.ToString();
-            }
-            return localIP;
-        }
-
-        private bool IsPortOpen(string host, int port, TimeSpan timeout)
-        {
-            TcpClient client = null;
-            bool result = false;
-
-            try
-            {
-                client = new TcpClient();
-                Task task = client.ConnectAsync(host, port);
-                if (task.Wait(timeout))
-                {//if fails within timeout, task.Wait still returns true.
-                    if (client.Connected)
-                    {
-                        // port reachable
-                        result = true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // connection failed
-                result = false;
-            }
-            finally
-            {
-                client.Close();
-            }
-
-            return result;
-        }
-
     }
 }

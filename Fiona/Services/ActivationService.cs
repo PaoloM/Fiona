@@ -90,7 +90,6 @@ namespace Fiona.Services
         private async Task StartupAsync()
         {
             await ThemeSelectorService.SetRequestedThemeAsync();
-            //await FirstRunDisplayService.ShowIfAppropriateAsync();
             Singleton<LiveTileService>.Instance.SampleUpdate();
         }
 

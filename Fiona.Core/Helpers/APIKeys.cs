@@ -8,10 +8,8 @@ namespace Fiona.Core.Helpers
 {
     public static partial class APIKeys
     {
-        public static readonly string AppCenter = "";
-        public static readonly string LMSServerName = "";
-        public static readonly int LMSServerPort = 9000;
-        public static readonly string DiscogsConsumerKey = "";
-        public static readonly string DiscogsConsumerSecret = "";
+        public static readonly string AppCenter = "3753ac1b-c7cd-4211-a784-a3af5c69e3bd";
+        public static readonly string DiscogsConsumerKey = "WkBhOuYSHdffYSJUiJqa";
+        public static readonly string DiscogsConsumerSecret = "VYXKutiwwxGUaHRSMwBHbIUtQWEQrkdk";
     }
 }
