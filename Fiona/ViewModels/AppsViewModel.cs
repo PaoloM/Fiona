@@ -19,11 +19,25 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _Apps, value);
         }
 
-        private Visibility _PlaylistCommandsVisibility;
+        private Visibility _PlaylistCommandsVisibility = Visibility.Collapsed;
         public Visibility PlaylistCommandsVisibility
         {
             get => _PlaylistCommandsVisibility;
             set => SetProperty(ref _PlaylistCommandsVisibility, value);
+        }
+
+        private Visibility _AppsGridViewVisibility = Visibility.Visible;
+        public Visibility AppsGridViewVisibility
+        {
+            get => _AppsGridViewVisibility;
+            set => SetProperty(ref _AppsGridViewVisibility, value);
+        }
+
+        private Visibility _AppsListViewVisibility = Visibility.Collapsed;
+        public Visibility AppsListViewVisibility
+        {
+            get => _AppsListViewVisibility;
+            set => SetProperty(ref _AppsListViewVisibility, value);
         }
 
         private string _AppletTitle;
@@ -62,9 +76,6 @@ namespace Fiona.ViewModels
                 }
                 else
                 {
-                    //if (value.Type == null)
-                    //    value.Type = "link";
-
                     AppletTitle = FionaDataService.CurrentAppletName;
                     AppletIconUrl = string.IsNullOrEmpty(FionaDataService.CurrentAppletIconUrl) ? FionaDataService.DefaultAlbumImageUrl : FionaDataService.CurrentAppletIconUrl;
 
@@ -83,8 +94,19 @@ namespace Fiona.ViewModels
                     { // app tree traversal
                         if (!(value.Style?.ToLower() == "itemnoaction" || value.GoAction?.ToLower() == "playcontrol"))
                         {
-                            Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer, FionaDataService.CurrentAppletMenu, "items", value.GetMenu, value.GetID);
+                            Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
+                                FionaDataService.CurrentAppletMenu, "items", value.GetMenu, value.GetID);
                             TileTitle = Apps.Title;
+                            if (Apps.window.windowStyle == "icon_list")
+                            {
+                                AppsGridViewVisibility = Visibility.Visible;
+                                AppsListViewVisibility = Visibility.Collapsed;
+                            }
+                            else
+                            {
+                                AppsGridViewVisibility = Visibility.Collapsed;
+                                AppsListViewVisibility = Visibility.Visible;
+                            }
                         }
                         else
                         {

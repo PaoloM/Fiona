@@ -27,20 +27,30 @@
 
                 <ResourceDictionary x:Key="Light">
 
-                    <SolidColorBrush x:Key="NavigationBackground" Color="#f0f0f0"></SolidColorBrush>
+                    <SolidColorBrush x:Key="NavigationBackground" Color="#fffff0"></SolidColorBrush>
+                    <SolidColorBrush x:Key="MainAreaBackground" Color="#cfcfc0"></SolidColorBrush>
+                    <SolidColorBrush x:Key="PlayerAreaBackground" Color="#8f8f80"></SolidColorBrush>
+                    <SolidColorBrush x:Key="CardBackground" Color="#afafa0"></SolidColorBrush>
+
+                    <!--<SolidColorBrush x:Key="NavigationBackground" Color="#f0f0f0"></SolidColorBrush>
                     <SolidColorBrush x:Key="MainAreaBackground" Color="#c0c0c0"></SolidColorBrush>
                     <SolidColorBrush x:Key="PlayerAreaBackground" Color="#808080"></SolidColorBrush>
-                    <SolidColorBrush x:Key="CardBackground" Color="#a0a0a0"></SolidColorBrush>
+                    <SolidColorBrush x:Key="CardBackground" Color="#a0a0a0"></SolidColorBrush>-->
 
                 </ResourceDictionary>
                 
                 <ResourceDictionary x:Key="Dark">
 
-                    <SolidColorBrush x:Key="NavigationBackground" Color="#06090c"></SolidColorBrush>
+                    <SolidColorBrush x:Key="NavigationBackground" Color="#06091c"></SolidColorBrush>
+                    <SolidColorBrush x:Key="MainAreaBackground" Color="#23273b"></SolidColorBrush>
+                    <SolidColorBrush x:Key="PlayerAreaBackground" Color="#384158"></SolidColorBrush>
+                    <SolidColorBrush x:Key="CardBackground" Color="#2d344a"></SolidColorBrush>
+
+                    <!--<SolidColorBrush x:Key="NavigationBackground" Color="#06090c"></SolidColorBrush>
                     <SolidColorBrush x:Key="MainAreaBackground" Color="#23272b"></SolidColorBrush>
                     <SolidColorBrush x:Key="PlayerAreaBackground" Color="#384148"></SolidColorBrush>
-                    <SolidColorBrush x:Key="CardBackground" Color="#2d343a"></SolidColorBrush>
-                    
+                    <SolidColorBrush x:Key="CardBackground" Color="#2d343a"></SolidColorBrush>-->
+
                 </ResourceDictionary>
                 
             </ResourceDictionary.ThemeDictionaries>

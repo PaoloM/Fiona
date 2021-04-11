@@ -3,9 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="ThemeControlForegroundBaseHighBrush" Color="{ThemeResource SystemBaseHighColor}"></SolidColorBrush>
 
-    <SolidColorBrush x:Key="MyEvenRowBrush" Color="{ThemeResource SystemChromeMediumLowColor}"></SolidColorBrush>
-    <SolidColorBrush x:Key="MyOddRowBrush" Color="{ThemeResource SystemBaseLowColor}"></SolidColorBrush>
+    <SolidColorBrush x:Key="MyEvenRowBrush" Color="{ThemeResource SystemChromeMediumColor}" Opacity="0.1"></SolidColorBrush>
+    <SolidColorBrush x:Key="MyOddRowBrush" Color="{ThemeResource SystemChromeMediumColor}" Opacity="0.5"></SolidColorBrush>
 
-
+    <!--<SolidColorBrush x:Key="MyEvenRowBrush" Color="{ThemeResource SystemChromeMediumLowColor}"></SolidColorBrush>
+    <SolidColorBrush x:Key="MyOddRowBrush" Color="{ThemeResource SystemBaseLowColor}"></SolidColorBrush>-->
 
 </ResourceDictionary>

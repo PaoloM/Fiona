@@ -7,7 +7,7 @@
     xmlns:models="using:Fiona.Core.Models"
     xmlns:helpers="using:Fiona.Helpers"
     xmlns:viewmodels="using:Fiona.ViewModels"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls" xmlns:interactivity="using:Microsoft.Xaml.Interactivity" xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
 
@@ -27,7 +27,8 @@
             <!--<TextBlock Text="{x:Bind ViewModel.AppletTitle, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>-->
             <TextBlock Text="{x:Bind ViewModel.TileTitle, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}" Margin="8,0,0,16" TextTrimming="Clip"></TextBlock>
         </StackPanel>
-        
+
+        <!-- Playlist node commands -->
         <StackPanel Grid.Row="1" Visibility="{x:Bind ViewModel.PlaylistCommandsVisibility, Mode=OneWay}"
                     Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Button Background="{x:Null}" Command="{x:Bind ViewModel.PlayPlaylistCommand}" Margin="4,0,4,16">
@@ -43,46 +44,62 @@
                 </StackPanel>
             </Button>
         </StackPanel>
-        
+
         <Grid x:Name="ContentArea" Grid.Row="2">
-        <controls:AdaptiveGridView                      
-            IsItemClickEnabled="True"
-            ItemsSource="{x:Bind ViewModel.Apps.Applets, Mode=OneWay}"
-            SelectionMode="None"            
-            ItemClickCommand="{x:Bind ViewModel.AppSelectedCommand}"
-            >
-            <GridView.ItemTemplate>
-                <DataTemplate x:DataType="models:Applet">
-                    <Grid x:Name="itemThumbnail" Width="160" Height="196" Margin="8,8,8,8"
-                        Background="Transparent"
-                        helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=ItemControls}">
-                        <!--Background="{ThemeResource SystemControlPageBackgroundChromeLowBrush}">-->
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
-                            <Image Source="{x:Bind GetImageUrl, Mode=OneWay}" Width="160" Height="160" Stretch="UniformToFill"/>
-                            <TextBlock HorizontalAlignment="Center"
-                                Margin="{StaticResource XXSmallTopMargin}"
-                                Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="{x:Bind GetText, Mode=OneWay}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
-                        </StackPanel>
-                        <StackPanel x:Name="ItemControls" Orientation="Horizontal"
-                                    HorizontalAlignment="Center" VerticalAlignment="Top"
-                                    Visibility="Collapsed" Margin="0,64,0,0">
-                            <Button x:Name="PlayAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0"
-                                    >
-                                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE102;" FontSize="14"/>
-                            </Button>
-                            <Button x:Name="QueueAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0"
-                                    >
-                                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE109;" FontSize="14"/>
-                            </Button>
-                        </StackPanel>
+            <!-- Display items in a grid -->
+            <controls:AdaptiveGridView x:Name="AppsGridView"              
+                IsItemClickEnabled="True"
+                ItemsSource="{x:Bind ViewModel.Apps.Applets, Mode=OneWay}"
+                SelectionMode="None"            
+                ItemClickCommand="{x:Bind ViewModel.AppSelectedCommand}"
+                Visibility="{x:Bind ViewModel.AppsGridViewVisibility, Mode=OneWay}">
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Applet">
+                        <Grid x:Name="itemThumbnail" Width="160" Height="196" Margin="8,8,8,8"
+                            Background="Transparent"
+                            helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=ItemControls}">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <Image Source="{x:Bind GetImageUrl, Mode=OneWay}" Width="160" Height="160" Stretch="UniformToFill"/>
+                                <TextBlock HorizontalAlignment="Center"
+                                    Margin="{StaticResource XXSmallTopMargin}"
+                                    Style="{ThemeResource CaptionTextBlockStyle}"
+                                    Text="{x:Bind GetText, Mode=OneWay}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+                            </StackPanel>
+                            <StackPanel x:Name="ItemControls" Orientation="Horizontal"
+                                HorizontalAlignment="Center" VerticalAlignment="Top"
+                                Visibility="Collapsed" Margin="0,64,0,0">
+                                <Button x:Name="PlayAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0">
+                                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE102;" FontSize="14"/>
+                                </Button>
+                                <Button x:Name="QueueAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0">
+                                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE109;" FontSize="14"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </controls:AdaptiveGridView>
 
-                    </Grid>
-                </DataTemplate>
-            </GridView.ItemTemplate>
+            <!-- Display items in a list -->
+            <ListView x:Name="AppsListView"
+                IsItemClickEnabled="True"
+                ItemsSource="{x:Bind ViewModel.Apps.Applets, Mode=OneWay}"
+                SelectionMode="None"
+                Visibility="{x:Bind ViewModel.AppsListViewVisibility, Mode=OneWay}">
 
-        </controls:AdaptiveGridView>
-        
-    </Grid>
+                <interactivity:Interaction.Behaviors>
+                    <core:EventTriggerBehavior EventName="SelectionChanged">
+                        <core:InvokeCommandAction Command="{x:Bind ViewModel.AppSelectedCommand}"
+                        CommandParameter="{Binding SelectedItem, ElementName=AppsListView}" />
+                    </core:EventTriggerBehavior>
+                </interactivity:Interaction.Behaviors>
+                
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Applet">
+                        <TextBlock Text="{x:Bind Text, Mode=OneWay}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </Grid>
 </Page>
