@@ -44,10 +44,11 @@
 * Tweaked the colors for the light theme
 * Added playlist shuffle control
 * Added playlist repeat control
+* Unified the transport control between navigation pages and Now Playing page
 
 #### 03/29/2021
 
-* Created the supporting website at [](fionamusic.app]
+* Created the supporting website at http://fionamusic.app
 * Moved the link to the privacy policy to point to the new website
 
 ## Notes
