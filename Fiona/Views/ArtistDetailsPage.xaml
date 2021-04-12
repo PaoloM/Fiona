@@ -62,25 +62,40 @@
                     FontSize="{StaticResource XLargeFontSize}"
                     Text="{x:Bind ViewModel.CurrentArtist.Name, Mode=OneWay}" FontWeight="Light" TextWrapping="Wrap" />
                 <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Text="{x:Bind ViewModel.AllGenres, Mode=OneWay}" TextTrimming="CharacterEllipsis"/>
-                <TextBlock Style="{ThemeResource BodyTextBlockStyle}" Text="{x:Bind ViewModel.ArtistBio, Mode=OneWay}" TextWrapping="Wrap" Height="150" Margin="0,20,0,0"/>
+                <ScrollViewer Height="100" Margin="0,20,0,0">
+                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Text="{x:Bind ViewModel.ArtistBio, Mode=OneWay}" TextWrapping="Wrap"/>
+                </ScrollViewer>
             </StackPanel>
 
-            <!--<StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1"
+            <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1"
                         VerticalAlignment="Bottom" HorizontalAlignment="Left"
                         Margin="-12,0,0,0">
-                <Button CornerRadius="4" Background="{x:Null}" Command="{x:Bind ViewModel.PlayAllCommand}" CommandParameter="{x:Bind}" Margin="4,0,4,0">
+                <Button Background="{x:Null}" Command="{x:Bind ViewModel.PlayAllByArtistCommand}" CommandParameter="{x:Bind ViewModel.CurrentArtist}" Margin="4,0,4,0">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE102;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
-                        <TextBlock x:Uid="MyMusic_Artist_PlayAll" FontSize="{StaticResource SmallFontSize}"/>
+                        <TextBlock x:Uid="Artist_PlayAll" FontSize="{StaticResource SmallFontSize}"/>
                     </StackPanel>
                 </Button>
-                <Button CornerRadius="4" Background="{x:Null}" Command="{x:Bind ViewModel.AddToQueueCommand}" CommandParameter="{x:Bind}" Margin="4,0,4,0">
+                <Button Background="{x:Null}" Command="{x:Bind ViewModel.ShuffleAllByArtistCommand}" CommandParameter="{x:Bind ViewModel.CurrentArtist}" Margin="4,0,4,0">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE14B;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
+                        <TextBlock x:Uid="Artist_ShuffleAll" FontSize="{StaticResource SmallFontSize}"/>
+                    </StackPanel>
+                </Button>
+                <Button Background="{x:Null}" Command="{x:Bind ViewModel.AddAllToQueueByArtistCommand}" CommandParameter="{x:Bind ViewModel.CurrentArtist}" Margin="4,0,4,0">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE109;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
-                        <TextBlock x:Uid="MyMusic_Artist_AddToQueue" FontSize="{StaticResource SmallFontSize}"/>
+                        <TextBlock x:Uid="Artist_AddToQueue" FontSize="{StaticResource SmallFontSize}"/>
                     </StackPanel>
                 </Button>
-            </StackPanel>-->
+                <Button Background="{x:Null}"  Command="{x:Bind ViewModel.ViewArtistOnDiscogsCommand}"  CommandParameter="{x:Bind ViewModel.CurrentArtist}" Margin="4,0,4,0">
+                    <StackPanel Orientation="Horizontal">
+                        <BitmapIcon UriSource="/Assets/discogs-vinyl-record-mark.png" Width="16" Height="16" Margin="0,0,8,0"/>
+                        <!--<FontIcon Glyph="&#xE109;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>-->
+                        <TextBlock x:Uid="Artist_GoToDiscogs" FontSize="{StaticResource SmallFontSize}"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
         </Grid>
 
         <ScrollViewer Grid.Row="1">

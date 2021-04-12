@@ -289,6 +289,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\cover_350x350.png" />
+    <Content Include="Assets\discogs-vinyl-record-mark.png" />
     <Content Include="Assets\LargeTile.scale-100.png" />
     <Content Include="Assets\LargeTile.scale-125.png" />
     <Content Include="Assets\LargeTile.scale-150.png" />

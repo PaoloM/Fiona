@@ -300,14 +300,14 @@ namespace Fiona.ViewModels
         public RelayCommand ToggleRepeatTransportCommand => _ToggleRepeatTransportCommand ?? (_ToggleRepeatTransportCommand = new RelayCommand(ToggleRepeatTransport));
         private void ToggleRepeatTransport()
         {
-            FionaDataService.TransportRepeat(FionaDataService.CurrentPlayer);
+            FionaDataService.TransportToggleRepeat(FionaDataService.CurrentPlayer);
         }
 
         private RelayCommand _ToggleShuffleTransportCommand;
         public RelayCommand ToggleShuffleTransportCommand => _ToggleShuffleTransportCommand ?? (_ToggleShuffleTransportCommand = new RelayCommand(ToggleShuffleTransport));
         private void ToggleShuffleTransport()
         {
-            FionaDataService.TransportShuffle(FionaDataService.CurrentPlayer);
+            FionaDataService.TransportToggleShuffle(FionaDataService.CurrentPlayer);
         }
 
         private RelayCommand _ToggleMuteCommand;

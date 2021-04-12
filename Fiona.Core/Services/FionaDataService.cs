@@ -141,6 +141,7 @@ namespace Fiona.Core.Services
 
         public static void PlaylistLoadAndPlayAlbum(Player player, Album album)
         {
+            TransportUnsetShuffle(player);
             var msg = FionaMessage.CreateMessage(player, "playlistcontrol", "cmd:load", "album_id:" + album.ID.ToString());
             var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
         }
@@ -148,6 +149,27 @@ namespace Fiona.Core.Services
         public static void PlaylistAppendAlbum(Player player, Album album)
         {
             var msg = FionaMessage.CreateMessage(player, "playlistcontrol", "cmd:add", "album_id:" + album.ID.ToString());
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void PlaylistLoadAndPlayArtist(Player player, Artist artist)
+        {
+            TransportUnsetShuffle(player);
+            var msg = FionaMessage.CreateMessage(player, "playlistcontrol", "cmd:load", "artist_id:" + artist.ID.ToString());
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void PlaylistLoadAndShuffleArtist(Player player, Artist artist)
+        {
+            TransportSetShuffle(player);
+            var msg = FionaMessage.CreateMessage(player, "playlistcontrol", "cmd:load", "artist_id:" + artist.ID.ToString());
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void PlaylistAppendArtist(Player player, Artist artist)
+        {
+            TransportUnsetShuffle(player);
+            var msg = FionaMessage.CreateMessage(player, "playlistcontrol", "cmd:add", "artist_id:" + artist.ID.ToString());
             var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
         }
 
@@ -170,7 +192,7 @@ namespace Fiona.Core.Services
             // load the playlist with all albums
 
             // shuffle the playlist
-            TransportShuffle(player);
+            TransportToggleShuffle(player);
         }
         #endregion
 
@@ -193,15 +215,39 @@ namespace Fiona.Core.Services
             var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
         }
 
-        public static void TransportShuffle(Player player)
+        public static void TransportToggleShuffle(Player player)
         {
             var msg = FionaMessage.CreateMessage(player, "playlist", "shuffle");
             var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
         }
 
-        public static void TransportRepeat(Player player)
+        public static void TransportSetShuffle(Player player)
+        {
+            var msg = FionaMessage.CreateMessage(player, "playlist", "shuffle", "1");
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void TransportUnsetShuffle(Player player)
+        {
+            var msg = FionaMessage.CreateMessage(player, "playlist", "shuffle", "0");
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void TransportToggleRepeat(Player player)
         {
             var msg = FionaMessage.CreateMessage(player, "playlist", "repeat");
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void TransportSetRepeat(Player player)
+        {
+            var msg = FionaMessage.CreateMessage(player, "playlist", "repeat", "1");
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void TransportUnsetRepeat(Player player)
+        {
+            var msg = FionaMessage.CreateMessage(player, "playlist", "repeat", "2");
             var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
         }
         #endregion

@@ -33,7 +33,7 @@ namespace Fiona.ViewModels
         {
             get { return _currentAlbum; }
             set
-            {
+            { 
                 var e = FionaDataService.GetAllTracksByAlbum(value);
                 var g = FionaDataService.GetAllGenresByAlbum(value);
                 value.Tracks = (from s in e.Tracks orderby s.TracknumSort select s).ToList<Track>();
@@ -52,6 +52,8 @@ namespace Fiona.ViewModels
                     ca = ca.Substring(0, ca.IndexOf(',')); // if there is a comma, take the first artist
 
                 var artist = (from a in FionaDataService.AllArtists.Artists where a.Name == ca select a).First<Artist>();
+
+                // TODO verify that this is necessary
                 if (string.IsNullOrEmpty(artist.Profile))
                 {
                     DiscogsArtist da = DiscogsDataService.GetArtistInfo(artist.Name);

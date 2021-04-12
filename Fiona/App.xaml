@@ -27,10 +27,10 @@
 
                 <ResourceDictionary x:Key="Light">
 
-                    <SolidColorBrush x:Key="NavigationBackground" Color="#fffff0"></SolidColorBrush>
-                    <SolidColorBrush x:Key="MainAreaBackground" Color="#cfcfc0"></SolidColorBrush>
-                    <SolidColorBrush x:Key="PlayerAreaBackground" Color="#8f8f80"></SolidColorBrush>
-                    <SolidColorBrush x:Key="CardBackground" Color="#afafa0"></SolidColorBrush>
+                    <SolidColorBrush x:Key="NavigationBackground" Color="#f6f6f0"></SolidColorBrush>
+                    <SolidColorBrush x:Key="MainAreaBackground" Color="#c6c6c0"></SolidColorBrush>
+                    <SolidColorBrush x:Key="PlayerAreaBackground" Color="#868680"></SolidColorBrush>
+                    <SolidColorBrush x:Key="CardBackground" Color="#a6a6a0"></SolidColorBrush>
 
                     <!--<SolidColorBrush x:Key="NavigationBackground" Color="#f0f0f0"></SolidColorBrush>
                     <SolidColorBrush x:Key="MainAreaBackground" Color="#c0c0c0"></SolidColorBrush>

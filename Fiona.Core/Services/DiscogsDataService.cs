@@ -12,6 +12,8 @@ namespace Fiona.Core.Services
 {
     public static class DiscogsDataService
     {
+        private static string UA = "Fiona/0.1.0 (fiona@thatpaolo.com)";
+
         public static DiscogsArtist GetArtistInfo(string name)
         {
             if (HaveKeys())
@@ -55,7 +57,7 @@ namespace Fiona.Core.Services
         private static IEnumerable<T> SearchDiscogs<T>(string param)
         {
             string url = $"{QueryUrl(param)}&key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
-            client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (fiona@thatpaolo.com)");
+            client.DefaultRequestHeaders.Add("User-Agent", UA);
 
             var response = client.GetAsync(url);
             string res = "";
@@ -75,7 +77,7 @@ namespace Fiona.Core.Services
         private static T QueryDiscogsEntity<T>(string entitytype, string id)
         {
             string url = $"{EntityUrl(entitytype, id)}?key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
-            client.DefaultRequestHeaders.Add("User-Agent", "Fiona/0.1.0 (fiona@thatpaolo)");
+            client.DefaultRequestHeaders.Add("User-Agent", UA);
 
             var response = client.GetAsync(url);
             string res = "";

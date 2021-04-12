@@ -60,6 +60,35 @@ namespace Fiona.ViewModels
             NavigationService.Navigate<ArtistDetailsPage>(artist);
         }
 
+        private RelayCommand<Artist> _PlayAllByArtistCommand;
+        public RelayCommand<Artist> PlayAllByArtistCommand => _PlayAllByArtistCommand ?? (_PlayAllByArtistCommand = new RelayCommand<Artist>(param => PlayAllByArtist((Artist)param)));
+        private void PlayAllByArtist(Artist artist)
+        {
+            FionaDataService.PlaylistLoadAndPlayArtist(FionaDataService.CurrentPlayer, artist);
+        }
+
+        private RelayCommand<Artist> _ShuffleAllByArtistCommand;
+        public RelayCommand<Artist> ShuffleAllByArtistCommand => _ShuffleAllByArtistCommand ?? (_ShuffleAllByArtistCommand = new RelayCommand<Artist>(param => ShuffleAllByArtist((Artist)param)));
+        private void ShuffleAllByArtist(Artist artist)
+        {
+            FionaDataService.PlaylistLoadAndShuffleArtist(FionaDataService.CurrentPlayer, artist);
+        }
+
+        private RelayCommand<Artist> _AddAllToQueueByArtistCommand;
+        public RelayCommand<Artist> AddAllToQueueByArtistCommand => _AddAllToQueueByArtistCommand ?? (_AddAllToQueueByArtistCommand = new RelayCommand<Artist>(param => AddAllToQueueByArtist((Artist)param)));
+        private void AddAllToQueueByArtist(Artist artist)
+        {
+            FionaDataService.PlaylistAppendArtist(FionaDataService.CurrentPlayer, artist);
+        }
+
+        private RelayCommand<Artist> _ViewArtistOnDiscogsCommand;
+        public RelayCommand<Artist> ViewArtistOnDiscogsCommand => _ViewArtistOnDiscogsCommand ?? (_ViewArtistOnDiscogsCommand = new RelayCommand<Artist>(param => ViewArtistOnDiscogs((Artist)param)));
+        private async void ViewArtistOnDiscogs(Artist artist)
+        {
+            var uri = new Uri("https://www.discogs.com/artist/" + artist.DiscogsID.ToString());
+            var success = await Windows.System.Launcher.LaunchUriAsync(uri);
+         }
+
         private RelayCommand _ShuffleAllArtistsCommand;
         public RelayCommand ShuffleAllArtistsCommand => _ShuffleAllArtistsCommand ?? (_ShuffleAllArtistsCommand = new RelayCommand(ShuffleAllArtists));
         private void ShuffleAllArtists()

@@ -64,21 +64,21 @@
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE902;" />
                     </winui:NavigationViewItem.Icon>
                 </winui:NavigationViewItem>
-                <!--<winui:NavigationViewItem x:Uid="Shell_Radio" helpers:NavHelper.NavigateTo="views:RadioPage">
+                <winui:NavigationViewItem x:Uid="Shell_Radio" helpers:NavHelper.NavigateTo="views:RadioPage">
                     <winui:NavigationViewItem.Icon>
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC05;" />
                     </winui:NavigationViewItem.Icon>
-                </winui:NavigationViewItem>-->
+                </winui:NavigationViewItem>
                 <winui:NavigationViewItem x:Uid="Shell_Apps" helpers:NavHelper.NavigateTo="views:AppsPage">
                     <winui:NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE179;" />
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF0E2;" />
                     </winui:NavigationViewItem.Icon>
                 </winui:NavigationViewItem>
-                <!--<winui:NavigationViewItem x:Uid="Shell_Favorites" helpers:NavHelper.NavigateTo="views:FavoritesPage">
+                <winui:NavigationViewItem x:Uid="Shell_Favorites" helpers:NavHelper.NavigateTo="views:FavoritesPage">
                     <winui:NavigationViewItem.Icon>
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE728;" />
                     </winui:NavigationViewItem.Icon>
-                </winui:NavigationViewItem>-->
+                </winui:NavigationViewItem>
             </winui:NavigationView.MenuItems>
 
             <!--<winui:NavigationView.AutoSuggestBox>
@@ -116,7 +116,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="60"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="180"/>
                 </Grid.RowDefinitions>
 
                 <!-- CURRENT TRACK -->
@@ -180,66 +180,6 @@
                     </ListView>
 
                 </Grid>
-
-                <!-- VOLUME, TRANSPORT AND PLAYERS -->
-                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="2">
-                    <StackPanel Orientation="Vertical">
-                        <ComboBox x:Name="PlayersComboBox" Margin="0,16,0,0"
-                          HorizontalAlignment="Center" BorderThickness="0" Background="Transparent"
-                          ItemsSource="{x:Bind ViewModel.PlayersList.Players, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.CurrentPlayer, Mode=TwoWay}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="models:Player">
-                                    <Grid Margin="-8,4,0,4">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="40"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <FontIcon Glyph="{x:Bind IconGlyph, Mode=OneWay}"
-                                            FontFamily="ms-appx:/Assets/FionaIcons.ttf#FionaIcons"
-                                            FontSize="24" HorizontalAlignment="Center"/>
-
-                                        <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}"></TextBlock>
-                                        </StackPanel>
-
-                                    </Grid>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        <Grid HorizontalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-
-                            <Button Grid.Column="0"
-                                HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.PreviousTrackTransportCommand}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
-                            </Button>
-                            <Button Grid.Column="1" Margin="8,0,8,0"
-                                HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.PauseTransportCommand}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
-                            </Button>
-                            <Button Grid.Column="2"
-                                HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.NextTrackTransportCommand}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
-                            </Button>
-
-                            <winui:ProgressRing Width="52" Grid.Column="1" IsIndeterminate="False" Background="Transparent"
-                                Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
-                                Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}"/>
-                        </Grid>
-                        <Slider Maximum="100" Margin="0,8,0,0"
-                                Value="{x:Bind ViewModel.CurrentPlayerStatus.MixerVolume, Mode=TwoWay}"/>
-                    </StackPanel>
-
-                </Grid>
             </Grid>
         </Grid>
 
@@ -283,6 +223,7 @@
                     Command="{x:Bind ViewModel.HideNowPlayingCommand}" Canvas.ZIndex="99">
                 <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" Height="19" VerticalAlignment="Top" />
             </Button>
+            
             <Image Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}"
                    VerticalAlignment="Top"
                    HorizontalAlignment="Center"
@@ -301,41 +242,77 @@
                                Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Album, Mode=OneWay}" FontSize="18"/>
                 </StackPanel>
             </StackPanel>
-            
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                        Width="208" Margin="0,0,36,44">
+        </Grid>
+
+        <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Padding="36,24,36,44">
+            <StackPanel Orientation="Vertical">
+                <ComboBox x:Name="PlayersComboBox" Margin="0,16,0,0"
+                          HorizontalAlignment="Center" BorderThickness="0" Background="Transparent"
+                          ItemsSource="{x:Bind ViewModel.PlayersList.Players, Mode=OneWay}"
+                          SelectedItem="{x:Bind ViewModel.CurrentPlayer, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:Player">
+                            <Grid Margin="-8,4,0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <FontIcon Glyph="{x:Bind IconGlyph, Mode=OneWay}"
+                                            FontFamily="ms-appx:/Assets/FionaIcons.ttf#FionaIcons"
+                                            FontSize="24" HorizontalAlignment="Center"/>
+
+                                <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}"></TextBlock>
+                                </StackPanel>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
                 <Grid HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0"
+                    <ToggleButton Grid.Column="0" IsChecked="{x:Bind ViewModel.CurrentPlayerStatus.PlaylistShuffle, Mode=OneWay}"
+                                HorizontalAlignment="Right" Height="28" Width="28" CornerRadius="14" Background="Transparent"
+                                Command="{x:Bind ViewModel.ToggleShuffleTransportCommand}">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE14B;" FontSize="10" />
+                    </ToggleButton>
+                    <Button Grid.Column="1"  Margin="4,0,0,0"
                                 HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.PreviousTrackTransportCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
                     </Button>
-                    <Button Grid.Column="1" Margin="8,0,8,0"
+                    <Button Grid.Column="2" Margin="4,0,4,0"
                                 HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.PauseTransportCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
                     </Button>
-                    <Button Grid.Column="2"
+                    <Button Grid.Column="3"  Margin="0,0,4,0"
                                 HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
                                 Command="{x:Bind ViewModel.NextTrackTransportCommand}">
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
                     </Button>
+                    <ToggleButton Grid.Column="4" IsChecked="{x:Bind ViewModel.CurrentPlayerStatus.PlaylistRepeat, Mode=OneWay}"
+                                HorizontalAlignment="Right" Height="28" Width="28" CornerRadius="14" Background="Transparent"
+                                Command="{x:Bind ViewModel.ToggleRepeatTransportCommand}">
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE1CD;" FontSize="10" />
+                    </ToggleButton>
 
-                    <winui:ProgressRing Width="52" Grid.Column="1" IsIndeterminate="False" Background="Transparent"
+                    <winui:ProgressRing Width="52" Grid.Column="2" IsIndeterminate="False" Background="Transparent"
                                 Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
                                 Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}"/>
-
                 </Grid>
-
                 <Slider Maximum="100" Margin="0,8,0,0"
                                 Value="{x:Bind ViewModel.CurrentPlayerStatus.MixerVolume, Mode=TwoWay}"/>
             </StackPanel>
+
         </Grid>
 
     </Grid>

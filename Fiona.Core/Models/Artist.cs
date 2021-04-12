@@ -25,6 +25,8 @@ namespace Fiona.Core.Models
 
         public string Profile { get; set; }
 
+        public int DiscogsID { get; set; }
+
         public List<string>Images { get; set; }
 
         public override string ToString()

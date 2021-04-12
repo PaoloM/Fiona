@@ -9,12 +9,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Fiona.ViewModels
 {
     public class ArtistDetailsViewModel : BaseViewModel
     {
+        private enum BioServices
+        {
+            DISCOGS
+        }
+
         private string _artistBio = "";
         public string ArtistBio
         {
@@ -72,6 +78,7 @@ namespace Fiona.ViewModels
                     DiscogsArtist da = DiscogsDataService.GetArtistInfo(ca);
                     if (da != null)
                     {
+                        value.DiscogsID = da.ID;
                         value.Profile = da.Profile;
                         value.Images = new List<string>();
                         if (da.Images.Count > 0)
@@ -81,10 +88,68 @@ namespace Fiona.ViewModels
                         }
                     }
                 }
-                ArtistBio = value.Profile;
+                
+                ArtistBio = PrettifyBio(BioServices.DISCOGS, value.Profile, true);
                 ArtistImageUrl = value.Images.Count > 0 ? value.Images[0] : null;
                 SetProperty(ref _currentArtist, value);
             }
+        }
+
+        private string PrettifyBio(BioServices service, string bio, bool keepHTML)
+        {
+            var result = "";
+
+            if (service == BioServices.DISCOGS)
+            {
+                // [a12345] <- artist by Discogs ID
+                // [a=ABCDEF] <- artist by name
+                // [m12345] <- master by Discogs ID
+                // [m=12345] <- master by Discogs ID, there is no name
+                // [l12345] <- label by Discogs ID
+                // [l=ABCDEF] <- label by name
+                // [r=12345] <- release by Discogs ID (?)
+                // [i]...[/i] <- italic
+                // [url=...]...[/url] <- straight href
+
+                string[] tok = Regex.Split(bio, @"(\[.+?\])|(\w+)");
+
+                for (int i = 0; i < tok.Length; i++)
+                {
+                    // simple html cases
+                    tok[i] = tok[i].Replace("[i]", keepHTML ? "<i>" : "");
+                    tok[i] = tok[i].Replace("[/i]", keepHTML ? "</i>" : "");
+                    tok[i] = tok[i].Replace("[/url]", keepHTML ? "</a>" : "");
+
+                    if (tok[i].StartsWith("["))
+                    {
+                        if (tok[i][2] == '=') // by name, just ignore it
+                        {
+                            switch (tok[i][1])
+                            {
+                                case 'u': // url
+                                    tok[i] = keepHTML ? ("<a href=\"" + tok[i].Substring(5, tok[i].Length - 6) + "\">") : "";
+                                    break;
+                                case 'a': // artist
+                                case 'l': // label
+                                case 'r': // release
+                                case 'm': // master
+                                    tok[i] = tok[i].Substring(3, tok[i].Length - 4);
+                                    // TODO - check for all numbers, that means it requires another query from Discogs like the block below
+
+                                    break;
+                            }
+                        }
+                        else // get more info from Discogs
+                        {
+                            //TODO
+                        }
+                    }
+                }
+
+                result = String.Join("", tok);
+            }
+
+            return result.Trim();
         }
     }
 }
