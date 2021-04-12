@@ -3,8 +3,6 @@
 # Fiona
  A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) controller for Windows 10
 
-[![Build status](https://build.appcenter.ms/v0.1/apps/c1bf4304-517e-47af-8e39-5e78f367f15b/branches/main/badge)](https://appcenter.ms)
-
 ## Current features
 
 * Autodiscovery and connection to your Logitech Media Server/Squeezebox
