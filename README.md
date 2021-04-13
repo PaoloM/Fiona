@@ -1,7 +1,10 @@
 ![logo](https://github.com/PaoloM/Fiona/blob/main/Original%20assets/Fiona%20logo%20-%20small.png)
 
 # Fiona
- A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) controller for Windows 10
+
+[![Build status](https://build.appcenter.ms/v0.1/apps/d7f40dde-1410-4946-82eb-9b5c207f84a0/branches/main/badge)](https://appcenter.ms)
+ 
+A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) controller for Windows 10
 
 ## Current features
 
