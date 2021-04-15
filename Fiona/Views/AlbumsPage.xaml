@@ -1,28 +1,32 @@
 ﻿<Page
     x:Class="Fiona.Views.AlbumsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:Fiona.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Fiona.Core.Models"
-    xmlns:helpers="using:Fiona.Helpers"
-    xmlns:viewmodels="using:Fiona.ViewModels"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:uc="using:Fiona.Controls"
+    xmlns:viewmodels="using:Fiona.ViewModels"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
 
     <Page.DataContext>
-        <viewmodels:BaseViewModel x:Name="BaseVM"/>
+        <viewmodels:BaseViewModel x:Name="BaseVM" />
     </Page.DataContext>
 
     <Grid x:Name="ContentArea">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,8">
+        <StackPanel
+            Grid.Row="0"
+            Margin="0,0,0,8"
+            VerticalAlignment="Top"
+            Orientation="Horizontal">
             <!--<Button x:Uid="AlbumsShuffleAll" Background="{x:Null}" Command="{x:Bind ViewModel.ShuffleAllAlbumsCommand}">
                 <ContentControl>
                     <StackPanel Orientation="Horizontal">
@@ -45,11 +49,13 @@
             </ComboBox>-->
         </StackPanel>
 
-        <controls:AdaptiveGridView Grid.Row="1" Margin="44,0,36,36"                                   
+        <controls:AdaptiveGridView
+            Grid.Row="1"
+            Margin="44,0,36,36"
             IsItemClickEnabled="True"
+            ItemClickCommand="{x:Bind BaseVM.ViewAlbumDetailsCommand}"
             ItemsSource="{x:Bind ViewModel.Albums}"
-            SelectionMode="None"
-            ItemClickCommand="{x:Bind BaseVM.ViewAlbumDetailsCommand}">
+            SelectionMode="None">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:Album">
                     <!--<uc:AlbumCard AlbumName="{x:Bind Name, Mode=OneWay}"
@@ -57,34 +63,72 @@
                                   Artwork="{x:Bind ArtworkUrl, Mode=OneWay}"
                                   PlayAlbumCommand="{x:Bind BaseVM.PlayAlbumCommand}"
                                   QueueAlbumCommand="{x:Bind BaseVM.QueueAlbumCommand}"/>-->
-                    <Grid x:Name="itemThumbnail" Width="160" Height="196" Margin="8,8,8,8"
-                        Background="Transparent"
-                        helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=AlbumControls}">
+                    <Grid
+                        x:Name="itemThumbnail"
+                        Width="160"
+                        Height="196"
+                        Margin="8,8,8,8"
+                        helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=AlbumControls}"
+                        Background="Transparent">
 
                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
-                            <Image Source="{x:Bind ArtworkUrl, Mode=OneWay}" Width="160" Height="160" Stretch="UniformToFill"/>
+                            <Image
+                                Width="160"
+                                Height="160"
+                                Source="{x:Bind ArtworkUrl, Mode=OneWay}"
+                                Stretch="UniformToFill" />
                             <TextBlock
                                 Margin="4,4,4,0"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="{x:Bind Name}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+                                Text="{x:Bind Name}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap" />
                             <TextBlock
                                 Margin="4,0,4,4"
+                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="{x:Bind ArtistName}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
-                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+                                Text="{x:Bind ArtistName}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap" />
                         </StackPanel>
 
-                        <StackPanel x:Name="AlbumControls" Orientation="Horizontal"
-                                    HorizontalAlignment="Center" VerticalAlignment="Top"
-                                    Visibility="Collapsed" Margin="0,64,0,0">
-                            <Button x:Name="PlayAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0"
-                                    Command="{x:Bind BaseVM.PlayAlbumCommand}" CommandParameter="{x:Bind}">
-                                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE102;" FontSize="14"/>
+                        <StackPanel
+                            x:Name="AlbumControls"
+                            Margin="0,64,0,0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Orientation="Horizontal"
+                            Visibility="Collapsed">
+                            <Button
+                                x:Name="PlayAlbum"
+                                Width="32"
+                                Height="32"
+                                Margin="4,0,4,0"
+                                Command="{x:Bind BaseVM.PlayAlbumCommand}"
+                                CommandParameter="{x:Bind}"
+                                CornerRadius="16">
+                                <FontIcon
+                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                    FontSize="14"
+                                    Glyph="&#xE102;" />
                             </Button>
-                            <Button x:Name="QueueAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0"
-                                    Command="{x:Bind BaseVM.QueueAlbumCommand}" CommandParameter="{x:Bind}">
-                                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE109;" FontSize="14"/>
+                            <Button
+                                x:Name="QueueAlbum"
+                                Width="32"
+                                Height="32"
+                                Margin="4,0,4,0"
+                                Command="{x:Bind BaseVM.QueueAlbumCommand}"
+                                CommandParameter="{x:Bind}"
+                                CornerRadius="16">
+                                <FontIcon
+                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                    FontSize="14"
+                                    Glyph="&#xE109;" />
                             </Button>
+                            <!--<Button x:Name="FavoriteAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0">
+
+                                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE113;" FontSize="14"/>
+                            </Button>-->
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

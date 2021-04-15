@@ -103,6 +103,16 @@ namespace Fiona.Core.Helpers
             return JsonConvert.SerializeObject(new FionaMessage(new object[2] { player.ID, new List<string>(7) { command, arg0, arg1, arg2, arg3, arg4, arg5 } }));
         }
 
+        public static string CreateMessage(Player player, string command, string arg0, string arg1, string arg2, string arg3, string arg4, string arg5, string arg6)
+        {
+            return JsonConvert.SerializeObject(new FionaMessage(new object[2] { player.ID, new List<string>(8) { command, arg0, arg1, arg2, arg3, arg4, arg5, arg6 } }));
+        }
+
+        public static string CreateMessage(Player player, string command, string arg0, string arg1, string arg2, string arg3, string arg4, string arg5, string arg6, string arg7)
+        {
+            return JsonConvert.SerializeObject(new FionaMessage(new object[2] { player.ID, new List<string>(9) { command, arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 } }));
+        }
+
         #endregion
     }
 }

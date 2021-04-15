@@ -2,14 +2,17 @@
     x:Class="Fiona.Views.ShellPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:behaviors="using:Fiona.Behaviors"
-    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls="using:Fiona.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:Fiona.Helpers"
-    xmlns:views="using:Fiona.Views"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:ic="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:i="using:Microsoft.Xaml.Interactivity" xmlns:controls="using:Fiona.Controls" xmlns:models="using:Fiona.Core.Models" xmlns:viewmodels="using:Fiona.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Fiona.Core.Models"
+    xmlns:viewmodels="using:Fiona.ViewModels"
+    xmlns:views="using:Fiona.Views"
+    xmlns:winui="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 
     <i:Interaction.Behaviors>
@@ -19,7 +22,7 @@
     </i:Interaction.Behaviors>
 
     <Page.DataContext>
-        <viewmodels:BaseViewModel x:Name="BaseVM"/>
+        <viewmodels:BaseViewModel x:Name="BaseVM" />
     </Page.DataContext>
 
     <Page.Resources>
@@ -29,27 +32,32 @@
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="54*"/>
-            <ColumnDefinition Width="616*"/>
-            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="54*" />
+            <ColumnDefinition Width="616*" />
+            <ColumnDefinition Width="280" />
         </Grid.ColumnDefinitions>
 
-        <winui:NavigationView PaneDisplayMode="LeftCompact"
-            Grid.Column="0" Grid.ColumnSpan="2"
-            x:Name="navigationView" 
+        <winui:NavigationView
+            x:Name="navigationView"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Background="{ThemeResource NavigationBackground}"
+            CompactPaneLength="64"
             IsBackButtonVisible="Visible"
             IsBackEnabled="{x:Bind ViewModel.IsBackEnabled, Mode=OneWay}"
-            SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}"
             IsSettingsVisible="True"
-            CompactPaneLength="64"
-            Background="{ThemeResource NavigationBackground}">
+            PaneDisplayMode="LeftCompact"
+            SelectedItem="{x:Bind ViewModel.Selected, Mode=OneWay}">
 
             <winui:NavigationView.HeaderTemplate>
                 <DataTemplate>
-                    <TextBlock x:Name="appTitle" Style="{StaticResource TitleTextBlockStyle}"
-                            FontSize="28" Margin="0,8,0,0"
-                            VerticalAlignment="Center"
-                            Text="{Binding}"/>
+                    <TextBlock
+                        x:Name="appTitle"
+                        Margin="0,8,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="28"
+                        Style="{StaticResource TitleTextBlockStyle}"
+                        Text="{Binding}" />
                 </DataTemplate>
             </winui:NavigationView.HeaderTemplate>
 
@@ -86,16 +94,14 @@
             </winui:NavigationView.AutoSuggestBox>-->
 
             <i:Interaction.Behaviors>
-                <behaviors:NavigationViewHeaderBehavior
-                DefaultHeader="{x:Bind ViewModel.Selected.Content, Mode=OneWay}">
+                <behaviors:NavigationViewHeaderBehavior DefaultHeader="{x:Bind ViewModel.Selected.Content, Mode=OneWay}">
                     <behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
                         <DataTemplate>
-                            <Grid Background="{ThemeResource MainAreaBackground}"
-                                  Margin="-44,-44,0,-36">
+                            <Grid Margin="-44,-44,0,-36" Background="{ThemeResource MainAreaBackground}">
                                 <TextBlock
-                                Text="{Binding}"
-                                Style="{ThemeResource PageTitleStyle}"
-                                Margin="60,0,0,0" />
+                                    Margin="60,0,0,0"
+                                    Style="{ThemeResource PageTitleStyle}"
+                                    Text="{Binding}" />
                             </Grid>
                         </DataTemplate>
                     </behaviors:NavigationViewHeaderBehavior.DefaultHeaderTemplate>
@@ -109,161 +115,260 @@
             </Grid>
         </winui:NavigationView>
 
-        <!-- PLAYER AREA -->
-        <Grid Grid.Column="2" x:Name="PlayerArea"
-              Padding="36,44,36,44" Background="{ThemeResource PlayerAreaBackground}">
+        <!--  PLAYER AREA  -->
+        <Grid
+            x:Name="PlayerArea"
+            Grid.Column="2"
+            Padding="36,44,36,44"
+            Background="{ThemeResource PlayerAreaBackground}">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="180"/>
+                    <RowDefinition Height="60" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="180" />
                 </Grid.RowDefinitions>
 
-                <!-- CURRENT TRACK -->
-                <Button Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent"
-                Padding="0,0,0,0" BorderThickness="0" BorderBrush="Transparent" 
-                Command="{x:Bind ViewModel.ShowNowPlayingCommand}">
-                    <Grid HorizontalAlignment="Stretch" Width="208" >
+                <!--  CURRENT TRACK  -->
+                <Button
+                    Grid.Row="0"
+                    Padding="0,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    Command="{x:Bind ViewModel.ShowNowPlayingCommand}">
+                    <Grid Width="208" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="60"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0"
-                               Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"/>
-                        <!-- TODO enable text scrolling if long text -->
-                        <StackPanel Orientation="Vertical" Margin="8,0,0,0" Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
-                                       TextTrimming="CharacterEllipsis"
-                                       Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}"/>
-                            <TextBlock  Style="{ThemeResource CaptionTextBlockStyle}"
-                                                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                       TextTrimming="CharacterEllipsis"
-                                       Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" />
+                        <Image Grid.Column="0" Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}" />
+                        <!--  TODO enable text scrolling if long text  -->
+                        <StackPanel
+                            Grid.Column="1"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center"
+                            Orientation="Vertical">
+                            <TextBlock
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis" />
+                            <TextBlock
+                                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis" />
                         </StackPanel>
 
                     </Grid>
                 </Button>
 
-                <!-- QUEUE -->
+                <!--  QUEUE  -->
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock x:Uid="Shell_QueueTitle" Grid.Row="0" Style="{ThemeResource SubtitleTextBlockStyle}" FontWeight="Light" Margin="0,24,0,12"/>
+                    <TextBlock
+                        x:Uid="Shell_QueueTitle"
+                        Grid.Row="0"
+                        Margin="0,24,0,12"
+                        FontWeight="Light"
+                        Style="{ThemeResource SubtitleTextBlockStyle}" />
 
-                    <ListView Margin="-8,0,0,0" Grid.Row="1"
+                    <ListView
+                        Grid.Row="1"
+                        Margin="-8,0,0,0"
                         ItemsSource="{x:Bind ViewModel.Queue, Mode=OneWay}">
 
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             </Style>
                         </ListView.ItemContainerStyle>
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:Track">
-                                <StackPanel Orientation="Horizontal" Margin="0,4,0,4">
-                                    <Image Source="{x:Bind ArtworkUrl, Mode=OneWay}" Width="36" Height="36"/>
-                                    <StackPanel Orientation="Vertical" Margin="8,0,0,0">
-                                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}"
-                                       TextTrimming="CharacterEllipsis"
-                                       Text="{x:Bind Title, Mode=OneWay}"/>
-                                        <TextBlock  Style="{ThemeResource CaptionTextBlockStyle}"
-                                                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                                       TextTrimming="CharacterEllipsis"
-                                       Text="{x:Bind Artist, Mode=OneWay}" />
+                                <StackPanel Margin="0,4,0,4" Orientation="Horizontal">
+                                    <Image
+                                        Width="36"
+                                        Height="36"
+                                        Source="{x:Bind ArtworkUrl, Mode=OneWay}" />
+                                    <StackPanel Margin="8,0,0,0" Orientation="Vertical">
+                                        <TextBlock
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{x:Bind Title, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{x:Bind Artist, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis" />
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-
                 </Grid>
+                
             </Grid>
         </Grid>
 
-        <!-- TITLE BAR -->
-        <Grid x:Name="TitleBar" Background="Transparent" Height="44" VerticalAlignment="Top" Margin="0,0,220,0" Canvas.ZIndex="99">
+        <!--  TITLE BAR  -->
+        <Grid
+            x:Name="TitleBar"
+            Height="44"
+            Margin="0,0,220,0"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Canvas.ZIndex="99">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="36"/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="36" />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Image Source="ms-appx:///Assets/Square44x44Logo.png" 
-                   Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                   Width="32" Height="32" Margin="16,4"/>
-            <TextBlock Grid.Column="1" x:Uid="Shell_AppTitle" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                   Margin="8,0,0,0" Style="{ThemeResource CaptionTextBlockStyle}"/>
+            <Image
+                Grid.Column="0"
+                Width="32"
+                Height="32"
+                Margin="16,4"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Source="ms-appx:///Assets/Square44x44Logo.png" />
+            <TextBlock
+                x:Uid="Shell_AppTitle"
+                Grid.Column="1"
+                Margin="8,0,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Style="{ThemeResource CaptionTextBlockStyle}" />
         </Grid>
 
         <!--<Grid x:Name="TitleBar" Background="Transparent">
-            --><!-- Width of the padding columns is set in LayoutMetricsChanged handler. -->
-            <!-- Using padding columns instead of Margin ensures that the background
-         paints the area under the caption control buttons (for transparent buttons). -->
-            <!--<Grid.ColumnDefinitions>
+        -->
+        <!--  Width of the padding columns is set in LayoutMetricsChanged handler.  -->
+        <!--
+            Using padding columns instead of Margin ensures that the background
+            paints the area under the caption control buttons (for transparent buttons).
+        -->
+        <!--<Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
                 <ColumnDefinition/>
                 <ColumnDefinition x:Name="RightPaddingColumn" Width="0"/>
-            </Grid.ColumnDefinitions>--><!--
-            <Image Source="ms-appx:///Assets/Square44x44Logo.png" 
+            </Grid.ColumnDefinitions>-->
+        <!--
+            <Image Source="ms-appx:///Assets/Square44x44Logo.png"
                    Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"
                    Width="32" Height="32" Margin="16,4"/>
-            --><!--<TextBlock Text="Custom Title Bar" x:Uid="Shell_AppTitle"
+        -->
+        <!--<TextBlock Text="Custom Title Bar" x:Uid="Shell_AppTitle"
                Grid.Column="1" Width="200"
-               Style="{StaticResource CaptionTextBlockStyle}" 
-               Margin="64,8,0,0" Canvas.ZIndex="-1"/>--><!--
+               Style="{StaticResource CaptionTextBlockStyle}"
+               Margin="64,8,0,0" Canvas.ZIndex="-1"/>-->
+        <!--
         </Grid>-->
 
-        <!-- NOW PLAYING PAGE -->
-        <Grid x:Name="NowPlayingPage" Grid.ColumnSpan="3" Background="black" Visibility="{x:Bind ViewModel.NowPlayingPageVisibility, Mode=OneWay}">
-            <Button VerticalAlignment="Top" HorizontalAlignment="Left"
-                    Width="64" Height="32"  Margin="0,32,0,0"
-                    Background="Transparent" Foreground="White"
-                    Command="{x:Bind ViewModel.HideNowPlayingCommand}" Canvas.ZIndex="99">
-                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" Height="19" VerticalAlignment="Top" />
+        <!--  NOW PLAYING PAGE  -->
+        <Grid
+            x:Name="NowPlayingPage"
+            Grid.ColumnSpan="3"
+            Background="black"
+            Visibility="{x:Bind ViewModel.NowPlayingPageVisibility, Mode=OneWay}">
+            <Button
+                Width="64"
+                Height="32"
+                Margin="0,32,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Canvas.ZIndex="99"
+                Command="{x:Bind ViewModel.HideNowPlayingCommand}"
+                Foreground="White">
+                <FontIcon
+                    Height="19"
+                    VerticalAlignment="Top"
+                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                    Glyph="&#xE0A6;" />
             </Button>
-            
-            <Image Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}"
-                   VerticalAlignment="Top"
-                   HorizontalAlignment="Center"
-                   Stretch="UniformToFill" Opacity="0.2"
-                   Margin="-16"/>
 
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="64,0,0,64">
-                <Image Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"
-                      Width="160" Height="160" Stretch="UniformToFill" HorizontalAlignment="Left"/>
-                <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="32,0,0,0">
-                    <TextBlock HorizontalAlignment="Left" Foreground="White"
-                               Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}" FontSize="24" FontWeight="Bold"/>
-                    <TextBlock HorizontalAlignment="Left" Foreground="White"
-                               Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" FontSize="18"/>
-                    <TextBlock HorizontalAlignment="Left" Foreground="White"
-                               Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Album, Mode=OneWay}" FontSize="18"/>
+            <Image
+                Margin="-16"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Opacity="0.2"
+                Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}"
+                Stretch="UniformToFill" />
+
+            <StackPanel
+                Margin="64,0,0,64"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Orientation="Horizontal">
+                <Image
+                    Width="160"
+                    Height="160"
+                    HorizontalAlignment="Left"
+                    Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"
+                    Stretch="UniformToFill" />
+                <StackPanel
+                    Margin="32,0,0,0"
+                    VerticalAlignment="Center"
+                    Orientation="Vertical">
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        FontSize="24"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}" />
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Foreground="White"
+                        Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" />
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        FontSize="18"
+                        Foreground="White"
+                        Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Album, Mode=OneWay}" />
                 </StackPanel>
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Padding="36,24,36,44">
+        <!-- PLAYER PICKER, TRANSPORT, VOLUME -->
+        <Grid
+            Grid.Column="2"
+            Padding="36,24,36,44"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom">
             <StackPanel Orientation="Vertical">
-                <ComboBox x:Name="PlayersComboBox" Margin="0,16,0,0"
-                          HorizontalAlignment="Center" BorderThickness="0" Background="Transparent"
-                          ItemsSource="{x:Bind ViewModel.PlayersList.Players, Mode=OneWay}"
-                          SelectedItem="{x:Bind ViewModel.CurrentPlayer, Mode=TwoWay}">
+                <ComboBox
+                    x:Name="PlayersComboBox"
+                    Margin="0,16,0,0"
+                    HorizontalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{x:Bind ViewModel.PlayersList.Players, Mode=OneWay}"
+                    SelectedItem="{x:Bind ViewModel.CurrentPlayer, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate x:DataType="models:Player">
                             <Grid Margin="-8,4,0,4">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="40"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <FontIcon Glyph="{x:Bind IconGlyph, Mode=OneWay}"
-                                            FontFamily="ms-appx:/Assets/FionaIcons.ttf#FionaIcons"
-                                            FontSize="24" HorizontalAlignment="Center"/>
+                                <FontIcon
+                                    HorizontalAlignment="Center"
+                                    FontFamily="ms-appx:/Assets/FionaIcons.ttf#FionaIcons"
+                                    FontSize="24"
+                                    Glyph="{x:Bind IconGlyph, Mode=OneWay}" />
 
-                                <StackPanel Orientation="Vertical" Grid.Column="1" VerticalAlignment="Center">
-                                    <TextBlock Text="{x:Bind Name, Mode=OneWay}" Style="{StaticResource CaptionTextBlockStyle}"></TextBlock>
+                                <StackPanel
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Orientation="Vertical">
+                                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Name, Mode=OneWay}" />
                                 </StackPanel>
 
                             </Grid>
@@ -279,38 +384,90 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <ToggleButton Grid.Column="0" IsChecked="{x:Bind ViewModel.CurrentPlayerStatus.PlaylistShuffle, Mode=OneWay}"
-                                HorizontalAlignment="Right" Height="28" Width="28" CornerRadius="14" Background="Transparent"
-                                Command="{x:Bind ViewModel.ToggleShuffleTransportCommand}">
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE14B;" FontSize="10" />
+                    <ToggleButton
+                        Grid.Column="0"
+                        Width="28"
+                        Height="28"
+                        HorizontalAlignment="Right"
+                        Background="Transparent"
+                        Command="{x:Bind ViewModel.ToggleShuffleTransportCommand}"
+                        CornerRadius="14"
+                        IsChecked="{x:Bind ViewModel.CurrentPlayerStatus.PlaylistShuffle, Mode=OneWay}">
+                        <FontIcon
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="10"
+                            Glyph="&#xE14B;" />
                     </ToggleButton>
-                    <Button Grid.Column="1"  Margin="4,0,0,0"
-                                HorizontalAlignment="Right" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.PreviousTrackTransportCommand}">
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE892;" FontSize="14" />
+                    <Button
+                        Grid.Column="1"
+                        Width="36"
+                        Height="36"
+                        Margin="4,0,0,0"
+                        HorizontalAlignment="Right"
+                        Background="{ThemeResource CardBackground}"
+                        Command="{x:Bind ViewModel.PreviousTrackTransportCommand}"
+                        CornerRadius="18">
+                        <FontIcon
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="14"
+                            Glyph="&#xE892;" />
                     </Button>
-                    <Button Grid.Column="2" Margin="4,0,4,0"
-                                HorizontalAlignment="Center" Height="52" Width="52" CornerRadius="26" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.PauseTransportCommand}">
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" FontSize="18"  FontWeight="Bold"/>
+                    <Button
+                        Grid.Column="2"
+                        Width="52"
+                        Height="52"
+                        Margin="4,0,4,0"
+                        HorizontalAlignment="Center"
+                        Background="{ThemeResource CardBackground}"
+                        Command="{x:Bind ViewModel.PauseTransportCommand}"
+                        CornerRadius="26">
+                        <FontIcon
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Glyph="{x:Bind ViewModel.IsPlayingGlyph, Mode=OneWay}" />
                     </Button>
-                    <Button Grid.Column="3"  Margin="0,0,4,0"
-                                HorizontalAlignment="Left" Height="36" Width="36" CornerRadius="18" Background="{ThemeResource CardBackground}"
-                                Command="{x:Bind ViewModel.NextTrackTransportCommand}">
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE893;" FontSize="14" />
+                    <Button
+                        Grid.Column="3"
+                        Width="36"
+                        Height="36"
+                        Margin="0,0,4,0"
+                        HorizontalAlignment="Left"
+                        Background="{ThemeResource CardBackground}"
+                        Command="{x:Bind ViewModel.NextTrackTransportCommand}"
+                        CornerRadius="18">
+                        <FontIcon
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="14"
+                            Glyph="&#xE893;" />
                     </Button>
-                    <ToggleButton Grid.Column="4" IsChecked="{x:Bind ViewModel.CurrentPlayerStatus.PlaylistRepeat, Mode=OneWay}"
-                                HorizontalAlignment="Right" Height="28" Width="28" CornerRadius="14" Background="Transparent"
-                                Command="{x:Bind ViewModel.ToggleRepeatTransportCommand}">
-                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE1CD;" FontSize="10" />
+                    <ToggleButton
+                        Grid.Column="4"
+                        Width="28"
+                        Height="28"
+                        HorizontalAlignment="Right"
+                        Background="Transparent"
+                        Command="{x:Bind ViewModel.ToggleRepeatTransportCommand}"
+                        CornerRadius="14"
+                        IsChecked="{x:Bind ViewModel.CurrentPlayerStatus.PlaylistRepeat, Mode=OneWay}">
+                        <FontIcon
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="10"
+                            Glyph="&#xE1CD;" />
                     </ToggleButton>
 
-                    <winui:ProgressRing Width="52" Grid.Column="2" IsIndeterminate="False" Background="Transparent"
-                                Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
-                                Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}"/>
+                    <winui:ProgressRing
+                        Grid.Column="2"
+                        Width="52"
+                        Background="Transparent"
+                        IsIndeterminate="False"
+                        Maximum="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Duration, Mode=OneWay}"
+                        Value="{x:Bind ViewModel.CurrentPlayerStatus.Time, Mode=OneWay}" />
                 </Grid>
-                <Slider Maximum="100" Margin="0,8,0,0"
-                                Value="{x:Bind ViewModel.CurrentPlayerStatus.MixerVolume, Mode=TwoWay}"/>
+                <Slider
+                    Margin="0,8,0,0"
+                    Maximum="100"
+                    Value="{x:Bind ViewModel.CurrentPlayerStatus.MixerVolume, Mode=TwoWay}" />
             </StackPanel>
 
         </Grid>

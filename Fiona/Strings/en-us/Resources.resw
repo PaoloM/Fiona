@@ -259,4 +259,7 @@ Please enter the address and port of your Logitech Media Server (or your Squeeze
   <data name="Artist_ShuffleAll.Text" xml:space="preserve">
     <value>Shuffle all</value>
   </data>
+  <data name="Playlist_Favorite.Text" xml:space="preserve">
+    <value>Add to favorites</value>
+  </data>
 </root>

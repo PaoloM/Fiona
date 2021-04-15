@@ -40,6 +40,13 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _AppsListViewVisibility, value);
         }
 
+        private Visibility _TransportControlsVisibility = Visibility.Collapsed;
+        public Visibility TransportControlsVisibility
+        {
+            get => _TransportControlsVisibility;
+            set => SetProperty(ref _TransportControlsVisibility, value);
+        }
+
         private string _AppletTitle;
         public string AppletTitle
         {
@@ -92,25 +99,18 @@ namespace Fiona.ViewModels
                     }
                     else
                     { // app tree traversal
-                        if (!(value.Style?.ToLower() == "itemnoaction" || value.GoAction?.ToLower() == "playcontrol"))
+                        Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
+                            FionaDataService.CurrentAppletMenu, "items", value.GetMenu, value.GetID);
+                        TileTitle = Apps.Title;
+                        if (Apps.window.WindowStyle == "text_list")
                         {
-                            Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
-                                FionaDataService.CurrentAppletMenu, "items", value.GetMenu, value.GetID);
-                            TileTitle = Apps.Title;
-                            if (Apps.window.windowStyle == "icon_list")
-                            {
-                                AppsGridViewVisibility = Visibility.Visible;
-                                AppsListViewVisibility = Visibility.Collapsed;
-                            }
-                            else
-                            {
-                                AppsGridViewVisibility = Visibility.Collapsed;
-                                AppsListViewVisibility = Visibility.Visible;
-                            }
+                            AppsGridViewVisibility = Visibility.Collapsed;
+                            AppsListViewVisibility = Visibility.Visible;
                         }
-                        else
+                        else // WindowStyle == "icon_list" || "home_menu"
                         {
-                            //TODO tell the user there's nowhere to go here
+                            AppsGridViewVisibility = Visibility.Visible;
+                            AppsListViewVisibility = Visibility.Collapsed;
                         }
                     }
                 }
@@ -122,21 +122,32 @@ namespace Fiona.ViewModels
         public RelayCommand PlayPlaylistCommand => _PlayPlaylistCommand ?? (_PlayPlaylistCommand = new RelayCommand(PlayPlaylist));
         private void PlayPlaylist()
         {
-            FionaDataService.PlayPlaylistFromApp(FionaDataService.CurrentPlayer, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentAppletName, FionaDataService.CurrentApplet.Params.item_id);
+            FionaDataService.PlayPlaylistFromApp(FionaDataService.CurrentPlayer, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentApplet.Params.item_id);
         }
 
         private RelayCommand _QueuePlaylistCommand;
         public RelayCommand QueuePlaylistCommand => _QueuePlaylistCommand ?? (_QueuePlaylistCommand = new RelayCommand(QueuePlaylist));
         private void QueuePlaylist()
         {
-            FionaDataService.QueuePlaylistFromApp(FionaDataService.CurrentPlayer, FionaDataService.CurrentAppletName, FionaDataService.CurrentAppletName, FionaDataService.CurrentApplet.Params.item_id);
+            FionaDataService.QueuePlaylistFromApp(FionaDataService.CurrentPlayer, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentApplet.Params.item_id);
+        }
+
+        private RelayCommand _FavoritePlaylistCommand;
+        public RelayCommand FavoritePlaylistCommand => _FavoritePlaylistCommand ?? (_FavoritePlaylistCommand = new RelayCommand(FavoritePlaylist));
+        private void FavoritePlaylist()
+        {
+            // TODO
         }
 
         private RelayCommand<Applet> _AppSelectedCommand;
         public RelayCommand<Applet> AppSelectedCommand => _AppSelectedCommand ?? (_AppSelectedCommand = new RelayCommand<Applet>(param => AppSelected((Applet)param)));
         private void AppSelected(Applet applet)
         {
-            NavigationService.Navigate<AppsPage>(applet);
+            // navigate only if it makes sense
+            if (applet.GoAction is null)
+            {
+                NavigationService.Navigate<AppsPage>(applet);
+            }
         }
 
         public AppsViewModel()

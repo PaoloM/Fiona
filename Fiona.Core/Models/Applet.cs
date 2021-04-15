@@ -60,128 +60,174 @@ namespace Fiona.Core.Models
 
         public string GetText
         {
-            get
-            {
-                if (Type != null)
-                {
-                    switch (Type.ToLower())
-                    {
-                        case "redirect": return Text;
-                        case "playlist":
-                            if (IsAudio == 1)
-                                return Name;
-                            else
-                                return Text;
-                        case "link":
-                            if (string.IsNullOrEmpty(AddAction))
-                                return Name;
-                            else
-                                return Text;
-                        default: return Text;
-                    }
-                }
-                else
-                {
-                    if (Style?.ToLower() == "itemplay" || Style == null)
-                        return Text;
-                    else
-                    if (GoAction?.ToLower() == "playcontrol")
-                        return Text;
-                    else
-                        return Name;
-                }
-            }
+            get => Text;
+            //{
+            //    if (Type != null)
+            //    {
+            //        switch (Type.ToLower())
+            //        {
+            //            case "redirect": return Text;
+            //            case "playlist":
+            //                if (IsAudio == 1)
+            //                    return Name;
+            //                else
+            //                    return Text;
+            //            case "link":
+            //                if (string.IsNullOrEmpty(AddAction))
+            //                    return Name;
+            //                else
+            //                    return Text;
+            //            default: return Text;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (Style?.ToLower() == "itemplay" || Style == null)
+            //            return Text;
+            //        else
+            //        if (GoAction?.ToLower() == "playcontrol")
+            //            return Text;
+            //        else
+            //            return Name;
+            //    }
+            //}
         }
 
         public string GetImageUrl
         {
-            get
+            get 
             {
-                if (Type != null)
+                if (Icon == null)
                 {
-                    switch (Type.ToLower())
+                    if (IconID == null)
                     {
-                        case "redirect": return string.Format("{0}{1}", FionaDataService.RemoteUrl, IconID);
-                        case "playlist":
-                            if (!string.IsNullOrEmpty(Icon))
-                            {
-                                if (Icon.StartsWith("http"))
-                                    return Icon;
-                                else
-                                    return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
-                            }
-                            else
-                                return FionaDataService.DefaultAppImageUrl;
-                        case "link":
-                            if (!string.IsNullOrEmpty(Icon))
-                            {
-                                if (Icon.StartsWith("http"))
-                                    return Icon;
-                                else
-                                    return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
-                            }
-                            else
-                            if (!string.IsNullOrEmpty(Image))
-                            {
-                                if (Image.StartsWith("http"))
-                                    return Image;
-                                else
-                                    return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
-                            }
-                            else
-                                return FionaDataService.DefaultAppImageUrl;
-                        default: return FionaDataService.DefaultAppImageUrl;
+                        return FionaDataService.DefaultAppImageUrl;
+                    }
+                    else
+                    {
+                        return IconID.StartsWith("http") ? IconID : string.Format("{0}{1}", FionaDataService.RemoteUrl, IconID);
                     }
                 }
                 else
                 {
-                    if (Style?.ToLower() == "itemplay" || Style == null)
-                    {
-                        if (string.IsNullOrEmpty(Icon))
-                            return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
-                        else
-                        if (Icon.StartsWith("http"))
-                            return Icon;
-                        else
-                            return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
-                    }
-                    else
-                        return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+                    return Icon.StartsWith("http") ? Icon : string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
                 }
             }
+            
+            //{
+            //    if (Type != null)
+            //    {
+            //        switch (Type.ToLower())
+            //        {
+            //            case "redirect": return string.Format("{0}{1}", FionaDataService.RemoteUrl, IconID);
+            //            case "playlist":
+            //                if (!string.IsNullOrEmpty(Icon))
+            //                {
+            //                    if (Icon.StartsWith("http"))
+            //                        return Icon;
+            //                    else
+            //                        return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
+            //                }
+            //                else
+            //                    return FionaDataService.DefaultAppImageUrl;
+            //            case "link":
+            //                if (!string.IsNullOrEmpty(Icon))
+            //                {
+            //                    if (Icon.StartsWith("http"))
+            //                        return Icon;
+            //                    else
+            //                        return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
+            //                }
+            //                else
+            //                if (!string.IsNullOrEmpty(Image))
+            //                {
+            //                    if (Image.StartsWith("http"))
+            //                        return Image;
+            //                    else
+            //                        return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+            //                }
+            //                else
+            //                    return FionaDataService.DefaultAppImageUrl;
+            //            default: return FionaDataService.DefaultAppImageUrl;
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (Style?.ToLower() == "itemplay" || Style == null)
+            //        {
+            //            if (string.IsNullOrEmpty(Icon))
+            //                return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+            //            else
+            //            if (Icon.StartsWith("http"))
+            //                return Icon;
+            //            else
+            //                return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
+            //        }
+            //        else
+            //            return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
+            //    }
+            //}
         }
 
         public string GetMenu
         {
-            get
-            {
-                if (Type?.ToLower() == "redirect" && AddAction?.ToLower() == "go")
-                    return Actions.Go.Params.Menu;
-                if (Type?.ToLower() == "link" && AddAction?.ToLower() == "go")
-                    return Actions.Go.Params.Menu;
-                else
-                    return FionaDataService.CurrentAppletMenu;
-            }
+            get => (AddAction?.ToLower() == "go") ? Actions.Go.Params.Menu : FionaDataService.CurrentAppletMenu;
+            //{
+            //    if (Type?.ToLower() == "redirect" && AddAction?.ToLower() == "go")
+            //        return Actions.Go.Params.Menu;
+            //    if (Type?.ToLower() == "link" && AddAction?.ToLower() == "go")
+            //        return Actions.Go.Params.Menu;
+            //    else
+            //        return FionaDataService.CurrentAppletMenu;
+            //}
         }
 
         public string GetID
         {
-            get
-            {
-                if (GoAction?.ToLower() == "playcontrol")
-                    return Params.item_id;
-                else
-                if (Type?.ToLower() == "link" && AddAction?.ToLower() == "go")
-                    return Actions.Go.Params.item_id;
-                else
-                    if (AddAction?.ToLower() == "play" || Type?.ToLower() == "playlist")
-                    return Params.item_id;
-                else
-                    if (Style?.ToLower() != "itemnoaction")
-                    return ID;
-                else
-                    return "";
-            }
+            get => (AddAction?.ToLower() == "go") ? Actions?.Go.Params.item_id : Params.item_id;
+            //{
+            //    if (GoAction?.ToLower() == "playcontrol")
+            //        return Params.item_id;
+            //    else
+            //    if (AddAction?.ToLower() == "go")
+            //        return Actions.Go.Params.item_id;
+            //    else
+            //        if (AddAction?.ToLower() == "play" || Type?.ToLower() == "playlist" || Type is null)
+            //        if (Params != null) 
+            //            return Params.item_id;
+            //        else 
+            //            return ID;
+            //    else
+            //        if (Style?.ToLower() != "itemnoaction")
+            //        return ID;
+            //    else
+            //        return "";
+            //}
+        }
+
+        public string GetStyle
+        {
+            get => Style;
+        }
+
+        public bool IsNavigation
+        {
+            get => AddAction?.ToLower() == "go" || Type is null;
+        }
+
+        public bool IsIndividualTrack
+        {
+            get => GoAction?.ToLower() == "play" || GoAction?.ToLower() == "playcontrol";
+        }
+
+        public bool IsPlaylist
+        {
+            get => Type?.ToLower() == "playlist";
+        }
+
+        public bool HasPlayQueueFavorite
+        {
+            get => IsIndividualTrack || IsPlaylist;
         }
     }
 
@@ -213,7 +259,10 @@ namespace Fiona.Core.Models
     public class AppletListWindow : FionaBase
     {
         [JsonProperty(PropertyName = "windowStyle")]
-        public string windowStyle { get; set; }
+        public string WindowStyle { get; set; }
+
+        [JsonProperty(PropertyName = "textarea")]
+        public string TextArea { get; set; }
     }
 
     public class AppletListItemLoopParams

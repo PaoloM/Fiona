@@ -259,7 +259,7 @@ namespace Fiona.Core.Services
                 return AllApps;
             else
             {
-                var msg = FionaMessage.CreateMessage(player, "myapps", "items", "0", FionaCommand.MaxItems, "menu:1");
+                var msg = FionaMessage.CreateMessage(player, "myapps", "items", "0", FionaCommand.MaxItems, "menu:1", "want_url:1");
                 var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
                 AllApps = res;
                 return res;
@@ -268,29 +268,30 @@ namespace Fiona.Core.Services
 
         public static AppletList GetAppTopLevel(Player player, string cmd1)
         {
-            var msg = FionaMessage.CreateMessage(player, cmd1, "items", "0", FionaCommand.MaxItems);
+            var msg = FionaMessage.CreateMessage(player, cmd1, "items", "0", FionaCommand.MaxItems, "menu:1", "want_url:1");
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
             return res;
         }
 
         public static AppletList GetApps(Player player, string cmd1, string cmd2, string menu, string item_id)
         {
-            var msg = FionaMessage.CreateMessage(player, cmd1, cmd2, "0", FionaCommand.MaxItems, "menu:" + menu, "item_id:" + item_id);
+            var msg = FionaMessage.CreateMessage(player, cmd1, cmd2, "0", FionaCommand.MaxItems, "menu:" + menu, "item_id:" + item_id, "want_url:1");
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
             return res;
         }
 
         public static void PlayPlaylistFromApp(Player player, string appname, string menu, string item_id)
         {
-            var msg = FionaMessage.CreateMessage(player, appname, "playlist", "play", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id);
+            var msg = FionaMessage.CreateMessage(player, appname, "playlist", "play", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id, "want_url:1");
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
         }
 
         public static void QueuePlaylistFromApp(Player player, string appname, string menu, string item_id)
         {
-            var msg = FionaMessage.CreateMessage(player, appname, "playlist", "add", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id);
+            var msg = FionaMessage.CreateMessage(player, appname, "playlist", "add", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id, "want_url:1");
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
         }
+
         #endregion
 
         #region Misc
@@ -348,7 +349,8 @@ namespace Fiona.Core.Services
 
         public static string DefaultAppImageUrl
         {
-            get => $"{RemoteUrl}music/0/cover_{BigImageSize}x{BigImageSize}.jpg";
+            //            get => $"{RemoteUrl}music/0/cover_{BigImageSize}x{BigImageSize}.jpg";
+            get => $"/Assets/playlist.png";
         }
 
         private static HttpClient client = new HttpClient();

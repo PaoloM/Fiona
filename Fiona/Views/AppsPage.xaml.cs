@@ -22,5 +22,19 @@ namespace Fiona.Views
             base.OnNavigatedTo(e);
             ViewModel.CurrentApplet = (Applet)(e.Parameter);
         }
+
+        private void PlayThis_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            var item = e.OriginalSource as Button;
+            var ap = item.DataContext as Applet;
+            FionaDataService.PlayPlaylistFromApp(FionaDataService.CurrentPlayer, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentAppletMenu, ap.GetID);
+        }
+
+        private void QueueThis_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            var item = e.OriginalSource as Button;
+            var ap = item.DataContext as Applet;
+            FionaDataService.QueuePlaylistFromApp(FionaDataService.CurrentPlayer, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentAppletMenu, ap.GetID);
+        }
     }
 }
