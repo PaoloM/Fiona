@@ -90,7 +90,10 @@
             </winui:NavigationView.MenuItems>
 
             <!--<winui:NavigationView.AutoSuggestBox>
-                <AutoSuggestBox QueryIcon="Find" AutomationProperties.Name="Search" />
+                <AutoSuggestBox QueryIcon="Find" AutomationProperties.Name="Search"
+                    TextChanged="AutoSuggestBox_TextChanged"
+                    QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+                    SuggestionChosen="AutoSuggestBox_SuggestionChosen"/>
             </winui:NavigationView.AutoSuggestBox>-->
 
             <i:Interaction.Behaviors>

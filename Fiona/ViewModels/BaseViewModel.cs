@@ -109,5 +109,13 @@ namespace Fiona.ViewModels
         {
             FionaDataService.PlaylistAddTrackToQueue(FionaDataService.CurrentPlayer, track.Location);
         }
+
+        private RelayCommand<string> _SearchCommand;
+        public RelayCommand<string> SearchCommand => _SearchCommand ?? (_SearchCommand = new RelayCommand<string>(param => Search((string)param)));
+        private void Search(string q)
+        {
+            NavigationService.Navigate<SearchResultsView>(q);
+        }
+
     }
 }

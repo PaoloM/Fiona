@@ -1,0 +1,54 @@
+﻿<Page
+    x:Class="Fiona.Views.SearchResultsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Fiona.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:interactivity="using:Microsoft.Xaml.Interactivity" xmlns:core="using:Microsoft.Xaml.Interactions.Core" xmlns:viewmodels="using:Fiona.ViewModels" xmlns:models="using:Fiona.Core.Models"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.DataContext>
+        <viewmodels:BaseViewModel x:Name="BaseVM" />
+    </Page.DataContext>
+
+    <Grid BorderBrush="Orange">
+        <ScrollViewer BorderBrush="Azure">
+            <StackPanel Orientation="Vertical">
+                <!-- Artists -->
+                <TextBlock x:Uid="Search_ArtistsHeader"/>
+                <ListView Grid.Column="0" Grid.Row="1" x:Name="ArtistsListBox"
+                    ItemsSource="{Binding ArtistsResults.Artists}"
+                    Margin="28,28,28,28">
+
+                    <interactivity:Interaction.Behaviors>
+                        <core:EventTriggerBehavior EventName="SelectionChanged">
+                            <core:InvokeCommandAction Command="{x:Bind BaseVM.GoToArtistCommand}"
+                                CommandParameter="{Binding SelectedItem, ElementName=ArtistsListBox}" />
+                        </core:EventTriggerBehavior>
+                    </interactivity:Interaction.Behaviors>
+
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Artist">
+                            <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="{x:Bind Name, Mode=OneWay}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                </ListView>
+
+                <!-- Albums -->
+                <TextBlock x:Uid="Search_AlbumsHeader"/>
+
+                <!-- Tracks -->
+                <TextBlock x:Uid="Search_TracksHeader"/>
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

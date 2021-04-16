@@ -262,4 +262,13 @@ Please enter the address and port of your Logitech Media Server (or your Squeeze
   <data name="Playlist_Favorite.Text" xml:space="preserve">
     <value>Add to favorites</value>
   </data>
+  <data name="Search_AlbumsHeader" xml:space="preserve">
+    <value>Albums</value>
+  </data>
+  <data name="Search_ArtistsHeader" xml:space="preserve">
+    <value>Artists</value>
+  </data>
+  <data name="Search_TracksHeader" xml:space="preserve">
+    <value>Tracks</value>
+  </data>
 </root>
