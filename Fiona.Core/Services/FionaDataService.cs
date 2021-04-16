@@ -292,6 +292,12 @@ namespace Fiona.Core.Services
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
         }
 
+        public static AppletList SearchInApp(Player player, string appname, string menu, string item_id, string query_term)
+        {
+            var msg = FionaMessage.CreateMessage(player, appname, "items", "0", FionaCommand.MaxItems, "menu:" + menu, "item_id:" + item_id, "cachesearch:1", "search:" + query_term);
+            var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+            return res;
+        }
         #endregion
 
         #region Misc

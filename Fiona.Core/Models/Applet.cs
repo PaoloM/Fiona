@@ -61,36 +61,6 @@ namespace Fiona.Core.Models
         public string GetText
         {
             get => Text;
-            //{
-            //    if (Type != null)
-            //    {
-            //        switch (Type.ToLower())
-            //        {
-            //            case "redirect": return Text;
-            //            case "playlist":
-            //                if (IsAudio == 1)
-            //                    return Name;
-            //                else
-            //                    return Text;
-            //            case "link":
-            //                if (string.IsNullOrEmpty(AddAction))
-            //                    return Name;
-            //                else
-            //                    return Text;
-            //            default: return Text;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (Style?.ToLower() == "itemplay" || Style == null)
-            //            return Text;
-            //        else
-            //        if (GoAction?.ToLower() == "playcontrol")
-            //            return Text;
-            //        else
-            //            return Name;
-            //    }
-            //}
         }
 
         public string GetImageUrl
@@ -113,96 +83,34 @@ namespace Fiona.Core.Models
                     return Icon.StartsWith("http") ? Icon : string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
                 }
             }
-            
-            //{
-            //    if (Type != null)
-            //    {
-            //        switch (Type.ToLower())
-            //        {
-            //            case "redirect": return string.Format("{0}{1}", FionaDataService.RemoteUrl, IconID);
-            //            case "playlist":
-            //                if (!string.IsNullOrEmpty(Icon))
-            //                {
-            //                    if (Icon.StartsWith("http"))
-            //                        return Icon;
-            //                    else
-            //                        return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
-            //                }
-            //                else
-            //                    return FionaDataService.DefaultAppImageUrl;
-            //            case "link":
-            //                if (!string.IsNullOrEmpty(Icon))
-            //                {
-            //                    if (Icon.StartsWith("http"))
-            //                        return Icon;
-            //                    else
-            //                        return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
-            //                }
-            //                else
-            //                if (!string.IsNullOrEmpty(Image))
-            //                {
-            //                    if (Image.StartsWith("http"))
-            //                        return Image;
-            //                    else
-            //                        return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
-            //                }
-            //                else
-            //                    return FionaDataService.DefaultAppImageUrl;
-            //            default: return FionaDataService.DefaultAppImageUrl;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (Style?.ToLower() == "itemplay" || Style == null)
-            //        {
-            //            if (string.IsNullOrEmpty(Icon))
-            //                return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
-            //            else
-            //            if (Icon.StartsWith("http"))
-            //                return Icon;
-            //            else
-            //                return string.Format("{0}{1}", FionaDataService.RemoteUrl, Icon);
-            //        }
-            //        else
-            //            return string.Format("{0}{1}", FionaDataService.RemoteUrl, Image);
-            //    }
-            //}
         }
 
         public string GetMenu
         {
             get => (AddAction?.ToLower() == "go") ? Actions.Go.Params.Menu : FionaDataService.CurrentAppletMenu;
-            //{
-            //    if (Type?.ToLower() == "redirect" && AddAction?.ToLower() == "go")
-            //        return Actions.Go.Params.Menu;
-            //    if (Type?.ToLower() == "link" && AddAction?.ToLower() == "go")
-            //        return Actions.Go.Params.Menu;
-            //    else
-            //        return FionaDataService.CurrentAppletMenu;
-            //}
         }
 
         public string GetID
         {
-            get => (AddAction?.ToLower() == "go") ? Actions?.Go.Params.item_id : Params.item_id;
-            //{
-            //    if (GoAction?.ToLower() == "playcontrol")
-            //        return Params.item_id;
-            //    else
-            //    if (AddAction?.ToLower() == "go")
-            //        return Actions.Go.Params.item_id;
-            //    else
-            //        if (AddAction?.ToLower() == "play" || Type?.ToLower() == "playlist" || Type is null)
-            //        if (Params != null) 
-            //            return Params.item_id;
-            //        else 
-            //            return ID;
-            //    else
-            //        if (Style?.ToLower() != "itemnoaction")
-            //        return ID;
-            //    else
-            //        return "";
-            //}
+//            get => (AddAction?.ToLower() == "go") ? Actions?.Go.Params.item_id : Params.item_id;
+            get
+            {
+                if (Actions != null)
+                {
+                    return Actions.Go.Params.item_id;
+                }
+                else
+                {
+                    if (Params != null)
+                    {
+                        return Params.item_id;
+                    }
+                    else
+                    {
+                        return ID;
+                    }
+                }
+            }
         }
 
         public string GetStyle
@@ -229,6 +137,17 @@ namespace Fiona.Core.Models
         {
             get => IsIndividualTrack || IsPlaylist;
         }
+
+        public bool IsSearch
+        {
+            get => Type?.ToLower() == "search";
+        }
+
+        public bool IsNotSearch
+        {
+            get => Type?.ToLower() != "search";
+        }
+
     }
 
     public class AppletList : FionaBase
@@ -263,6 +182,9 @@ namespace Fiona.Core.Models
 
         [JsonProperty(PropertyName = "textarea")]
         public string TextArea { get; set; }
+
+        [JsonProperty(PropertyName = "titleStyle")]
+        public string TitleStyle { get; set; }
     }
 
     public class AppletListItemLoopParams
@@ -305,5 +227,8 @@ namespace Fiona.Core.Models
 
         [JsonProperty(PropertyName = "cmd")]
         public List<string> Cmd { get; set; } = new List<string>();
+
+        [JsonProperty(PropertyName = "nextWindow")]
+        public string NextWindow { get; set; }
     }
 }

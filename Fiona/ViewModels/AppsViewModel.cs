@@ -47,6 +47,20 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _TransportControlsVisibility, value);
         }
 
+        private Visibility _TextareaVisibility = Visibility.Collapsed;
+        public Visibility TextareaVisibility
+        {
+            get => _TextareaVisibility;
+            set => SetProperty(ref _TextareaVisibility, value);
+        }
+
+        private string _QueryTerm;
+        public string QueryTerm
+        {
+            get => _QueryTerm;
+            set => SetProperty(ref _QueryTerm, value);
+        }
+
         private string _AppletTitle;
         public string AppletTitle
         {
@@ -102,15 +116,26 @@ namespace Fiona.ViewModels
                         Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
                             FionaDataService.CurrentAppletMenu, "items", value.GetMenu, value.GetID);
                         TileTitle = Apps.Title;
-                        if (Apps.window.WindowStyle == "text_list")
+                        if (!string.IsNullOrEmpty(Apps.window.TextArea))
                         {
+                            TextareaVisibility = Visibility.Visible;
                             AppsGridViewVisibility = Visibility.Collapsed;
-                            AppsListViewVisibility = Visibility.Visible;
-                        }
-                        else // WindowStyle == "icon_list" || "home_menu"
-                        {
-                            AppsGridViewVisibility = Visibility.Visible;
                             AppsListViewVisibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            if (Apps.window.WindowStyle == "text_list")
+                            {
+                                TextareaVisibility = Visibility.Collapsed;
+                                AppsGridViewVisibility = Visibility.Collapsed;
+                                AppsListViewVisibility = Visibility.Visible;
+                            }
+                            else // WindowStyle == "icon_list" || "home_menu"
+                            {
+                                TextareaVisibility = Visibility.Collapsed;
+                                AppsGridViewVisibility = Visibility.Visible;
+                                AppsListViewVisibility = Visibility.Collapsed;
+                            }
                         }
                     }
                 }
@@ -146,8 +171,22 @@ namespace Fiona.ViewModels
             // navigate only if it makes sense
             if (applet.GoAction is null)
             {
-                NavigationService.Navigate<AppsPage>(applet);
+                if (applet?.Style != "itemNoAction")
+                {
+                    if (applet.Actions?.Go?.NextWindow == null)
+                    {
+                        NavigationService.Navigate<AppsPage>(applet);
+                    }
+                }
             }
+        }
+
+        private RelayCommand<string> _QueryInAppCommand;
+        public RelayCommand<string> QueryInAppCommand => _QueryInAppCommand ?? (_QueryInAppCommand = new RelayCommand<string>(param => QueryInApp((string)param)));
+        private void QueryInApp(string q)
+        {
+            var a = FionaDataService.SearchInApp(FionaDataService.CurrentPlayer, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentAppletMenu, FionaDataService.CurrentApplet.Params.item_id, q);
+            NavigationService.Navigate<AppsPage>(a);
         }
 
         public AppsViewModel()

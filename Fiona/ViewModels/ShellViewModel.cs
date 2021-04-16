@@ -179,6 +179,11 @@ namespace Fiona.ViewModels
                         if (ca.IndexOf(',') > 0)
                             ca = ca.Substring(0, ca.IndexOf(',')); // if there is a comma, take the first artist
 
+                        if (ca.IndexOf(" - ") > 0)
+                            ca = ca.Substring(ca.IndexOf(" - ") + 3); // if there is a " - ", take the last part of the string. This to support Band's Camp plugin
+
+                        ca = ca.Trim();
+
                         // look in the local artists list
                         var aa = (from a in FionaDataService.AllArtists.Artists where a.Name == ca select a);
                         if (aa.Count<Artist>() > 0)
