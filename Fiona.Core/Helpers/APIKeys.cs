@@ -11,6 +11,6 @@ namespace Fiona.Core.Helpers
         public static readonly string AppCenter = "3753ac1b-c7cd-4211-a784-a3af5c69e3bd";
         public static readonly string DiscogsConsumerKey = "WkBhOuYSHdffYSJUiJqa";
         public static readonly string DiscogsConsumerSecret = "VYXKutiwwxGUaHRSMwBHbIUtQWEQrkdk";
-        public static readonly string UserAgent = "Fiona/0.4.0 (fiona@thatpaolo.com)";
+        public static readonly string UserAgent = "Fiona/0.4.0 (support@fionamusic.app)";
     }
 }

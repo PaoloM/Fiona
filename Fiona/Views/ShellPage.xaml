@@ -51,13 +51,15 @@
 
             <winui:NavigationView.HeaderTemplate>
                 <DataTemplate>
-                    <TextBlock
-                        x:Name="appTitle"
-                        Margin="0,8,0,0"
-                        VerticalAlignment="Center"
-                        FontSize="28"
-                        Style="{StaticResource TitleTextBlockStyle}"
-                        Text="{Binding}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            x:Name="appTitle"
+                            Margin="0,0,0,0"
+                            VerticalAlignment="Center"
+                            FontSize="28"
+                            Style="{StaticResource TitleTextBlockStyle}"
+                            Text="{Binding Path=Content.HeaderText, ElementName=rootFrame}" />
+                    </StackPanel>
                 </DataTemplate>
             </winui:NavigationView.HeaderTemplate>
 

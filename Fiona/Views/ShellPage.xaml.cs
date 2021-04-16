@@ -33,6 +33,11 @@ namespace Fiona.Views
             TitleBar.Height = sender.Height;
         }
 
+        public void SetHeader(string header)
+        {
+            navigationView.Header = header;
+        }
+
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             // Only get results when it was a user typing,

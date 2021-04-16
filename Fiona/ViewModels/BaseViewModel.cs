@@ -117,5 +117,49 @@ namespace Fiona.ViewModels
             NavigationService.Navigate<SearchResultsView>(q);
         }
 
+        private RelayCommand _PauseTransportCommand;
+        public RelayCommand PauseTransportCommand => _PauseTransportCommand ?? (_PauseTransportCommand = new RelayCommand(PauseTransport));
+        private void PauseTransport()
+        {
+            FionaDataService.TransportPause(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _PreviousTrackTransportCommand;
+        public RelayCommand PreviousTrackTransportCommand => _PreviousTrackTransportCommand ?? (_PreviousTrackTransportCommand = new RelayCommand(PreviousTrackTransport));
+        private void PreviousTrackTransport()
+        {
+            FionaDataService.TransportPrevious(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _NextTrackTransportCommand;
+        public RelayCommand NextTrackTransportCommand => _NextTrackTransportCommand ?? (_NextTrackTransportCommand = new RelayCommand(NextTrackTransport));
+        private void NextTrackTransport()
+        {
+            FionaDataService.TransportNext(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _ToggleRepeatTransportCommand;
+        public RelayCommand ToggleRepeatTransportCommand => _ToggleRepeatTransportCommand ?? (_ToggleRepeatTransportCommand = new RelayCommand(ToggleRepeatTransport));
+        private void ToggleRepeatTransport()
+        {
+            FionaDataService.TransportToggleRepeat(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _ToggleShuffleTransportCommand;
+        public RelayCommand ToggleShuffleTransportCommand => _ToggleShuffleTransportCommand ?? (_ToggleShuffleTransportCommand = new RelayCommand(ToggleShuffleTransport));
+        private void ToggleShuffleTransport()
+        {
+            FionaDataService.TransportToggleShuffle(FionaDataService.CurrentPlayer);
+        }
+
+        private RelayCommand _ToggleMuteCommand;
+        public RelayCommand ToggleMuteCommand => _ToggleMuteCommand ?? (_ToggleMuteCommand = new RelayCommand(ToggleMute));
+        private void ToggleMute()
+        {
+            FionaDataService.ToggleMuteVolume(FionaDataService.CurrentPlayer);
+        }
+
+
+
     }
 }
