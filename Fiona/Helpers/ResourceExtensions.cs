@@ -11,7 +11,8 @@ namespace Fiona.Helpers
 
         public static string GetLocalized(this string resourceKey)
         {
-            return _resLoader.GetString(resourceKey);
+            string r = _resLoader.GetString(resourceKey);
+            return r;
         }
     }
 }

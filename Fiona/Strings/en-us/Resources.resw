@@ -214,15 +214,6 @@ Please enter the address and port of your Logitech Media Server (or your Squeeze
   <data name="Album_ShortInfoFormat" xml:space="preserve">
     <value>{0}  •  {1}  •  {2} songs</value>
   </data>
-  <data name="Settings_LMS.Text" xml:space="preserve">
-    <value>Logitech Media Server</value>
-  </data>
-  <data name="Settings_LMS_ServerIP.Text" xml:space="preserve">
-    <value>Server address (e.g. 192.168.1.2)</value>
-  </data>
-  <data name="Settings_LMS_ServerPort.Text" xml:space="preserve">
-    <value>Server port (default 9000)</value>
-  </data>
   <data name="Albums_SortBy.Text" xml:space="preserve">
     <value>Sort by</value>
   </data>

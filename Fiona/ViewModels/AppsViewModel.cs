@@ -54,6 +54,13 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _TextareaVisibility, value);
         }
 
+        private Visibility _TitleVisibility = Visibility.Collapsed;
+        public Visibility TitleVisibility
+        {
+            get => _TitleVisibility;
+            set => SetProperty(ref _TitleVisibility, value);
+        }
+
         private string _QueryTerm;
         public string QueryTerm
         {
@@ -92,52 +99,39 @@ namespace Fiona.ViewModels
 
                 if (value == null) // coming from the Shell, show all apps
                 {
+                    AppletTitle = ResourceExtensions.GetLocalized("Shell_Apps.Content");
                     PlaylistCommandsVisibility = Visibility.Collapsed;
+                    TitleVisibility = Visibility.Collapsed;
                     Apps = FionaDataService.GetAllApps(FionaDataService.CurrentPlayer);
                 }
                 else
                 {
                     AppletTitle = FionaDataService.CurrentAppletName;
+                    TitleVisibility = Visibility.Visible;
                     AppletIconUrl = string.IsNullOrEmpty(FionaDataService.CurrentAppletIconUrl) ? FionaDataService.DefaultAlbumImageUrl : FionaDataService.CurrentAppletIconUrl;
 
                     PlaylistCommandsVisibility = value.Type?.ToLower() == "playlist" ? Visibility.Visible : Visibility.Collapsed;
 
                     if (value.Type?.ToLower() == "redirect")
                     { // app top level
-                        FionaDataService.CurrentAppletName = value.Name;
+                        Apps = FionaDataService.GetAppTopLevel(FionaDataService.CurrentPlayer, value.GetMenu);
+                        FionaDataService.CurrentAppletName = value.GetText;
                         FionaDataService.CurrentAppletMenu = value.GetMenu;
                         FionaDataService.CurrentAppletIconUrl = value.GetImageUrl;
                         AppletTitle = FionaDataService.CurrentAppletName;
                         AppletIconUrl = FionaDataService.CurrentAppletIconUrl;
-                        Apps = FionaDataService.GetAppTopLevel(FionaDataService.CurrentPlayer, value.GetMenu);
                     }
                     else
                     { // app tree traversal
                         Apps = FionaDataService.GetApps(FionaDataService.CurrentPlayer,
                             FionaDataService.CurrentAppletMenu, "items", value.GetMenu, value.GetID);
                         TileTitle = Apps.Title;
-                        if (!string.IsNullOrEmpty(Apps.window.TextArea))
-                        {
-                            TextareaVisibility = Visibility.Visible;
-                            AppsGridViewVisibility = Visibility.Collapsed;
-                            AppsListViewVisibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            if (Apps.window.WindowStyle == "text_list")
-                            {
-                                TextareaVisibility = Visibility.Collapsed;
-                                AppsGridViewVisibility = Visibility.Collapsed;
-                                AppsListViewVisibility = Visibility.Visible;
-                            }
-                            else // WindowStyle == "icon_list" || "home_menu"
-                            {
-                                TextareaVisibility = Visibility.Collapsed;
-                                AppsGridViewVisibility = Visibility.Visible;
-                                AppsListViewVisibility = Visibility.Collapsed;
-                            }
-                        }
                     }
+
+                    TextareaVisibility = !string.IsNullOrEmpty(Apps.window.TextArea) ? Visibility.Visible : Visibility.Collapsed;
+                    AppsGridViewVisibility = Apps.window.WindowStyle != "text_list" ? Visibility.Visible : Visibility.Collapsed;
+                    AppsListViewVisibility = Apps.window.WindowStyle == "text_list" ? Visibility.Visible : Visibility.Collapsed;
+
                 }
                 SetProperty(ref _CurrentApplet, value);
             }

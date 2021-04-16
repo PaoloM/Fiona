@@ -9,6 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiona.Core", "Fiona.Core\Fi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{121D5D31-D635-4521-8543-1CB7D351570D}"
 	ProjectSection(SolutionItems) = preProject
+		AccessibilityChecklist.md = AccessibilityChecklist.md
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection

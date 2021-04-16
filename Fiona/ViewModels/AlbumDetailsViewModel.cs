@@ -51,26 +51,27 @@ namespace Fiona.ViewModels
                 if (ca.IndexOf(',') > 0)
                     ca = ca.Substring(0, ca.IndexOf(',')); // if there is a comma, take the first artist
 
+                if (ca.IndexOf(" - ") > 0)
+                    ca = ca.Substring(ca.IndexOf(" - ") + 3); // if there is a " - ", take the last part of the string. This to support Band's Camp plugin
+
                 var artist = (from a in FionaDataService.AllArtists.Artists where a.Name == ca select a).First<Artist>();
 
                 // TODO verify that this is necessary
-                if (string.IsNullOrEmpty(artist.Profile))
+
+                DiscogsArtist da = DiscogsDataService.GetArtistInfo(artist.Name);
+                if (da != null)
                 {
-                    DiscogsArtist da = DiscogsDataService.GetArtistInfo(artist.Name);
-                    if (da != null)
+                    artist.Profile = da.Profile;
+                    artist.Images = new List<string>();
+                    if (da.Images.Count > 0)
                     {
-                        artist.Profile = da.Profile;
-                        artist.Images = new List<string>();
-                        if (da.Images.Count > 0)
-                        {
-                            foreach (var i in da.Images)
-                                artist.Images.Add(i.ImageUrl);
-                        }
+                        foreach (var i in da.Images)
+                            artist.Images.Add(i.ImageUrl);
                     }
-                        ArtistBio = artist.Profile;
-                        ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[0] : null;
-                    
                 }
+                    ArtistBio = artist.Profile;
+                    ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[0] : null;
+                    
                 CurrentArtist = artist;
             }
         }

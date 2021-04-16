@@ -40,7 +40,7 @@
                 Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}" />-->
 
             <FlipView Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
-                      Height="236" Width="236"
+                Height="236" Width="236"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center" ItemsSource="{x:Bind ViewModel.CurrentArtist.Images, Mode=OneWay}">
                 <FlipView.ItemTemplate>
