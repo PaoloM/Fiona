@@ -106,10 +106,11 @@ namespace Fiona.ViewModels
                 }
                 else
                 {
-
                     AppletTitle = FionaDataService.CurrentAppletName;
                     TitleVisibility = Visibility.Visible;
-                    AppletIconUrl = string.IsNullOrEmpty(FionaDataService.CurrentAppletIconUrl) ? FionaDataService.DefaultAlbumImageUrl : FionaDataService.CurrentAppletIconUrl;
+                    AppletIconUrl = string.IsNullOrEmpty(FionaDataService.CurrentAppletIconUrl) ?
+                        FionaDataService.DefaultAlbumImageUrl :
+                        FionaDataService.CurrentAppletIconUrl;
 
                     PlaylistCommandsVisibility = value.Type?.ToLower() == "playlist" ? Visibility.Visible : Visibility.Collapsed;
 
@@ -129,7 +130,7 @@ namespace Fiona.ViewModels
                         TileTitle = Apps.Title;
                     }
 
-                    TextareaVisibility = !string.IsNullOrEmpty(Apps.window.TextArea) ? Visibility.Visible : Visibility.Collapsed;
+                    TextareaVisibility = string.IsNullOrEmpty(Apps.window.TextArea) ? Visibility.Collapsed : Visibility.Visible;
                     AppsGridViewVisibility = Apps.window.WindowStyle != "text_list" ? Visibility.Visible : Visibility.Collapsed;
                     AppsListViewVisibility = Apps.window.WindowStyle == "text_list" ? Visibility.Visible : Visibility.Collapsed;
 

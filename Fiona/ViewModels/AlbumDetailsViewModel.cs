@@ -56,22 +56,6 @@ namespace Fiona.ViewModels
 
                 var artist = (from a in FionaDataService.AllArtists.Artists where a.Name == ca select a).First<Artist>();
 
-                // TODO verify that this is necessary
-
-                DiscogsArtist da = DiscogsDataService.GetArtistInfo(artist.Name);
-                if (da != null)
-                {
-                    artist.Profile = da.Profile;
-                    artist.Images = new List<string>();
-                    if (da.Images.Count > 0)
-                    {
-                        foreach (var i in da.Images)
-                            artist.Images.Add(i.ImageUrl);
-                    }
-                }
-                    ArtistBio = artist.Profile;
-                    ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[0] : null;
-                    
                 CurrentArtist = artist;
             }
         }

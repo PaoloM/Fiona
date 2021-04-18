@@ -25,8 +25,6 @@ namespace Fiona.Views
 
             InitializeComponent();
 
-            //NowPlayingBackground.Source.
-
             DataContext = ViewModel;
             ViewModel.Initialize(shellFrame, navigationView, KeyboardAccelerators);
         }
@@ -35,6 +33,7 @@ namespace Fiona.Views
         {
             TitleBar.Height = sender.Height;
         }
+
 
         // SEARCH ----------------------------
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)

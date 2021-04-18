@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Fiona.Core.Models"
     xmlns:viewmodels="using:Fiona.ViewModels"
+    xmlns:views="using:Fiona.Views"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
 
@@ -17,28 +18,28 @@
         <viewmodels:BaseViewModel x:Name="BaseVM" />
     </Page.DataContext>
 
-    <Grid Margin="44,0,36,0">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Visibility="{x:Bind ViewModel.TitleVisibility}"
-            Margin="0,-136,0,0" Background="{ThemeResource MainAreaBackground}"
+        <StackPanel Visibility="{x:Bind ViewModel.TitleVisibility}" Grid.Row="0"
+            Margin="52,-180,0,0" Background="{ThemeResource MainAreaBackground}"
             VerticalAlignment="Center"
             Orientation="Horizontal">
-            <Image Width="48" Height="48" Margin="8,0,16,0" Source="{x:Bind ViewModel.AppletIconUrl, Mode=OneWay}" Stretch="UniformToFill" />
+            <Image Width="48" Height="48" Margin="0,0,16,0" Source="{x:Bind ViewModel.AppletIconUrl, Mode=OneWay}" Stretch="UniformToFill" />
             <TextBlock Text="{x:Bind ViewModel.AppletTitle, Mode=OneWay}" FontWeight="Light"
                        Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
         </StackPanel>
 
-        <TextBlock Grid.Row="0" Margin="8,22,0,16" FontWeight="Light"
+        <TextBlock Grid.Row="0" Margin="52,22,0,16" FontWeight="Light" Height="56"
                    Style="{ThemeResource SubtitleTextBlockStyle}"
                    Text="{x:Bind ViewModel.TileTitle, Mode=OneWay}" TextTrimming="Clip" />
       
         <!--  Playlist node commands  -->
-        <StackPanel
+        <StackPanel Margin="36,0,0,0"
             Grid.Row="1"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
@@ -78,7 +79,7 @@
             </Button>-->
         </StackPanel>
 
-        <Grid x:Name="ContentArea" Grid.Row="2">
+        <Grid x:Name="ContentArea" Grid.Row="2" Margin="44,0">
             <ScrollViewer>
                 <StackPanel Orientation="Vertical">
                     <!--  Show textarea  -->
