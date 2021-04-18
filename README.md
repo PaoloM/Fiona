@@ -31,7 +31,6 @@ These plugins have been tested and are working per spec:
 
 ## Known issues
 
-1. For some unknown reason, Artist images are not shown anymore in Now Playing and Artist Details pages
 1. Some info in the artis profiles are rendered as numbers instead of text https://github.com/PaoloM/Fiona/issues/4
 1. The personalization setting "Windows default" sets the colors to the app dark mode, not the Windows' one (is it really an issue?)
 1. Images transitions in the Now Playing page are not animated
@@ -43,7 +42,8 @@ These plugins have been tested and are working per spec:
 #### 04/16/21
 
 * Refactored all transport commands to BaseViewModel
-
+* Improved speed entering AlbumDetails
+* Updated the code to retrieve images from Discogs.com to allow for a proper UserAgent header
 
 #### 04/15/2021
 
