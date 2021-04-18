@@ -89,7 +89,7 @@ namespace Fiona.ViewModels
                 }
                                 
                 ArtistBio = PrettifyBio(BioServices.DISCOGS, value.Profile, false);
-                ArtistImageUrl = value.Images.Count > 0 ? value.Images[0] : null;
+                ArtistImageUrl = value.Images?.Count > 0 ? value.Images[0] : null;
 
                 SetProperty(ref _currentArtist, value);
             }
@@ -111,44 +111,47 @@ namespace Fiona.ViewModels
                 // DONE [i]...[/i] <- italic
                 // DONE [url=...]...[/url] <- straight href
 
-                string[] tok = Regex.Split(bio, @"(\[.+?\])|(\w+)");
-
-                for (int i = 0; i < tok.Length; i++)
+                if (!string.IsNullOrEmpty(bio))
                 {
-                    // simple html cases
-                    tok[i] = tok[i].Replace("[i]", keepHTML ? "<i>" : "");
-                    tok[i] = tok[i].Replace("[/i]", keepHTML ? "</i>" : "");
-                    tok[i] = tok[i].Replace("[/url]", keepHTML ? "</a>" : "");
+                    string[] tok = Regex.Split(bio, @"(\[.+?\])|(\w+)");
 
-                    if (tok[i].StartsWith("["))
+                    for (int i = 0; i < tok.Length; i++)
                     {
-                        if (tok[i][1] == 'u') // url
-                        {
-                            tok[i] = keepHTML ? ("<a href=\"" + tok[i].Substring(5, tok[i].Length - 6) + "\">") : "";
-                        }
-                        else
-                        {
-                            if (tok[i][2] == '=') // by name, just ignore it
-                            {
-                                switch (tok[i][1])
-                                {
-                                    case 'a': // artist
-                                    case 'l': // label
-                                        tok[i] = tok[i].Substring(3, tok[i].Length - 4);
-                                        // TODO - check for all numbers, that means it requires another query from Discogs like the block below
+                        // simple html cases
+                        tok[i] = tok[i].Replace("[i]", keepHTML ? "<i>" : "");
+                        tok[i] = tok[i].Replace("[/i]", keepHTML ? "</i>" : "");
+                        tok[i] = tok[i].Replace("[/url]", keepHTML ? "</a>" : "");
 
-                                        break;
-                                }
-                            }
-                            else // get more info from Discogs
+                        if (tok[i].StartsWith("["))
+                        {
+                            if (tok[i][1] == 'u') // url
                             {
-                                //TODO
+                                tok[i] = keepHTML ? ("<a href=\"" + tok[i].Substring(5, tok[i].Length - 6) + "\">") : "";
+                            }
+                            else
+                            {
+                                if (tok[i][2] == '=') // by name, just ignore it
+                                {
+                                    switch (tok[i][1])
+                                    {
+                                        case 'a': // artist
+                                        case 'l': // label
+                                            tok[i] = tok[i].Substring(3, tok[i].Length - 4);
+                                            // TODO - check for all numbers, that means it requires another query from Discogs like the block below
+
+                                            break;
+                                    }
+                                }
+                                else // get more info from Discogs
+                                {
+                                    //TODO
+                                }
                             }
                         }
                     }
-                }
 
-                result = String.Join("", tok);
+                    result = String.Join("", tok);
+                }
             }
 
             return result.Trim();

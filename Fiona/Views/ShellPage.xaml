@@ -298,6 +298,7 @@
             </Button>
 
             <Image
+                x:Name="NowPlayingBackground"
                 Margin="-16"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"

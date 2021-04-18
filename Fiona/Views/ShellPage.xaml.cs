@@ -24,6 +24,9 @@ namespace Fiona.Views
             Window.Current.SetTitleBar(TitleBar); // Set XAML element as a draggable region
 
             InitializeComponent();
+
+            //NowPlayingBackground.Source.
+
             DataContext = ViewModel;
             ViewModel.Initialize(shellFrame, navigationView, KeyboardAccelerators);
         }
@@ -33,11 +36,7 @@ namespace Fiona.Views
             TitleBar.Height = sender.Height;
         }
 
-        public void SetHeader(string header)
-        {
-            navigationView.Header = header;
-        }
-
+        // SEARCH ----------------------------
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             // Only get results when it was a user typing,

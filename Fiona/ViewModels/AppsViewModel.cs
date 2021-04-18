@@ -107,10 +107,8 @@ namespace Fiona.ViewModels
                 else
                 {
 
-                    TitleVisibility = Visibility.Collapsed;
-                    
                     AppletTitle = FionaDataService.CurrentAppletName;
-                    //TitleVisibility = Visibility.Visible;
+                    TitleVisibility = Visibility.Visible;
                     AppletIconUrl = string.IsNullOrEmpty(FionaDataService.CurrentAppletIconUrl) ? FionaDataService.DefaultAlbumImageUrl : FionaDataService.CurrentAppletIconUrl;
 
                     PlaylistCommandsVisibility = value.Type?.ToLower() == "playlist" ? Visibility.Visible : Visibility.Collapsed;
