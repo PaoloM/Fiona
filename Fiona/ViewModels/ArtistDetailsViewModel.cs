@@ -11,6 +11,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Fiona.ViewModels
 {
@@ -41,6 +43,21 @@ namespace Fiona.ViewModels
             get => _allGenres;
             set => SetProperty(ref _allGenres, value);
         }
+
+        private List<Image> _artistImageList = new List<Image>();
+        public List<Image> ArtistImageList
+        {
+            get => _artistImageList;
+            set => SetProperty(ref _artistImageList, value);
+        }
+
+        private Image _artistImage = new Image();
+        public Image ArtistImage
+        {
+            get => _artistImage;// == null ? FionaDataService.DefaultAlbumImageUrl : _artistImageUrl;
+            set => SetProperty(ref _artistImage, value);
+        }
+
 
         private Artist _currentArtist;
         public Artist CurrentArtist
@@ -84,7 +101,15 @@ namespace Fiona.ViewModels
                     if (da.Images.Count > 0)
                     {
                         foreach (var i in da.Images)
+                        {
+                            Image img = new Image();
+                            BitmapImage bm = new BitmapImage();
+                            Uri uri = new Uri(i.ImageUrl);
+                            bm.UriSource = uri;
+                            img.Source = bm;
+                            ArtistImageList.Add(img);
                             value.Images.Add(i.ImageUrl);
+                        }
                     }
                 }
                                 

@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Navigation;
 using WinUI = Microsoft.UI.Xaml.Controls;
 using Windows.UI.Notifications;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Fiona.ViewModels
 {
@@ -111,21 +112,21 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _artistBio, value);
         }
 
-        private List<string> _artistImageUrlList = new List<string>();
-        public List<string> ArtistImageUrlList
+        private List<Image> _artistImageList = new List<Image>();
+        public List<Image> ArtistImageList
         {
-            get => _artistImageUrlList;
-            set => SetProperty(ref _artistImageUrlList, value);
+            get => _artistImageList;
+            set => SetProperty(ref _artistImageList, value);
         }
 
-        private string _artistImageUrl = "";
-        public string ArtistImageUrl
+        private Image _artistImage = new Image();
+        public Image ArtistImage
         {
-            get => string.IsNullOrEmpty(_artistImageUrl) ? FionaDataService.DefaultAlbumImageUrl : _artistImageUrl;
-            set => SetProperty(ref _artistImageUrl, value);
+            get => _artistImage;// == null ? FionaDataService.DefaultAlbumImageUrl : _artistImageUrl;
+            set => SetProperty(ref _artistImage, value);
         }
 
-        private int CurrentArtistImageUrlIndex = 0;
+        private int CurrentArtistImageIndex = 0;
         private int Tick = 0;
         private int NextImageDuration = 5;
 
@@ -136,7 +137,7 @@ namespace Fiona.ViewModels
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            CurrentArtistImageUrlIndex = 0;
+            CurrentArtistImageIndex = 0;
             Tick = 0;
             dispatcherTimer.Start();
         }
@@ -146,14 +147,14 @@ namespace Fiona.ViewModels
             // move to the next artist image in the Now Playing screen
             if (++Tick > NextImageDuration)
             {
-                int c = ArtistImageUrlList.Count();
+                int c = ArtistImageList.Count();
                 if (c > 0)
                 {
-                    if (CurrentArtistImageUrlIndex >= c - 1)
-                        CurrentArtistImageUrlIndex = 0;
+                    if (CurrentArtistImageIndex >= c - 1)
+                        CurrentArtistImageIndex = 0;
                     else
-                        CurrentArtistImageUrlIndex++;
-                    ArtistImageUrl = ArtistImageUrlList[CurrentArtistImageUrlIndex];
+                        CurrentArtistImageIndex++;
+                    ArtistImage = ArtistImageList[CurrentArtistImageIndex];
                 }
                 Tick = 0;
             }
@@ -195,38 +196,49 @@ namespace Fiona.ViewModels
                             {
                                 artist.Profile = da.Profile;
                                 artist.Images = new List<string>();
-                                ArtistImageUrlList.Clear();
+                                ArtistImageList.Clear();
 
                                 if (da.Images.Count > 0)
                                 {
                                     foreach (var i in da.Images)
                                     {
                                         artist.Images.Add(i.ImageUrl);
-                                        ArtistImageUrlList.Add(i.ImageUrl);
+                                        Image img = new Image();
+                                        BitmapImage bm = new BitmapImage();
+                                        Uri uri = new Uri(i.ImageUrl);
+                                        bm.UriSource = uri;
+                                        img.Source = bm;
+                                        ArtistImageList.Add(img);
                                     }
                                 }
                             }
 
                             ArtistBio = artist.Profile;
                             Random rnd = new Random();
-                            ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[rnd.Next(0, artist.Images.Count - 1)] : FionaDataService.DefaultAlbumImageUrl;
+                            //ArtistImageUrl = artist.Images.Count > 0 ? artist.Images[rnd.Next(0, artist.Images.Count - 1)] : FionaDataService.DefaultAlbumImageUrl;
                         }
                         else
                         { // did not find it in the internal artist list, let's see if discogs has anything about the artist
                             DiscogsArtist da = DiscogsDataService.GetArtistInfo(ca);
                             if (da != null)
                             {
-                                ArtistImageUrlList.Clear();
+                                ArtistImageList.Clear();
                                 if (da.Images.Count > 0)
                                 {
                                     foreach (var i in da.Images)
                                     {
-                                        ArtistImageUrlList.Add(i.ImageUrl);
+                                        //da.Images.Add(i.ImageUrl);
+                                        Image img = new Image();
+                                        BitmapImage bm = new BitmapImage();
+                                        Uri uri = new Uri(i.ImageUrl);
+                                        bm.UriSource = uri;
+                                        img.Source = bm;
+                                        ArtistImageList.Add(img);
                                     }
                                 }
                                 ArtistBio = da.Profile;
                                 Random rnd = new Random();
-                                ArtistImageUrl = da.Images.Count > 0 ? da.Images[rnd.Next(0, da.Images.Count - 1)].ImageUrl : FionaDataService.DefaultAlbumImageUrl;
+                                //ArtistImageUrl = da.Images.Count > 0 ? da.Images[rnd.Next(0, da.Images.Count - 1)].ImageUrl : FionaDataService.DefaultAlbumImageUrl;
                             }
                         }
                     }

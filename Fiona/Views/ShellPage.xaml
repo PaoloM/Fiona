@@ -303,7 +303,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Opacity="0.2"
-                Source="{x:Bind ViewModel.ArtistImageUrl, Mode=OneWay}"
+                Source="{x:Bind ViewModel.ArtistImage.Source, Mode=OneWay}"
                 Stretch="UniformToFill" />
 
             <StackPanel
