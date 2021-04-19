@@ -30,6 +30,7 @@ namespace Fiona.Core.Services
         public static ArtistList AllArtists { get; set; }
         public static GenreList AllGenres { get; set; }
         public static AppletList AllApps { get; set; }
+        public static AppletList AllRadios { get; set; }
 
         #region Commands
 
@@ -298,6 +299,54 @@ namespace Fiona.Core.Services
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
             return res;
         }
+        #endregion
+
+        #region Radios
+        public static AppletList GetAllRadios(Player player)
+        {
+            if (AllRadios != null)
+                return AllRadios;
+            else
+            {
+                var msg = FionaMessage.CreateMessage(player, "radios", "0", FionaCommand.MaxItems, "menu:1", "want_url:1");
+                var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+                AllRadios = res;
+                return res;
+            }
+        }
+
+        public static AppletList GetRadioTopLevel(Player player, string cmd1)
+        {
+            var msg = FionaMessage.CreateMessage(player, cmd1, "items", "0", FionaCommand.MaxItems, "menu:1", "want_url:1");
+            var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+            return res;
+        }
+
+        public static AppletList GetRadios(Player player, string cmd1, string cmd2, string menu, string item_id)
+        {
+            var msg = FionaMessage.CreateMessage(player, cmd1, cmd2, "0", FionaCommand.MaxItems, "menu:" + menu, "item_id:" + item_id, "want_url:1");
+            var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+            return res;
+        }
+
+        //public static void PlayPlaylistFromApp(Player player, string appname, string menu, string item_id)
+        //{
+        //    var msg = FionaMessage.CreateMessage(player, appname, "playlist", "play", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id, "want_url:1");
+        //    var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+        //}
+
+        //public static void QueuePlaylistFromApp(Player player, string appname, string menu, string item_id)
+        //{
+        //    var msg = FionaMessage.CreateMessage(player, appname, "playlist", "add", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id, "want_url:1");
+        //    var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+        //}
+
+        //public static AppletList SearchInApp(Player player, string appname, string menu, string item_id, string query_term)
+        //{
+        //    var msg = FionaMessage.CreateMessage(player, appname, "items", "0", FionaCommand.MaxItems, "menu:" + menu, "item_id:" + item_id, "cachesearch:1", "search:" + query_term);
+        //    var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
+        //    return res;
+        //}
         #endregion
 
         #region Misc

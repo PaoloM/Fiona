@@ -1,15 +1,16 @@
 ﻿<Page
     x:Class="Fiona.Views.RadioPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:controls1="using:Fiona.Controls"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Fiona.Core.Models"
     xmlns:viewmodels="using:Fiona.ViewModels"
-    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
-    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:views="using:Fiona.Views"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
 
@@ -17,139 +18,225 @@
         <viewmodels:BaseViewModel x:Name="BaseVM" />
     </Page.DataContext>
 
-    <Grid Margin="44,0,36,0">
+    <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!--<StackPanel
-            Grid.Row="0"
+        <StackPanel Visibility="{x:Bind ViewModel.TitleVisibility}" Grid.Row="0"
+            Margin="52,-180,0,0" Background="{ThemeResource MainAreaBackground}"
             VerticalAlignment="Center"
             Orientation="Horizontal">
-            <Image
-                Width="32"
-                Height="32"
-                Margin="8,0,0,16"
-                Source="{x:Bind ViewModel.AppletIconUrl, Mode=OneWay}"
-                Stretch="UniformToFill" />
-            --><!--<TextBlock Text="{x:Bind ViewModel.AppletTitle, Mode=OneWay}" Style="{StaticResource BodyTextBlockStyle}"></TextBlock>--><!--
-            <TextBlock
-                Margin="8,0,0,16"
-                Style="{StaticResource BodyTextBlockStyle}"
-                Text="{x:Bind ViewModel.TileTitle, Mode=OneWay}"
-                TextTrimming="Clip" />
+            <Image Width="48" Height="48" Margin="0,0,16,0" Source="{x:Bind ViewModel.AppletIconUrl, Mode=OneWay}" Stretch="UniformToFill" />
+            <TextBlock Text="{x:Bind ViewModel.AppletTitle, Mode=OneWay}" FontWeight="Light"
+                       Style="{StaticResource TitleTextBlockStyle}"></TextBlock>
         </StackPanel>
 
-        <Grid x:Name="ContentArea" Grid.Row="1">
-            --><!--  Display items in a grid  --><!--
-            <controls:AdaptiveGridView
-                x:Name="AppsGridView"
-                IsItemClickEnabled="True"
-                ItemClickCommand="{x:Bind ViewModel.AppSelectedCommand}"
-                ItemsSource="{x:Bind ViewModel.Apps.Applets, Mode=OneWay}"
-                SelectionMode="None"
-                Visibility="{x:Bind ViewModel.AppsGridViewVisibility, Mode=OneWay}">
-                <GridView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Applet">
-                        <Grid
-                            x:Name="itemThumbnail"
-                            Width="160"
-                            Height="196"
-                            Margin="8,8,8,8"
-                            Background="Transparent">
-                            --><!--  helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=ItemControls}">  --><!--
+        <TextBlock Grid.Row="0" Margin="52,22,0,16" FontWeight="Light" Height="56"
+                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                   Text="{x:Bind ViewModel.TileTitle, Mode=OneWay}" TextTrimming="Clip" />
 
-                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
-                                <Image
+        <!--  Playlist node commands  -->
+        <StackPanel Margin="36,0,0,0"
+            Grid.Row="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Orientation="Horizontal"
+            Visibility="{x:Bind ViewModel.PlaylistCommandsVisibility, Mode=OneWay}">
+            <Button
+                x:Name="Playlist_PlayAll"
+                Margin="4,0,4,16"
+                Background="{x:Null}"
+                Command="{x:Bind ViewModel.PlayPlaylistCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon
+                        Margin="0,0,8,0"
+                        FontSize="{StaticResource SmallGlyphSize}"
+                        Glyph="&#xE102;" />
+                    <TextBlock x:Uid="Playlist_PlayAll" FontSize="{StaticResource SmallFontSize}" />
+                </StackPanel>
+            </Button>
+            <Button
+                x:Name="Playlist_AddAllToQueue"
+                Margin="4,0,4,16"
+                Background="{x:Null}"
+                Command="{x:Bind ViewModel.QueuePlaylistCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon
+                        Margin="0,0,8,0"
+                        FontSize="{StaticResource SmallGlyphSize}"
+                        Glyph="&#xE109;" />
+                    <TextBlock x:Uid="Playlist_AddAllToQueue" FontSize="{StaticResource SmallFontSize}" />
+                </StackPanel>
+            </Button>
+            <!--<Button Background="{x:Null}" Command="{x:Bind ViewModel.FavoritePlaylistCommand}" Margin="4,0,4,16">
+                <StackPanel Orientation="Horizontal">
+                    <FontIcon Glyph="&#xE113;" FontSize="{StaticResource SmallGlyphSize}" Margin="0,0,8,0"/>
+                    <TextBlock x:Uid="Playlist_Favorite" FontSize="{StaticResource SmallFontSize}"/>
+                </StackPanel>
+            </Button>-->
+        </StackPanel>
+
+        <Grid x:Name="ContentArea" Grid.Row="2" Margin="44,0">
+            <ScrollViewer>
+                <StackPanel Orientation="Vertical">
+                    <!--  Show textarea  -->
+                    <TextBlock
+                        x:Name="TextareaTextBlock"
+                        Margin="8,16"
+                        Text="{x:Bind ViewModel.Apps.window.TextArea, Mode=OneWay}"
+                        TextWrapping="WrapWholeWords"
+                        Visibility="{x:Bind ViewModel.TextareaVisibility, Mode=OneWay}" />
+
+                    <!--  Display items in a grid  -->
+                    <controls:AdaptiveGridView
+                        x:Name="AppsGridView"
+                        IsItemClickEnabled="True"
+                        ItemClickCommand="{x:Bind ViewModel.AppSelectedCommand}"
+                        ItemsSource="{x:Bind ViewModel.Apps.Applets, Mode=OneWay}"
+                        SelectionMode="None"
+                        Visibility="{x:Bind ViewModel.AppsGridViewVisibility, Mode=OneWay}">
+                        <GridView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Applet">
+                                <Grid
+                                    x:Name="itemThumbnail"
                                     Width="160"
-                                    Height="160"
-                                    Source="{x:Bind GetImageUrl, Mode=OneWay}"
-                                    Stretch="UniformToFill" />
-                                <TextBlock
-                                    Margin="{StaticResource XXSmallTopMargin}"
-                                    HorizontalAlignment="Center"
-                                    Style="{ThemeResource CaptionTextBlockStyle}"
-                                    Text="{x:Bind GetText, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="NoWrap" />
-                            </StackPanel>
+                                    Height="196"
+                                    Margin="8,8,8,8"
+                                    Background="Transparent">
+                                    <!--  helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=ItemControls}">  -->
 
-                            <StackPanel
-                                x:Name="ItemControls"
-                                Margin="0,64,0,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Top"
-                                Orientation="Horizontal"
-                                Visibility="{x:Bind HasPlayQueueFavorite, Mode=OneWay}">
-                                <Button
-                                    x:Name="PlayAlbum"
-                                    Width="32"
-                                    Height="32"
-                                    Margin="4,0,4,0"
-                                    Click="PlayThis_Click"
-                                    CornerRadius="16">
-                                    <FontIcon
-                                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                        FontSize="14"
-                                        Glyph="&#xE102;" />
-                                </Button>
-                                --><!--<Button x:Name="FavoriteAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0">
-                                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE113;" FontSize="14"/>
-                                </Button>--><!--
-                            </StackPanel>
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+                                        <Image
+                                            Width="160"
+                                            Height="160"
+                                            Source="{x:Bind GetImageUrl, Mode=OneWay}"
+                                            Stretch="UniformToFill" />
+                                        <TextBlock
+                                            Margin="{StaticResource XXSmallTopMargin}"
+                                            HorizontalAlignment="Center"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{x:Bind GetText, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
+                                    </StackPanel>
 
-                        </Grid>
-                    </DataTemplate>
-                </GridView.ItemTemplate>
-            </controls:AdaptiveGridView>
+                                    <StackPanel
+                                        x:Name="ItemControls"
+                                        Margin="0,64,0,0"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        Orientation="Horizontal"
+                                        Visibility="{x:Bind HasPlayQueueFavorite, Mode=OneWay}">
+                                        <Button
+                                            x:Name="PlayAlbum"
+                                            Width="32"
+                                            Height="32"
+                                            Margin="4,0,4,0"
+                                            Background="{ThemeResource CardBackground}"
+                                            Click="PlayThis_Click"
+                                            CornerRadius="16"
+                                            Opacity="0.5">
+                                            <FontIcon
+                                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                FontSize="14"
+                                                Glyph="&#xE102;" />
+                                        </Button>
+                                        <Button
+                                            x:Name="QueueAlbum"
+                                            Width="32"
+                                            Height="32"
+                                            Margin="4,0,4,0"
+                                            Background="{ThemeResource CardBackground}"
+                                            Click="QueueThis_Click"
+                                            CornerRadius="16"
+                                            Opacity="0.5">
+                                            <FontIcon
+                                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                FontSize="14"
+                                                Glyph="&#xE109;" />
+                                        </Button>
+                                        <!--<Button x:Name="FavoriteAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0">
+                                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE113;" FontSize="14"/>
+                                        </Button>-->
+                                    </StackPanel>
 
-            --><!--  Display items in a list  --><!--
-            <controls1:AlternatingRowListView
-                x:Name="AppsListView"
-                IsItemClickEnabled="True"
-                ItemsSource="{x:Bind ViewModel.Apps.Applets, Mode=OneWay}"
-                Visibility="{x:Bind ViewModel.AppsListViewVisibility, Mode=OneWay}"
-                EvenRowBackground="{ThemeResource MyEvenRowBrush}"
-                    OddRowBackground="{ThemeResource MyOddRowBrush}">
+                                </Grid>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </controls:AdaptiveGridView>
 
-                <controls1:AlternatingRowListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                    </Style>
-                </controls1:AlternatingRowListView.ItemContainerStyle>
+                    <!--  Display items in a list  -->
+                    <controls1:AlternatingRowListView
+                        x:Name="AppsListView"
+                        EvenRowBackground="{ThemeResource MyEvenRowBrush}"
+                        IsItemClickEnabled="True"
+                        ItemsSource="{x:Bind ViewModel.Apps.Applets, Mode=OneWay}"
+                        OddRowBackground="{ThemeResource MyOddRowBrush}"
+                        Visibility="{x:Bind ViewModel.AppsListViewVisibility, Mode=OneWay}">
 
-                <interactivity:Interaction.Behaviors>
-                    <core:EventTriggerBehavior EventName="SelectionChanged">
-                        <core:InvokeCommandAction Command="{x:Bind ViewModel.AppSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=AppsListView}" />
-                    </core:EventTriggerBehavior>
-                </interactivity:Interaction.Behaviors>
+                        <controls1:AlternatingRowListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </controls1:AlternatingRowListView.ItemContainerStyle>
 
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Applet">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" Visibility="{x:Bind IsSearch, Mode=OneWay}" KeyDown="SearchTextBox_KeyDown" />
-                            <TextBlock Grid.Column="0" Text="{x:Bind Text, Mode=OneWay}" Visibility="{x:Bind IsNotSearch, Mode=OneWay}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" x:Name="TrackControls" HorizontalAlignment="Right" Visibility="{x:Bind IsIndividualTrack, Mode=OneWay}">
-                                <Button VerticalAlignment="Stretch" Margin="4,0,4,0"
-                                    Background="Transparent" Click="PlayThis_Click">
-                                    <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE102;" FontSize="16" />
-                                </Button>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </controls1:AlternatingRowListView>
+                        <interactivity:Interaction.Behaviors>
+                            <core:EventTriggerBehavior EventName="SelectionChanged">
+                                <core:InvokeCommandAction Command="{x:Bind ViewModel.AppSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=AppsListView}" />
+                            </core:EventTriggerBehavior>
+                        </interactivity:Interaction.Behaviors>
 
-            --><!-- Show textarea --><!--
-            <TextBlock x:Name="TextareaTextBlock" Margin="8,16" TextWrapping="WrapWholeWords"
-                Visibility="{x:Bind ViewModel.TextareaVisibility, Mode=OneWay}"
-                       Text="{x:Bind ViewModel.Apps.window.TextArea, Mode=OneWay}"/>
-        </Grid>-->
-
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Applet">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox
+                                        Grid.Column="0"
+                                        KeyDown="SearchTextBox_KeyDown"
+                                        Visibility="{x:Bind IsSearch, Mode=OneWay}" />
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Text="{x:Bind Text, Mode=OneWay}"
+                                        Visibility="{x:Bind IsNotSearch, Mode=OneWay}" />
+                                    <StackPanel
+                                        x:Name="TrackControls"
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        Orientation="Horizontal"
+                                        Visibility="{x:Bind IsIndividualTrack, Mode=OneWay}">
+                                        <Button
+                                            Margin="4,0,4,0"
+                                            VerticalAlignment="Stretch"
+                                            Background="Transparent"
+                                            Click="PlayThis_Click">
+                                            <FontIcon
+                                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                FontSize="16"
+                                                Glyph="&#xE102;" />
+                                        </Button>
+                                        <Button
+                                            Margin="4,0,4,0"
+                                            VerticalAlignment="Stretch"
+                                            Background="Transparent"
+                                            Click="QueueThis_Click">
+                                            <FontIcon
+                                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                FontSize="16"
+                                                Glyph="&#xE109;" />
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </controls1:AlternatingRowListView>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Page>

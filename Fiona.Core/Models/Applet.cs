@@ -75,6 +75,7 @@ namespace Fiona.Core.Models
                     }
                     else
                     {
+                        if (IconID.StartsWith("/")) IconID = IconID.Substring(1);
                         return IconID.StartsWith("http") ? IconID : string.Format("{0}{1}", FionaDataService.RemoteUrl, IconID);
                     }
                 }
@@ -87,7 +88,18 @@ namespace Fiona.Core.Models
 
         public string GetMenu
         {
-            get => (AddAction?.ToLower() == "go") ? Actions.Go.Params.Menu : FionaDataService.CurrentAppletMenu;
+//            get => (AddAction?.ToLower() == "go") ? Actions.Go.Params.Menu : FionaDataService.CurrentAppletMenu;
+            get
+            {
+                if (Actions != null)
+                {
+                    return Actions.Go.Params.Menu;
+                }
+                else 
+                { 
+                    return string.Empty;
+                }
+            }
         }
 
         public string GetID
