@@ -6,6 +6,10 @@
  
 A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) controller for Windows 10
 
+## What's new?
+
+* Added a whole lot of screenshots for [v0.4](v0.4-prealpha-screenshots.md)
+
 ## Current features
 
 * Autodiscover and connect to your Logitech Media Server/Squeezebox
