@@ -128,7 +128,6 @@ namespace Fiona.ViewModels
                         Apps = FionaDataService.GetRadios(FionaDataService.CurrentPlayer,
                             FionaDataService.CurrentAppletMenu, "items", value.GetMenu, value.GetID);
                         TileTitle = Apps.Title;
-                        //TileTitle = Apps.Title + " (" + value.GetID.ToString() + ")";
                     }
 
                     TextareaVisibility = string.IsNullOrEmpty(Apps.window.TextArea) ? Visibility.Collapsed : Visibility.Visible;

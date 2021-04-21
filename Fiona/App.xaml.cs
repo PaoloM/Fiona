@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
+﻿//** LICENSE **********************************************
+//
+// Copyright (c) 2021 Paolo Marcucci. All rights reserved.
+// This code is licensed under the MIT License (MIT).
+// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
+// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
+// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
+// PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
+//
+//*********************************************************
+
 using Fiona.Core.Services;
 using Fiona.Helpers;
 using Fiona.Services;
-
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-
+using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
 
@@ -32,8 +37,6 @@ namespace Fiona
 
             AppCenter.Start(Fiona.Core.Helpers.APIKeys.AppCenter, typeof(Analytics), typeof(Crashes));
             UnhandledException += OnAppUnhandledException;
-
-            LoadState();
 
             // Deferred execution until used. Check https://docs.microsoft.com/dotnet/api/system.lazy-1 for further info on Lazy<T> class.
             _activationService = new Lazy<ActivationService>(CreateActivationService);
@@ -86,12 +89,14 @@ namespace Fiona
         {
             if (!args.PrelaunchActivated)
             {
+                LoadState();
                 await ActivationService.ActivateAsync(args);
             }
         }
 
         protected override async void OnActivated(IActivatedEventArgs args)
         {
+            LoadState();
             await ActivationService.ActivateAsync(args);
         }
 

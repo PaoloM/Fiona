@@ -88,7 +88,6 @@ namespace Fiona.Core.Models
 
         public string GetMenu
         {
-//            get => (AddAction?.ToLower() == "go") ? Actions.Go.Params.Menu : FionaDataService.CurrentAppletMenu;
             get
             {
                 if (Actions != null)
@@ -104,7 +103,6 @@ namespace Fiona.Core.Models
 
         public string GetID
         {
-//            get => (AddAction?.ToLower() == "go") ? Actions?.Go.Params.item_id : Params.item_id;
             get
             {
                 if (Actions != null)

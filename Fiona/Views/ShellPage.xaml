@@ -120,7 +120,7 @@
             </Grid>
         </winui:NavigationView>
 
-        <!--  PLAYER AREA  -->
+        <!--  QUEUE AREA  -->
         <Grid
             x:Name="PlayerArea"
             Grid.Column="2"
@@ -250,93 +250,18 @@
                 Style="{ThemeResource CaptionTextBlockStyle}" />
         </Grid>
 
-        <!--<Grid x:Name="TitleBar" Background="Transparent">
-        -->
-        <!--  Width of the padding columns is set in LayoutMetricsChanged handler.  -->
-        <!--
-            Using padding columns instead of Margin ensures that the background
-            paints the area under the caption control buttons (for transparent buttons).
-        -->
-        <!--<Grid.ColumnDefinitions>
-                <ColumnDefinition x:Name="LeftPaddingColumn" Width="0"/>
-                <ColumnDefinition/>
-                <ColumnDefinition x:Name="RightPaddingColumn" Width="0"/>
-            </Grid.ColumnDefinitions>-->
-        <!--
-            <Image Source="ms-appx:///Assets/Square44x44Logo.png"
-                   Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                   Width="32" Height="32" Margin="16,4"/>
-        -->
-        <!--<TextBlock Text="Custom Title Bar" x:Uid="Shell_AppTitle"
-               Grid.Column="1" Width="200"
-               Style="{StaticResource CaptionTextBlockStyle}"
-               Margin="64,8,0,0" Canvas.ZIndex="-1"/>-->
-        <!--
-        </Grid>-->
-
         <!--  NOW PLAYING PAGE  -->
-        <Grid
-            x:Name="NowPlayingPage"
-            Grid.ColumnSpan="3"
-            Background="black"
-            Visibility="{x:Bind ViewModel.NowPlayingPageVisibility, Mode=OneWay}">
-            <Button
-                Width="64"
-                Height="32"
-                Margin="0,32,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Background="Transparent"
-                Canvas.ZIndex="99"
-                Command="{x:Bind ViewModel.HideNowPlayingCommand}"
-                Foreground="White">
-                <FontIcon
-                    Height="19"
-                    VerticalAlignment="Top"
-                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                    Glyph="&#xE0A6;" />
+        <Grid x:Name="NowPlayingPage" Grid.ColumnSpan="3" Background="black" Visibility="{x:Bind ViewModel.NowPlayingPageVisibility, Mode=OneWay}">
+            <Button Width="64" Height="32" Margin="0,32,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Canvas.ZIndex="99" Command="{x:Bind ViewModel.HideNowPlayingCommand}" Foreground="White">
+                <FontIcon Height="19" VerticalAlignment="Top" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" />
             </Button>
-
-            <Image
-                x:Name="NowPlayingBackground"
-                Margin="-16"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                Opacity="0.2"
-                Source="{x:Bind ViewModel.ArtistImage.Source, Mode=OneWay}"
-                Stretch="UniformToFill" />
-
-            <StackPanel
-                Margin="64,0,0,64"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Orientation="Horizontal">
-                <Image
-                    Width="160"
-                    Height="160"
-                    HorizontalAlignment="Left"
-                    Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}"
-                    Stretch="UniformToFill" />
-                <StackPanel
-                    Margin="32,0,0,0"
-                    VerticalAlignment="Center"
-                    Orientation="Vertical">
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                        FontSize="24"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}" />
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                        FontSize="18"
-                        Foreground="White"
-                        Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" />
-                    <TextBlock
-                        HorizontalAlignment="Left"
-                        FontSize="18"
-                        Foreground="White"
-                        Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Album, Mode=OneWay}" />
+            <Image x:Name="NowPlayingBackground" Margin="-16" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.2" Source="{x:Bind ViewModel.ArtistImage.Source, Mode=OneWay}" Stretch="UniformToFill" />
+            <StackPanel Margin="64,0,0,64" HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
+                <Image Width="160" Height="160" HorizontalAlignment="Left" Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}" Stretch="UniformToFill" />
+                <StackPanel Margin="32,0,0,0" VerticalAlignment="Center" Orientation="Vertical">
+                    <TextBlock HorizontalAlignment="Left" FontSize="24" FontWeight="Bold" Foreground="White" Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Title, Mode=OneWay}" />
+                    <TextBlock HorizontalAlignment="Left" FontSize="18" Foreground="White" Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Artist, Mode=OneWay}" />
+                    <TextBlock HorizontalAlignment="Left" FontSize="18" Foreground="White" Text="{x:Bind ViewModel.CurrentPlayerStatus.CurrentSong.Album, Mode=OneWay}" />
                 </StackPanel>
             </StackPanel>
         </Grid>

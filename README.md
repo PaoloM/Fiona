@@ -16,13 +16,12 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 * Navigate your music library by album and artist
 * Individual queues for all your connected players
 * Now Playing page with artist images
-* 3rd party apps/plugins 
+* 3rd party apps/plugins almost completely supported
 * Radio support
 
 ## Roadmap/backlog
 
 * Full 3rd party app/plugin support
-* Radio support
 * Queue management
 * Favorites management
 * More animations and transitions
@@ -46,6 +45,7 @@ These plugins have been tested and are working per spec:
 
 #### 04/18/21
 
+* Added the _Private Networks_ capability to allow for some scenarios where local connectivity is limited
 * First implementation of radio support, some images do not show for some reason, but navigation reliably works
 
 #### 04/16/21

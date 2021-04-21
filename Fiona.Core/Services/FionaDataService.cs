@@ -328,25 +328,6 @@ namespace Fiona.Core.Services
             var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
             return res;
         }
-
-        //public static void PlayPlaylistFromApp(Player player, string appname, string menu, string item_id)
-        //{
-        //    var msg = FionaMessage.CreateMessage(player, appname, "playlist", "play", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id, "want_url:1");
-        //    var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
-        //}
-
-        //public static void QueuePlaylistFromApp(Player player, string appname, string menu, string item_id)
-        //{
-        //    var msg = FionaMessage.CreateMessage(player, appname, "playlist", "add", "_index:0", "_quantity:" + FionaCommand.MaxItems.ToString(), "menu:" + menu, "item_id:" + item_id, "want_url:1");
-        //    var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
-        //}
-
-        //public static AppletList SearchInApp(Player player, string appname, string menu, string item_id, string query_term)
-        //{
-        //    var msg = FionaMessage.CreateMessage(player, appname, "items", "0", FionaCommand.MaxItems, "menu:" + menu, "item_id:" + item_id, "cachesearch:1", "search:" + query_term);
-        //    var res = QueryWebServiceWithPost<AppletList>(RemoteUrlJson, msg);
-        //    return res;
-        //}
         #endregion
 
         #region Misc

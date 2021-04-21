@@ -2,7 +2,9 @@
 using Fiona.Services;
 using Fiona.ViewModels;
 using Windows.ApplicationModel.Core;
+using Windows.Media;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -27,6 +29,7 @@ namespace Fiona.Views
 
             DataContext = ViewModel;
             ViewModel.Initialize(shellFrame, navigationView, KeyboardAccelerators);
+
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
@@ -34,8 +37,7 @@ namespace Fiona.Views
             TitleBar.Height = sender.Height;
         }
 
-
-        // SEARCH ----------------------------
+        #region Search
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
             // Only get results when it was a user typing,
@@ -65,5 +67,6 @@ namespace Fiona.Views
                 NavigationService.Navigate<SearchResultsView>(args.QueryText);
             }
         }
+        #endregion
     }
 }
