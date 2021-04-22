@@ -4,7 +4,9 @@
 
 [![Build status](https://build.appcenter.ms/v0.1/apps/d7f40dde-1410-4946-82eb-9b5c207f84a0/branches/main/badge)](https://appcenter.ms)
  
-A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) controller for Windows 10
+A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) controller for Windows 10.
+
+![](Original%20assets/Screenshots/v0.4-prealpha/Screenshot%202021-04-18%20191217.png)
 
 ## What's new?
 
@@ -47,6 +49,8 @@ These plugins have been tested and are working per spec:
 
 * Added the _Private Networks_ capability to allow for some scenarios where local connectivity is limited
 * First implementation of radio support, some images do not show for some reason, but navigation reliably works
+* Fixed VisibilityOnHover helper to only show Play/Queue buttons when relevant
+* Added the ability to start Fiona from the command line
 
 #### 04/16/21
 

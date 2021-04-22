@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Fiona.Core.Models"
     xmlns:viewmodels="using:Fiona.ViewModels"
+    xmlns:helpers="using:Fiona.Helpers"
     xmlns:views="using:Fiona.Views"
     Style="{StaticResource PageStyle}"
     mc:Ignorable="d">
@@ -105,8 +106,8 @@
                                     Width="160"
                                     Height="196"
                                     Margin="8,8,8,8"
-                                    Background="Transparent">
-                                    <!--  helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=ItemControls}">  -->
+                                    Background="Transparent"
+                                    helpers:VisibilityHelper.VisibilityOnHover="{Binding ElementName=ItemControls}">  
 
                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
                                         <Image
@@ -129,7 +130,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Top"
                                         Orientation="Horizontal"
-                                        Visibility="{x:Bind HasPlayQueueFavorite, Mode=OneWay}">
+                                        Visibility="Collapsed">
                                         <Button
                                             x:Name="PlayAlbum"
                                             Width="32"

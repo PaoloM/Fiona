@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using Fiona.Core.Models;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 
 namespace Fiona.Helpers
@@ -19,12 +20,22 @@ namespace Fiona.Helpers
 
         private static void VisibilityOnHoverChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            UIElement t = d as UIElement;
-            UIElement s = e.NewValue as UIElement;
+            FrameworkElement t = d as FrameworkElement;
+            FrameworkElement s = e.NewValue as FrameworkElement;
 
             t.PointerEntered += (object sender, PointerRoutedEventArgs args) =>
             {
-                s.Visibility = Visibility.Visible;
+                if (s.DataContext is Applet a)
+                {
+                    if (a.HasPlayQueueFavorite)
+                    {
+                        s.Visibility = Visibility.Visible;
+                    }
+                }
+                else
+                {
+                    s.Visibility = Visibility.Visible;
+                }
             };
 
             t.PointerExited += (object sender, PointerRoutedEventArgs args) =>

@@ -84,7 +84,7 @@ These plugins have been tested and are working per spec:
 
 ## Notes
 
-* __Acrylic fix__ - Found a fix for Acrylic not appearing in the NavigationView on https://edi.wang/post/2018/10/9/fix-acrylicbrush-missing-navigationview-windows-10-17763 
+* __Acrylic fix__ - Found a fix for Acrylic not appearing in the NavigationView on [](https://edi.wang/post/2018/10/9/fix-acrylicbrush-missing-navigationview-windows-10-17763)
 * __Title bar customization__ - https://docs.microsoft.com/en-us/windows/uwp/design/shell/title-bar
 
 ## Attributions
