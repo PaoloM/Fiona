@@ -45,6 +45,10 @@ These plugins have been tested and are working per spec:
 
 ## Release notes
 
+#### 04/23/21
+
+* Added passing server and port in the command line (-s server -p port) for situations where autodiscovery on the local class C does not work
+
 #### 04/18/21
 
 * Added the _Private Networks_ capability to allow for some scenarios where local connectivity is limited

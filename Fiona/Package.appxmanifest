@@ -50,9 +50,9 @@ xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
 
       <Extensions>
         <uap5:Extension
-  Category="windows.appExecutionAlias"
-  Executable="fiona.exe"
-  EntryPoint="fiona.App">
+          Category="windows.appExecutionAlias"
+          Executable="fiona.exe"
+          EntryPoint="fiona.App">
           <uap5:AppExecutionAlias>
             <uap5:ExecutionAlias Alias="fiona.exe" />
           </uap5:AppExecutionAlias>

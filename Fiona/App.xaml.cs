@@ -42,14 +42,14 @@ namespace Fiona
             _activationService = new Lazy<ActivationService>(CreateActivationService);
         }
 
-        private void LoadState()
+        private void LoadState(out string server, out int port)
         {
             // Get server and port from local settings
-            string server = Windows.Storage.ApplicationData.Current.LocalSettings.Values["ServerIP"]?.ToString();
+            server = Windows.Storage.ApplicationData.Current.LocalSettings.Values["ServerIP"]?.ToString();
             if (server != null)
                 server = server.Replace("\"", "");
 
-            int port = 9000;
+            port = 9000;
             var portobject = Windows.Storage.ApplicationData.Current.LocalSettings.Values["ServerPort"];
             if (portobject != null)
                 port = int.Parse(portobject.ToString());
@@ -64,7 +64,10 @@ namespace Fiona
                 //TODO - we have a problem, let's not keep it a secret
                 Application.Current.Exit();
             }
+        }
 
+        private static void SetAndSaveServer(string server, int port)
+        {
             FionaDataService.ServerIP = server;
             FionaDataService.ServerPort = port;
 
@@ -87,16 +90,47 @@ namespace Fiona
 
         protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
-            if (!args.PrelaunchActivated)
-            {
-                LoadState();
-                await ActivationService.ActivateAsync(args);
-            }
+            string server;
+            int port;
+
+            LoadState(out server, out port);
+            SetAndSaveServer(server, port);
+
+            await ActivationService.ActivateAsync(args);          
         }
 
         protected override async void OnActivated(IActivatedEventArgs args)
         {
-            LoadState();
+            string server;
+            int port;
+
+            LoadState(out server, out port);
+
+            if (args.Kind == ActivationKind.CommandLineLaunch)
+            {
+                var commandLine = args as CommandLineActivatedEventArgs;
+                if (commandLine != null)
+                {
+                    var operation = commandLine.Operation;
+                    var arguments = operation.Arguments;
+                    string[] argsList = arguments.Split(' ');
+                    for (int i = 0; i < argsList.Length; i++)
+                    {
+                        if (argsList[i].ToLower() == "-s")
+                        {
+                            server = argsList[i + 1];
+                        }
+
+                        if (argsList[i].ToLower() == "-p")
+                        {
+                            port = int.Parse(argsList[i + 1]);
+                        }
+                    }
+                }
+            }
+
+            SetAndSaveServer(server, port);
+
             await ActivationService.ActivateAsync(args);
         }
 
