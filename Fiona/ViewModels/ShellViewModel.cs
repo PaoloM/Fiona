@@ -44,7 +44,7 @@ namespace Fiona.ViewModels
             get
             {
                 var ap = FionaDataService.GetAllPlayers();
-                if ((ap != null) && (ap.Players.Count > 0)) // if there are players
+                if ((ap != null) && (ap.Players?.Count > 0)) // if there are players
                 {
                     Player cp = null;
                     foreach (Player p in ap.Players)

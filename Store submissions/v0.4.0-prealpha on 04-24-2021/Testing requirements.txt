@@ -1,0 +1,4 @@
+Testing requirements
+1. Needs a Logitech Media Server instance on the LAN (get it from https://www.mysqueezebox.com/download)
+2. Needs a player. The easiest wat to do this is to download Squeezeplay from https://sourceforge.net/projects/lmsclients/files/squeezeplay/
+3. Server and PC running Fiona must be on the same LAN. If Fiona does not autodetect the server, run it once from the command line with this syntax: "fiona -p

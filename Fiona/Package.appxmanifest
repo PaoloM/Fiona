@@ -9,15 +9,15 @@ xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
   IgnorableNamespaces="uap mp genTemplate">
 
   <Identity
-    Name="FBAEEA49-4402-430F-8A08-A92FACA8E490"
-    Publisher="CN=pmarc"
+    Name="52192ThatPaolo.FionaMusic"
+    Publisher="CN=6FEF85FC-EDC9-42B9-95C6-42504FC7F25D"
     Version="0.4.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="FBAEEA49-4402-430F-8A08-A92FACA8E490" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="1ed0caed-413f-4284-88b9-4c33c09b1d41" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>Fiona</DisplayName>
-    <PublisherDisplayName>Paolo Marcucci</PublisherDisplayName>
+    <DisplayName>Fiona Music</DisplayName>
+    <PublisherDisplayName>ThatPaolo</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
