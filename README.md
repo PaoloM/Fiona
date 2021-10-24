@@ -23,9 +23,14 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 
 ## Roadmap/backlog
 
-* Full 3rd party app/plugin support
+v0.5
+
 * Queue management
 * Favorites management
+
+v.Next
+
+* Full 3rd party app/plugin support
 * More animations and transitions
 
 ## Tested plugins
@@ -45,24 +50,29 @@ These plugins have been tested and are working per spec:
 
 ## Release notes
 
-#### 04/23/21
+#### 11/15/21 - v0.5
+
+* Changed the app colors to the Windows 11 default ones
+* Initial queue management: direct select and play
+
+#### 04/23/21 - v0.4
 
 * Added passing server and port in the command line (-s server -p port) for situations where autodiscovery on the local class C does not work
 
-#### 04/18/21
+#### 04/18/21 - v0.3
 
 * Added the _Private Networks_ capability to allow for some scenarios where local connectivity is limited
 * First implementation of radio support, some images do not show for some reason, but navigation reliably works
 * Fixed VisibilityOnHover helper to only show Play/Queue buttons when relevant
 * Added the ability to start Fiona from the command line
 
-#### 04/16/21
+#### 04/16/21 - v0.2
 
 * Refactored all transport commands to BaseViewModel
 * Improved speed entering AlbumDetails
 * Updated the code to retrieve images from Discogs.com to allow for a proper UserAgent header
 
-#### 04/15/21
+#### 04/15/21 - v0.1
 
 * Apps
 	* Cleaned up detection and navigation
@@ -72,7 +82,7 @@ These plugins have been tested and are working per spec:
 * Foundational work to support system wide search, favorites, and radio
 * Removed all traces of the FirstRun experience
 
-#### 04/11/21
+#### 04/11/21 - prerelease 2
 
 * Added a function to prettify the bio coming from Discogs.com. Still some work to do on links by ID (they will appear as numbers in the artist bio)
 * Added LMS LAN autodiscovery. Now Fiona will scan your LAN to find an available Logitech Media Server install, no need to enter the IP of your sever anymore
@@ -85,7 +95,7 @@ These plugins have been tested and are working per spec:
 * Added playlist repeat control
 * Unified the transport control between navigation pages and Now Playing page
 
-#### 03/29/21
+#### 03/29/21 - prerelease 1
 
 * Created the supporting website at http://fionamusic.app
 * Moved the link to the privacy policy to point to the new website
