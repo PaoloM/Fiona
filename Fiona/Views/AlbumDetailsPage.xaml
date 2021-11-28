@@ -175,6 +175,17 @@
                                     FontSize="16"
                                     Glyph="&#xE109;" />
                             </Button>
+                            <Button
+                                Margin="4,0,4,0"
+                                VerticalAlignment="Stretch"
+                                Background="Transparent"
+                                Command="{x:Bind BaseVM.AddFavoriteTrackCommand}"
+                                CommandParameter="{x:Bind}">
+                                <FontIcon
+                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                    FontSize="16"
+                                    Glyph="&#xE113;" />
+                            </Button>
                         </StackPanel>
                         <TextBlock
                             Grid.Column="2"

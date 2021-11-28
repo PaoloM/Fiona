@@ -40,7 +40,7 @@ namespace Fiona.Core.Models
         [JsonProperty(PropertyName = "disc")]
         public string Disc { get; set; }
 
-        [JsonProperty(PropertyName = "playlist index")]
+        [JsonProperty(PropertyName = "playlist_index")]
         public string PlaylistIndex { get; set; }
 
         [JsonProperty(PropertyName = "coverart")]
