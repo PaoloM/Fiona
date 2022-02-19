@@ -70,6 +70,9 @@ namespace Fiona.Core.Models
         [JsonProperty(PropertyName = "artwork_url")]
         public string RemoteArtworkUrl { get; set; }
 
+        [JsonProperty(PropertyName = "bitrate")]
+        public String Bitrate { get; set; }
+
         public string TracknumSort
         {
             get

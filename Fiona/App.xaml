@@ -66,6 +66,12 @@
                     <SolidColorBrush x:Key="PlayerAreaBackground" Color="#384148"></SolidColorBrush>
                     <SolidColorBrush x:Key="CardBackground" Color="#2d343a"></SolidColorBrush>
 
+                    <!-- System -->
+                    <!--<SolidColorBrush x:Key="NavigationBackground" Color="{ThemeResource }"></SolidColorBrush>
+                    <SolidColorBrush x:Key="MainAreaBackground" Color="#23272b"></SolidColorBrush>
+                    <SolidColorBrush x:Key="PlayerAreaBackground" Color="#384148"></SolidColorBrush>
+                    <SolidColorBrush x:Key="CardBackground" Color="#2d343a"></SolidColorBrush>-->
+                    
                 </ResourceDictionary>
 
             </ResourceDictionary.ThemeDictionaries>
