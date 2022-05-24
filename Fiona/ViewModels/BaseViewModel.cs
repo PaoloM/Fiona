@@ -16,7 +16,9 @@ namespace Fiona.ViewModels
     {
         public List<Artist> Artists { get => FionaDataService.GetAllArtists().Artists; }
         public List<Album> Albums { get => FionaDataService.GetAllAlbums().Albums; }
+        public List<Favorite> Favorites { get => FionaDataService.GetAllFavorites().Favorites; }
 
+        #region ALBUM ------------------------------------------------------------------------------
         private RelayCommand<Album> _PlayAlbumCommand;
         public RelayCommand<Album> PlayAlbumCommand => _PlayAlbumCommand ?? (_PlayAlbumCommand = new RelayCommand<Album>(param => PlayAlbum((Album)param)));
         private void PlayAlbum(Album album)
@@ -52,7 +54,9 @@ namespace Fiona.ViewModels
         {
             //TODO
         }
+        #endregion
 
+        #region ARTIST ------------------------------------------------------------------------------
         private RelayCommand<Artist> _GoToArtistCommand;
         public RelayCommand<Artist> GoToArtistCommand => _GoToArtistCommand ?? (_GoToArtistCommand = new RelayCommand<Artist>(param => GoToArtist((Artist)param)));
         private void GoToArtist(Artist artist)
@@ -95,7 +99,9 @@ namespace Fiona.ViewModels
         {
             //TODO
         }
+        #endregion
 
+        #region TRACK ------------------------------------------------------------------------------
         private RelayCommand<Track> _PlayTrackCommand;
         public RelayCommand<Track> PlayTrackCommand => _PlayTrackCommand ?? (_PlayTrackCommand = new RelayCommand<Track>(param => PlayTrack((Track)param)));
         private void PlayTrack(Track track)
@@ -109,13 +115,9 @@ namespace Fiona.ViewModels
         {
             FionaDataService.PlaylistAddTrackToQueue(FionaDataService.CurrentPlayer, track.Location);
         }
+        #endregion
 
-        private RelayCommand<string> _SearchCommand;
-        public RelayCommand<string> SearchCommand => _SearchCommand ?? (_SearchCommand = new RelayCommand<string>(param => Search((string)param)));
-        private void Search(string q)
-        {
-            NavigationService.Navigate<SearchResultsView>(q);
-        }
+        #region TRANSPORT ------------------------------------------------------------------------------
 
         private RelayCommand _PauseTransportCommand;
         public RelayCommand PauseTransportCommand => _PauseTransportCommand ?? (_PauseTransportCommand = new RelayCommand(PauseTransport));
@@ -158,8 +160,54 @@ namespace Fiona.ViewModels
         {
             FionaDataService.ToggleMuteVolume(FionaDataService.CurrentPlayer);
         }
+        #endregion
 
+        #region FAVORITES ---------------------------------------------------------------------------------
+        private RelayCommand<Favorite> _PlayFavoriteCommand;
+        public RelayCommand<Favorite> PlayFavoriteCommand => _PlayFavoriteCommand ?? (_PlayFavoriteCommand = new RelayCommand<Favorite>(param => PlayFavorite((Favorite)param)));
+        private void PlayFavorite(Favorite favorite)
+        {
+            FionaDataService.PlaylistLoadAndPlayFavorite(FionaDataService.CurrentPlayer, favorite);
+        }
 
+        private RelayCommand<Favorite> _QueueFavoriteCommand;
+        public RelayCommand<Favorite> QueueFavoriteCommand => _QueueFavoriteCommand ?? (_QueueFavoriteCommand = new RelayCommand<Favorite>(param => QueueFavorite((Favorite)param)));
+        private void QueueFavorite(Favorite favorite)
+        {
+            FionaDataService.PlaylistAppendFavorite(FionaDataService.CurrentPlayer, favorite);
+        }
 
+        private RelayCommand<Album> _AddFavoriteAlbumCommand;
+        public RelayCommand<Album> AddFavoriteAlbumCommand => _AddFavoriteAlbumCommand ?? (_AddFavoriteAlbumCommand = new RelayCommand<Album>(param => AddFavoriteAlbum((Album)param)));
+        private void AddFavoriteAlbum(Album album)
+        {
+            FionaDataService.AddFavorite(FionaDataService.CurrentPlayer, album.Name, album.Url == null ? album.ExtID : album.Url, album.ArtworkUrl);
+            // TODO reload favorites
+        }
+
+        private RelayCommand<Track> _AddFavoriteTrackCommand;
+        public RelayCommand<Track> AddFavoriteTrackCommand => _AddFavoriteTrackCommand ?? (_AddFavoriteTrackCommand = new RelayCommand<Track>(param => AddFavoriteTrack((Track)param)));
+        private void AddFavoriteTrack(Track track)
+        {
+            FionaDataService.AddFavorite(FionaDataService.CurrentPlayer, track.Title, track.Location, track.ArtworkUrl);
+            // TODO reload favorites
+        }
+
+        private RelayCommand<Favorite> _UnFavoriteCommand;
+        public RelayCommand<Favorite> UnFavoriteCommand => _UnFavoriteCommand ?? (_UnFavoriteCommand = new RelayCommand<Favorite>(param => UnFavorite((Favorite)param)));
+        private void UnFavorite(Favorite favorite)
+        {
+            FionaDataService.UnFavorite(FionaDataService.CurrentPlayer, favorite);
+            // TODO reload favorites
+        }
+
+        #endregion
+
+        private RelayCommand<string> _SearchCommand;
+        public RelayCommand<string> SearchCommand => _SearchCommand ?? (_SearchCommand = new RelayCommand<string>(param => Search((string)param)));
+        private void Search(string q)
+        {
+            NavigationService.Navigate<SearchResultsView>(q);
+        }
     }
 }

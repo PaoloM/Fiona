@@ -138,6 +138,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             Grid.Column="0"
@@ -175,6 +176,17 @@
                                     FontSize="16"
                                     Glyph="&#xE109;" />
                             </Button>
+                            <Button
+                                Margin="4,0,4,0"
+                                VerticalAlignment="Stretch"
+                                Background="Transparent"
+                                Command="{x:Bind BaseVM.AddFavoriteTrackCommand}"
+                                CommandParameter="{x:Bind}">
+                                <FontIcon
+                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                    FontSize="16"
+                                    Glyph="&#xE113;" />
+                            </Button>
                         </StackPanel>
                         <TextBlock
                             Grid.Column="2"
@@ -184,6 +196,18 @@
                             Grid.Column="3"
                             VerticalAlignment="Center"
                             Text="{x:Bind DurationText, Mode=OneWay}" />
+                        <StackPanel
+                            Grid.Column="4"
+                            HorizontalAlignment="Center">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="8"
+                                Text="{x:Bind ContentType, Mode=OneWay}" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="8"
+                                Text="{x:Bind Bitrate, Mode=OneWay}" />
+                        </StackPanel>
                     </Grid>
                 </DataTemplate>
             </controls:AlternatingRowListView.ItemTemplate>

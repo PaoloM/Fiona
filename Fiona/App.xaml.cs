@@ -78,6 +78,7 @@ namespace Fiona
             //HACK - is this the right place to load ALL the large data?
             FionaDataService.GetAllAlbums();
             FionaDataService.GetAllArtists();
+            FionaDataService.GetAllFavorites();
         }
 
         private async Task<string> GetSlimServerIP()
