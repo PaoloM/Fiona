@@ -39,32 +39,32 @@
                 <ResourceDictionary x:Key="Light">
 
                     <!--  Cream  -->
-                    <!--<SolidColorBrush x:Key="NavigationBackground" Color="#f6f6f0" />
+                    <SolidColorBrush x:Key="NavigationBackground" Color="#f6f6f0" />
                     <SolidColorBrush x:Key="MainAreaBackground" Color="#c6c6c0" />
                     <SolidColorBrush x:Key="PlayerAreaBackground" Color="#868680" />
-                    <SolidColorBrush x:Key="CardBackground" Color="#a6a6a0" />-->
+                    <SolidColorBrush x:Key="CardBackground" Color="#a6a6a0" />
 
                     <!--  White  -->
-                    <SolidColorBrush x:Key="NavigationBackground" Color="#f0f0f0"></SolidColorBrush>
+                    <!--<SolidColorBrush x:Key="NavigationBackground" Color="#f0f0f0"></SolidColorBrush>
                     <SolidColorBrush x:Key="MainAreaBackground" Color="#c0c0c0"></SolidColorBrush>
                     <SolidColorBrush x:Key="PlayerAreaBackground" Color="#808080"></SolidColorBrush>
-                    <SolidColorBrush x:Key="CardBackground" Color="#a0a0a0"></SolidColorBrush>
+                    <SolidColorBrush x:Key="CardBackground" Color="#a0a0a0"></SolidColorBrush>-->
 
                 </ResourceDictionary>
 
                 <ResourceDictionary x:Key="Dark">
 
                     <!--  Blue  -->
-                    <!--<SolidColorBrush x:Key="NavigationBackground" Color="#06091c" />
+                    <SolidColorBrush x:Key="NavigationBackground" Color="#06091c" />
                     <SolidColorBrush x:Key="MainAreaBackground" Color="#23273b" />
                     <SolidColorBrush x:Key="PlayerAreaBackground" Color="#384158" />
-                    <SolidColorBrush x:Key="CardBackground" Color="#2d344a" />-->
+                    <SolidColorBrush x:Key="CardBackground" Color="#2d344a" />
 
                     <!--  Dark grey  -->
-                    <SolidColorBrush x:Key="NavigationBackground" Color="#06090c"></SolidColorBrush>
+                    <!--<SolidColorBrush x:Key="NavigationBackground" Color="#06090c"></SolidColorBrush>
                     <SolidColorBrush x:Key="MainAreaBackground" Color="#23272b"></SolidColorBrush>
                     <SolidColorBrush x:Key="PlayerAreaBackground" Color="#384148"></SolidColorBrush>
-                    <SolidColorBrush x:Key="CardBackground" Color="#2d343a"></SolidColorBrush>
+                    <SolidColorBrush x:Key="CardBackground" Color="#2d343a"></SolidColorBrush>-->
 
                     <!-- System -->
                     <!--<SolidColorBrush x:Key="NavigationBackground" Color="{ThemeResource }"></SolidColorBrush>
