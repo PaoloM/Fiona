@@ -3,13 +3,13 @@
     <!--  Common texts  -->
     <Style x:Key="PageTitleStyle" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="FontWeight" Value="Light" />
-        <Setter Property="FontSize" Value="36" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="40" />
         <!--  Value="{StaticResource LargeFontSize}" />  -->
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         <Setter Property="TextWrapping" Value="NoWrap" />
     </Style>
-
+    
     <Style x:Key="BodyTextStyle" TargetType="TextBlock">
         <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
