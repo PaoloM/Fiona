@@ -56,7 +56,7 @@
                     x:Name="title"
                     Margin="{StaticResource XXSmallTopMargin}"
                     FontSize="{StaticResource XLargeFontSize}"
-                    FontWeight="Light"
+                    FontWeight="SemiBold"
                     RelativePanel.AlignTopWithPanel="True"
                     RelativePanel.RightOf="itemHero"
                     Text="{x:Bind ViewModel.CurrentAlbum.Name, Mode=OneWay}"
