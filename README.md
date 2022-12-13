@@ -25,6 +25,8 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 
 v0.5
 
+* MixCloud plugin support
+
 * Queue management
 * Favorites management
 
@@ -39,6 +41,7 @@ These plugins have been tested and are working per spec:
 
 * Spotty
 * Band's Camp
+* **NEW** - MixCloud
 
 ## Known issues
 
@@ -53,7 +56,8 @@ These plugins have been tested and are working per spec:
 #### 11/15/21 - v0.5
 
 * Changed the app colors to the Windows 11 default ones
-* Initial queue management: direct select and play
+* Added support for the MixCloud plugin
+* (TBD) Initial queue management: direct select and play
 
 #### 04/23/21 - v0.4
 
