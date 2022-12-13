@@ -10,6 +10,7 @@
         public const string Players = "players";
         public const string Status = "status";
         public const string Genres = "genres";
+        public const string Favorites = "favorites";
 
         // misc
         public const string MaxItems = "100000";

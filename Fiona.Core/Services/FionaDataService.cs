@@ -31,6 +31,7 @@ namespace Fiona.Core.Services
         public static GenreList AllGenres { get; set; }
         public static AppletList AllApps { get; set; }
         public static AppletList AllRadios { get; set; }
+        public static FavoriteList AllFavorites { get; set; }
 
         #region Commands
 
@@ -131,6 +132,43 @@ namespace Fiona.Core.Services
             AllGenres = QueryWebServiceWithPost<GenreList>(RemoteUrlJson, msg);
             return AllGenres;
         }
+        #endregion
+
+        #region Favorites
+        public static FavoriteList GetAllFavorites()
+        {
+            var msg = FionaMessage.CreateMessage(FionaCommand.Favorites, "items", "0", FionaCommand.MaxItems);
+            AllFavorites = QueryWebServiceWithPost<FavoriteList>(RemoteUrlJson, msg);
+            return AllFavorites;
+        }
+
+        public static void PlaylistLoadAndPlayFavorite(Player player, Favorite favorite)
+        {
+            TransportUnsetShuffle(player);
+            var msg = FionaMessage.CreateMessage(player, "favorites", "playlist", "play", "item_id:" + favorite.ID.ToString());
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void PlaylistAppendFavorite(Player player, Favorite favorite)
+        {
+            var msg = FionaMessage.CreateMessage(player, "favorites", "playlist", "add", "item_id:" + favorite.ID.ToString());
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void AddFavorite(Player player, string title, string url, string icon)
+        {
+            var msg = FionaMessage.CreateMessage(player, "favorites", "add", "title:" + title, "url:" + url, "icon:" + icon);
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+        public static void UnFavorite(Player player, Favorite favorite)
+        {
+            var id = favorite.ID.Substring(favorite.ID.IndexOf('.') + 1);
+            var msg = FionaMessage.CreateMessage(player, "favorites", "delete", "item_id:" + id.ToString());
+            var r = QueryWebServiceWithPost<PlayerStatus>(RemoteUrlJson, msg);
+        }
+
+
         #endregion
 
         #region Playlist

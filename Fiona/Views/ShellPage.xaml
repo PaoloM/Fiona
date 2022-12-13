@@ -84,11 +84,11 @@
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xF0E2;" />
                     </winui:NavigationViewItem.Icon>
                 </winui:NavigationViewItem>
-                <!--<winui:NavigationViewItem x:Uid="Shell_Favorites" helpers:NavHelper.NavigateTo="views:FavoritesPage">
+                <winui:NavigationViewItem x:Uid="Shell_Favorites" helpers:NavHelper.NavigateTo="views:FavoritesPage">
                     <winui:NavigationViewItem.Icon>
                         <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE728;" />
                     </winui:NavigationViewItem.Icon>
-                </winui:NavigationViewItem>-->
+                </winui:NavigationViewItem>
             </winui:NavigationView.MenuItems>
 
             <!--<winui:NavigationView.AutoSuggestBox>

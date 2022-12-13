@@ -40,7 +40,7 @@ namespace Fiona.Core.Models
         [JsonProperty(PropertyName = "disc")]
         public string Disc { get; set; }
 
-        [JsonProperty(PropertyName = "playlist index")]
+        [JsonProperty(PropertyName = "playlist_index")]
         public string PlaylistIndex { get; set; }
 
         [JsonProperty(PropertyName = "coverart")]
@@ -69,6 +69,9 @@ namespace Fiona.Core.Models
 
         [JsonProperty(PropertyName = "artwork_url")]
         public string RemoteArtworkUrl { get; set; }
+
+        [JsonProperty(PropertyName = "bitrate")]
+        public String Bitrate { get; set; }
 
         public string TracknumSort
         {

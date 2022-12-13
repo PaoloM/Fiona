@@ -10,7 +10,11 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 
 ## What's new?
 
-* Added a whole lot of screenshots for [v0.4](v0.4-prealpha-screenshots.md)
+* Initial favorites support
+
+## Screenshots 
+
+* [v0.4](v0.4-prealpha-screenshots.md)
 
 ## Current features
 
@@ -20,15 +24,22 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 * Now Playing page with artist images
 * 3rd party apps/plugins almost completely supported
 * Radio support
+* Initial favorites support
 
 ## Roadmap/backlog
 
 v0.5
 
+<<<<<<< HEAD
 * MixCloud plugin support
 
 * Queue management
 * Favorites management
+=======
+* Queue management: direct select and play (todo)
+* Favorites management (ongoing)
+* Format and bitrate display for tracks (experimental)
+>>>>>>> 17ec795757a845565416cf10475c5d283e89a234
 
 v.Next
 
@@ -41,7 +52,12 @@ These plugins have been tested and are working per spec:
 
 * Spotty
 * Band's Camp
+<<<<<<< HEAD
 * **NEW** - MixCloud
+=======
+* Mixcloud
+* YouTube
+>>>>>>> 17ec795757a845565416cf10475c5d283e89a234
 
 ## Known issues
 
@@ -56,8 +72,12 @@ These plugins have been tested and are working per spec:
 #### 11/15/21 - v0.5
 
 * Changed the app colors to the Windows 11 default ones
+<<<<<<< HEAD
 * Added support for the MixCloud plugin
 * (TBD) Initial queue management: direct select and play
+=======
+* Initial Favorites support (add track/album, view all favorites, remove an entry)
+>>>>>>> 17ec795757a845565416cf10475c5d283e89a234
 
 #### 04/23/21 - v0.4
 

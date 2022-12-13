@@ -99,6 +99,7 @@
                             VerticalAlignment="Top"
                             Orientation="Horizontal"
                             Visibility="Collapsed">
+                            
                             <Button
                                 x:Name="PlayAlbum"
                                 Width="32"
@@ -112,6 +113,7 @@
                                     FontSize="14"
                                     Glyph="&#xE102;" />
                             </Button>
+                            
                             <Button
                                 x:Name="QueueAlbum"
                                 Width="32"
@@ -125,10 +127,21 @@
                                     FontSize="14"
                                     Glyph="&#xE109;" />
                             </Button>
-                            <!--<Button x:Name="FavoriteAlbum" Width="32" Height="32" CornerRadius="16" Margin="4,0,4,0">
-
-                                <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE113;" FontSize="14"/>
-                            </Button>-->
+                            
+                            <Button
+                                x:Name="FavoriteAlbum"
+                                Width="32"
+                                Height="32"
+                                CornerRadius="16"
+                                Command="{x:Bind BaseVM.AddFavoriteAlbumCommand}"
+                                CommandParameter="{x:Bind}"
+                                Margin="4,0,4,0">
+                                <FontIcon
+                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                    Glyph="&#xE113;"
+                                    FontSize="14"/>
+                            </Button>
+                            
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
