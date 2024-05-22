@@ -166,7 +166,7 @@
     <comment>Privacy Statement link content for Settings</comment>
   </data>
   <data name="Settings_PrivacyTermsLink.NavigateUri" xml:space="preserve">
-    <value>https://fionamusic.app/privacy.html</value>
+    <value>https://fionamusic.app/privacy/</value>
     <comment>Here is your Privacy Statement url for Settings</comment>
   </data>
   <data name="Settings_Personalization.Text" xml:space="preserve">

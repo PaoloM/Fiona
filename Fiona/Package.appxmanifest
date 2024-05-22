@@ -10,8 +10,8 @@ xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
 
   <Identity
     Name="52192ThatPaolo.FionaMusic"
-    Publisher="CN=6FEF85FC-EDC9-42B9-95C6-42504FC7F25D"
-    Version="0.5.0.0" />
+    Publisher="CN=ThatPaolo"
+    Version="0.5.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="1ed0caed-413f-4284-88b9-4c33c09b1d41" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
