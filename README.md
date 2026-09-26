@@ -10,7 +10,9 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 
 ## What's new?
 
-* Initial favorites support
+* Fiona asks for your server's address when it cannot find one on the network, instead of coming up empty
+* Much faster and more reliable server discovery
+* Artist images in the Now Playing page now crossfade
 
 ## Screenshots 
 
@@ -18,7 +20,7 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 
 ## Current features
 
-* Autodiscover and connect to your Logitech Media Server/Squeezebox
+* Autodiscover and connect to your Logitech Media Server/Squeezebox, or enter its address yourself
 * Navigate your music library by album and artist
 * Individual queues for all your connected players
 * Now Playing page with artist images
@@ -52,11 +54,33 @@ These plugins have been tested and are working per spec:
 
 1. Some info in the artis profiles are rendered as numbers instead of text https://github.com/PaoloM/Fiona/issues/4
 1. The personalization setting "Windows default" sets the colors to the app dark mode, not the Windows' one (is it really an issue?)
-1. Images transitions in the Now Playing page are not animated
 1. Navigating back from album/artist details to the main lists does not bring you back to the previous scroll location https://github.com/PaoloM/Fiona/issues/5
 1. Updating the queue with the same number of entries as the existing one does not update the queue visuals https://github.com/PaoloM/Fiona/issues/6
 
 ## Release notes
+
+#### 09/25/26 - v0.5.2
+
+Startup and server discovery, largely rewritten:
+
+* The address from the command line, or from your last session, is now checked against a short timeout *before* the window opens, and the slow LAN sweep runs with the window already up. Windows terminates an app that has not activated its window within a few seconds, which is what the sweep on the startup path was risking
+* A saved address is verified rather than trusted, so a server that has moved or been switched off no longer leaves you looking at an empty library
+* When no server can be found, Fiona asks for its address instead of starting up empty. The prompt takes `host:port`, can search the network again, and keeps what you last typed in front of you
+* The LAN sweep probes every address at once, so it takes about as long as one timeout rather than one timeout per address
+* The sweep now covers every local adapter's subnet instead of guessing one, so a WSL or Hyper-V adapter on the default route no longer sends the whole sweep to the wrong subnet
+
+Fixed:
+
+* Crash on startup whenever a server had not been resolved yet (`NullReferenceException` in `BaseViewModel.Albums`) - the data service answers `null` with no server configured, and three bound properties dereferenced it
+* The player picker stayed empty when the server was only found after the window had opened: the shell sits outside the navigation frame, so re-navigating did not refresh it
+* Navigating to an album by ID threw when the library was not loaded
+* Ending the LAN sweep early raised one exception per queued probe - around 190 of them per successful sweep
+
+Also:
+
+* Artist images in the Now Playing page crossfade instead of cutting (known issue 3)
+* The album and artist lists are fetched once and cached. They were re-fetched from the server on every read, from XAML bindings, which meant a blocking round trip per rendered page. Favorites stay uncached, since they are edited from inside the app
+* New signing certificate: the previous one expired on 05/22/25 and failed every build with APPX0108
 
 #### 11/15/21 - v0.5
 

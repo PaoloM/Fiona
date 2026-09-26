@@ -39,29 +39,36 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _Queue, value);
         }
 
+        private PlayerList _PlayersList;
         public PlayerList PlayersList
         {
-            get
-            {
-                var ap = FionaDataService.GetAllPlayers();
-                if ((ap != null) && (ap.Players?.Count > 0)) // if there are players
-                {
-                    Player cp = null;
-                    foreach (Player p in ap.Players)
-                    {
-                        if (p.IsPlaying) // pick the one who is playing now
-                        {
-                            cp = p;
-                        }
-                    }
-                    if (cp is null) cp = ap.Players[0]; // or pick the first one if no active ones
-                    //TODO maybe provide a "preferred player" selection in Settings
+            get => _PlayersList;
+            private set => SetProperty(ref _PlayersList, value);
+        }
 
-                    CurrentPlayer = cp;
-                    DispatcherTimerSetup();
-                }
-                return ap;
+        /// <summary>
+        /// Asks the server which players it has and settles on one to control. Has to be
+        /// called rather than computed on demand: the shell is built before a server has
+        /// necessarily been resolved, and the player picker binds once, so a list fetched
+        /// while there was nothing to ask would never be replaced.
+        /// </summary>
+        public void RefreshPlayers()
+        {
+            var ap = FionaDataService.GetAllPlayers();
+            PlayersList = ap;
+
+            if (!(ap?.Players?.Count > 0)) // no server, or a server with no players attached
+            {
+                return;
             }
+
+            //TODO maybe provide a "preferred player" selection in Settings
+            Player cp = ap.Players.FirstOrDefault(p => p.IsPlaying) // the one playing now
+                ?? ap.Players[0];                                   // or the first, if none is
+
+            CurrentPlayer = cp;
+            OnPropertyChanged(nameof(CurrentPlayer));
+            DispatcherTimerSetup();
         }
 
         public Player CurrentPlayer
@@ -134,6 +141,14 @@ namespace Fiona.ViewModels
 
         public void DispatcherTimerSetup()
         {
+            // Run again on every player refresh, so the timer already polling the server
+            // once a second has to be retired rather than left behind alongside the new one.
+            if (dispatcherTimer != null)
+            {
+                dispatcherTimer.Stop();
+                dispatcherTimer.Tick -= dispatcherTimer_Tick;
+            }
+
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
@@ -355,6 +370,8 @@ namespace Fiona.ViewModels
             // More info on tracking issue https://github.com/Microsoft/microsoft-ui-xaml/issues/8
             _keyboardAccelerators.Add(_altLeftKeyboardAccelerator);
             _keyboardAccelerators.Add(_backKeyboardAccelerator);
+
+            RefreshPlayers();
             await Task.CompletedTask;
         }
 

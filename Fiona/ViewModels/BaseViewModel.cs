@@ -14,9 +14,12 @@ namespace Fiona.ViewModels
 {
     public class BaseViewModel : ObservableObject
     {
-        public List<Artist> Artists { get => FionaDataService.GetAllArtists().Artists; }
-        public List<Album> Albums { get => FionaDataService.GetAllAlbums().Albums; }
-        public List<Favorite> Favorites { get => FionaDataService.GetAllFavorites().Favorites; }
+        // The data service answers null whenever there is no reachable server, and the
+        // JSON loop is absent for an empty library, so neither can be dereferenced here:
+        // bindings are evaluated long before a server has been resolved.
+        public List<Artist> Artists { get => FionaDataService.GetAllArtists()?.Artists ?? new List<Artist>(); }
+        public List<Album> Albums { get => FionaDataService.GetAllAlbums()?.Albums ?? new List<Album>(); }
+        public List<Favorite> Favorites { get => FionaDataService.GetAllFavorites()?.Favorites ?? new List<Favorite>(); }
 
         #region ALBUM ------------------------------------------------------------------------------
         private RelayCommand<Album> _PlayAlbumCommand;
@@ -44,7 +47,12 @@ namespace Fiona.ViewModels
         public RelayCommand<string> ViewAlbumDetailsByIDCommand => _ViewAlbumDetailsByIDCommand ?? (_ViewAlbumDetailsByIDCommand = new RelayCommand<string>(param => ViewAlbumDetailsByID((string)param)));
         private void ViewAlbumDetailsByID(string id)
         {
-            var album = (from a in Albums where a.ID == id select a).First<Album>();
+            var album = Albums.FirstOrDefault(a => a.ID == id);
+            if (album == null)
+            {
+                return; // the library is not loaded, or no longer holds this album
+            }
+
             NavigationService.Navigate<AlbumDetailsPage>(album);
         }
 

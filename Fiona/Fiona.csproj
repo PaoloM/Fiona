@@ -26,8 +26,14 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <PackageCertificateThumbprint>08DA9713B9C9A1C7801FA8CFEED55DD13076EA0D</PackageCertificateThumbprint>
+    <!-- The previous certificate (08DA9713...) expired on 2025-05-22, which failed every
+         build with APPX0108. This one runs to 2029-09-24. -->
+    <PackageCertificateThumbprint>476E6C08837D19ADBFC990AE728806F208EB661B</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <!-- No ARM32 debug VCLibs on Win11, so a multi-arch debug bundle fails validation -->
+    <AppxBundle>Never</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>

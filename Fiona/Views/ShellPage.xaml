@@ -255,7 +255,9 @@
             <Button Width="64" Height="32" Margin="0,32,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" Canvas.ZIndex="99" Command="{x:Bind ViewModel.HideNowPlayingCommand}" Foreground="White">
                 <FontIcon Height="19" VerticalAlignment="Top" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" />
             </Button>
-            <Image x:Name="NowPlayingBackground" Margin="-16" HorizontalAlignment="Center" VerticalAlignment="Top" Opacity="0.2" Source="{x:Bind ViewModel.ArtistImage.Source, Mode=OneWay}" Stretch="UniformToFill" />
+            <!--  Two stacked backgrounds: the incoming image fades in while the outgoing one fades out (see ShellPage.xaml.cs)  -->
+            <Image x:Name="NowPlayingBackgroundA" Margin="-16" HorizontalAlignment="Center" VerticalAlignment="Top" ImageFailed="NowPlayingBackground_ImageFailed" ImageOpened="NowPlayingBackground_ImageOpened" Opacity="0" Stretch="UniformToFill" />
+            <Image x:Name="NowPlayingBackgroundB" Margin="-16" HorizontalAlignment="Center" VerticalAlignment="Top" ImageFailed="NowPlayingBackground_ImageFailed" ImageOpened="NowPlayingBackground_ImageOpened" Opacity="0" Stretch="UniformToFill" />
             <StackPanel Margin="64,0,0,64" HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
                 <Image Width="160" Height="160" HorizontalAlignment="Left" Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}" Stretch="UniformToFill" />
                 <StackPanel Margin="32,0,0,0" VerticalAlignment="Center" Orientation="Vertical">

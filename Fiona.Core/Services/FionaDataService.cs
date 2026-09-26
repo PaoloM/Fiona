@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Fiona.Core.Services
@@ -33,6 +34,18 @@ namespace Fiona.Core.Services
         public static AppletList AllRadios { get; set; }
         public static FavoriteList AllFavorites { get; set; }
 
+        /// <summary>
+        /// Drops the cached library, so the next read fetches it afresh. Needed whenever the
+        /// server changes: the albums and artists of the old one say nothing about the new one.
+        /// </summary>
+        public static void InvalidateLibrary()
+        {
+            AllAlbums = null;
+            AllArtists = null;
+            AllGenres = null;
+            AllFavorites = null;
+        }
+
         #region Commands
 
         #region Server/Player
@@ -48,6 +61,41 @@ namespace Fiona.Core.Services
             } catch 
             {
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks that a Logitech Media Server is really answering at this address, within
+        /// the given timeout and without disturbing the address the app is currently using.
+        /// </summary>
+        public static async Task<bool> IsServerReachableAsync(string server, int port, TimeSpan timeout)
+        {
+            if (string.IsNullOrEmpty(server))
+            {
+                return false;
+            }
+
+            string url = $"http://{server}:{port}/jsonrpc.js";
+
+            using (var cts = new CancellationTokenSource(timeout))
+            {
+                try
+                {
+                    var content = new StringContent(FionaMessage.CreateMessage(FionaCommand.ServerStatus), Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync(url, content, cts.Token);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return false;
+                    }
+
+                    // Any web server will answer here; only ours answers with a JSON-RPC result.
+                    JObject o = JObject.Parse(await response.Content.ReadAsStringAsync());
+                    return o["result"] != null;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
 
@@ -71,10 +119,19 @@ namespace Fiona.Core.Services
         #endregion
 
         #region Album
+        /// <summary>
+        /// The whole album list, fetched once and then kept. This is read from XAML bindings,
+        /// which evaluate it repeatedly while a page renders, so querying per read meant a
+        /// blocking round trip to the server each time. A failed query caches nothing, so the
+        /// next read tries again; <see cref="InvalidateLibrary"/> drops what we have.
+        /// </summary>
         public static AlbumList GetAllAlbums()
         {
-            var msg = FionaMessage.CreateMessage(FionaCommand.Albums, "0", FionaCommand.MaxItems, FionaCommand.AlbumTags);
-            AllAlbums = QueryWebServiceWithPost<AlbumList>(RemoteUrlJson, msg);
+            if (AllAlbums == null)
+            {
+                var msg = FionaMessage.CreateMessage(FionaCommand.Albums, "0", FionaCommand.MaxItems, FionaCommand.AlbumTags);
+                AllAlbums = QueryWebServiceWithPost<AlbumList>(RemoteUrlJson, msg);
+            }
             return AllAlbums;
         }
 
@@ -92,16 +149,15 @@ namespace Fiona.Core.Services
         #endregion
 
         #region Artists
-        private static ArtistList _allArtists = null;
+        /// <summary>
+        /// The whole artist list. Cached like <see cref="GetAllAlbums"/>, and for the same reason.
+        /// </summary>
         public static ArtistList GetAllArtists()
         {
-            if (_allArtists == null)
+            if (AllArtists == null)
             {
                 var msg = FionaMessage.CreateMessage(FionaCommand.Artists, "0", FionaCommand.MaxItems, FionaCommand.ArtistTags);
                 AllArtists = QueryWebServiceWithPost<ArtistList>(RemoteUrlJson, msg);
-            } else
-            {
-                AllArtists = _allArtists;
             }
             return AllArtists;
         }
@@ -135,6 +191,11 @@ namespace Fiona.Core.Services
         #endregion
 
         #region Favorites
+        /// <summary>
+        /// Deliberately not cached, unlike the album and artist lists: favorites are added and
+        /// removed from inside the app, so a stale copy would be visibly wrong. The list is
+        /// small enough for that to cost little.
+        /// </summary>
         public static FavoriteList GetAllFavorites()
         {
             var msg = FionaMessage.CreateMessage(FionaCommand.Favorites, "items", "0", FionaCommand.MaxItems);
@@ -427,7 +488,11 @@ namespace Fiona.Core.Services
             get => $"/Assets/playlist.png";
         }
 
-        private static HttpClient client = new HttpClient();
+        // A LAN server that has gone away should fail in seconds, not in the 100 the
+        // HttpClient default would have us wait.
+        private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(30);
+
+        private static HttpClient client = new HttpClient { Timeout = RequestTimeout };
 
         private static T QueryWebServiceWithPost<T>(string url, string msg)
         {

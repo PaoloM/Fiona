@@ -1,23 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Networking;
+using Windows.Networking.Connectivity;
 
 namespace Fiona.Helpers
 {
+    /// <summary>
+    /// Looks for a Logitech Media Server by probing the slimproto port on every address of
+    /// every local subnet. All the probes really do run at once, so a sweep takes about as
+    /// long as one timeout rather than one timeout per address.
+    /// </summary>
     public class PortSweep
     {
-        private string BaseIP = "192.168.1.";
-        private int StartIP = 1;
-        private int StopIP = 255;
-        private string ip;
+        private const int StartIP = 1;
+        private const int StopIP = 254;
+        private const int SlimServerPort = 3483;
 
-        private int timeout = 50;
-        private int slimserverport = 3483;
+        // Generous enough for a busy wireless LAN: nothing waits on it serially any more.
+        private const int ProbeTimeoutMs = 500;
+
+        // Sockets in flight at once. High enough to sweep a /24 in two or three rounds,
+        // low enough not to exhaust the connection table on a machine with several adapters.
+        private const int MaxConcurrentProbes = 64;
 
         private string slimServer = "";
 
@@ -28,71 +36,129 @@ namespace Fiona.Helpers
 
         public async Task RunPortSweep_Async()
         {
-            var tasks = new List<Task>();
+            await RunPortSweep_Async(CancellationToken.None);
+        }
 
-            // find the LAN 
-            string localip = GetLocalIPAddress();
-            BaseIP = localip.Substring(0, localip.LastIndexOf('.') + 1);
+        public async Task RunPortSweep_Async(CancellationToken cancellationToken)
+        {
+            slimServer = "";
 
-            for (int i = StartIP; i <= StopIP; i++)
+            var candidates = new List<string>();
+            foreach (string prefix in GetLocalSubnets())
             {
-                ip = BaseIP + i.ToString();
-                var task = CheckPort_Async(ip, slimserverport, timeout);
-                tasks.Add(task);
+                for (int i = StartIP; i <= StopIP; i++)
+                {
+                    candidates.Add(prefix + i.ToString());
+                }
             }
 
-            await Task.WhenAll(tasks);
-        }
-
-        private async Task CheckPort_Async(string ip, int port, int timeout)
-        {
-            bool b = IsPortOpen(ip, port, TimeSpan.FromMilliseconds(timeout));
-            if (b) Interlocked.Exchange<string>(ref slimServer, ip);
-        }
-
-        private string GetLocalIPAddress()
-        {
-            string localIP;
-            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0))
+            if (candidates.Count == 0)
             {
-                socket.Connect("8.8.8.8", 65530);
-                IPEndPoint endPoint = socket.LocalEndPoint as IPEndPoint;
-                localIP = endPoint.Address.ToString();
+                return;
             }
-            return localIP;
+
+            // Cancelled as soon as one address answers, so the rest of the sweep is dropped.
+            using (var found = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
+            using (var throttle = new SemaphoreSlim(MaxConcurrentProbes))
+            {
+                await Task.WhenAll(candidates.Select(ip => ProbeAsync(ip, found, throttle)));
+            }
         }
 
-        private bool IsPortOpen(string host, int port, TimeSpan timeout)
+        private async Task ProbeAsync(string ip, CancellationTokenSource found, SemaphoreSlim throttle)
         {
-            TcpClient client = null;
-            bool result = false;
+            if (found.IsCancellationRequested)
+            {
+                return; // we already have a server, this address never needs probing
+            }
+
+            // Waited on without the token deliberately. Handing it the token instead makes
+            // ending the sweep throw once per queued probe - around 190 exceptions for a
+            // single /24 - which is control flow by exception: slow, and it breaks into the
+            // debugger on every successful run.
+            await throttle.WaitAsync();
 
             try
             {
-                client = new TcpClient();
-                Task task = client.ConnectAsync(host, port);
-                if (task.Wait(timeout))
-                {//if fails within timeout, task.Wait still returns true.
-                    if (client.Connected)
+                if (found.IsCancellationRequested)
+                {
+                    return; // another address answered while this probe sat in the queue
+                }
+
+                if (await IsPortOpenAsync(ip, SlimServerPort, ProbeTimeoutMs))
+                {
+                    // First answer wins; later ones leave the field alone.
+                    if (Interlocked.CompareExchange(ref slimServer, ip, "") == "")
                     {
-                        // port reachable
-                        result = true;
+                        found.Cancel();
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                // connection failed
-                result = false;
-            }
             finally
             {
-                client.Close();
+                throttle.Release();
             }
-
-            return result;
         }
 
-    }
+        private static async Task<bool> IsPortOpenAsync(string host, int port, int timeoutMs)
+        {
+            using (var client = new TcpClient())
+            {
+                try
+                {
+                    Task connect = client.ConnectAsync(host, port);
 
+                    // Abandoning a connect below would otherwise surface as an unobserved
+                    // task exception once the socket is torn down. Deliberately not awaited:
+                    // it outlives the probe by design.
+                    Task observed = connect.ContinueWith(t => { var ignored = t.Exception; },
+                        TaskContinuationOptions.OnlyOnFaulted);
+
+                    if (await Task.WhenAny(connect, Task.Delay(timeoutMs)) != connect)
+                    {
+                        return false; // nothing at this address answered in time
+                    }
+
+                    await connect; // a refused connection reaches us as an exception
+                    return client.Connected;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The /24 around each of this machine's IPv4 addresses. Every adapter is swept
+        /// rather than guessing one, so a virtual adapter (WSL, Hyper-V) sitting on the
+        /// default route can no longer send the whole sweep to the wrong subnet.
+        /// </summary>
+        private static IEnumerable<string> GetLocalSubnets()
+        {
+            var prefixes = new List<string>();
+
+            foreach (HostName hostName in NetworkInformation.GetHostNames())
+            {
+                if (hostName.Type != HostNameType.Ipv4 || hostName.IPInformation == null)
+                {
+                    continue; // not an IPv4 address belonging to a local adapter
+                }
+
+                string address = hostName.CanonicalName;
+                if (address.StartsWith("127.") || address.StartsWith("169.254."))
+                {
+                    continue; // loopback and link-local addresses never reach a server
+                }
+
+                string prefix = address.Substring(0, address.LastIndexOf('.') + 1);
+                if (!prefixes.Contains(prefix))
+                {
+                    prefixes.Add(prefix);
+                }
+            }
+
+            return prefixes;
+        }
+    }
 }

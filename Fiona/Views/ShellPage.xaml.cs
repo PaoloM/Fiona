@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Fiona.Services;
 using Fiona.ViewModels;
 using Windows.ApplicationModel.Core;
@@ -8,6 +9,9 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Fiona.Views
 {
@@ -28,6 +32,7 @@ namespace Fiona.Views
             InitializeComponent();
 
             DataContext = ViewModel;
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
             ViewModel.Initialize(shellFrame, navigationView, KeyboardAccelerators);
 
         }
@@ -67,6 +72,105 @@ namespace Fiona.Views
                 NavigationService.Navigate<SearchResultsView>(args.QueryText);
             }
         }
+        #endregion
+
+        #region Now Playing background crossfade
+
+        private const double BackgroundOpacity = 0.2;
+        private static readonly TimeSpan CrossFadeDuration = TimeSpan.FromMilliseconds(1200);
+
+        // True when NowPlayingBackgroundA is the image currently visible.
+        private bool _isBackgroundAVisible;
+
+        // The image that has just been given a new source and is waiting to be faded in.
+        private Image _pendingBackground;
+
+        private Storyboard _crossFade;
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ShellViewModel.ArtistImage))
+            {
+                CrossFadeArtistBackground();
+            }
+        }
+
+        private void CrossFadeArtistBackground()
+        {
+            ImageSource source = ViewModel.ArtistImage?.Source;
+            if (source == null) return;
+
+            Image incoming = _isBackgroundAVisible ? NowPlayingBackgroundB : NowPlayingBackgroundA;
+            if (ReferenceEquals(incoming.Source, source)) return; // already showing this one
+
+            // The fade starts once the bitmap is decoded, so we never fade in a blank image
+            _pendingBackground = incoming;
+            incoming.Source = source;
+
+            // A bitmap that is already decoded may not raise ImageOpened again, so fade right away
+            if (source is BitmapImage bitmap && bitmap.PixelWidth > 0)
+            {
+                FadeIn(incoming);
+            }
+        }
+
+        private void NowPlayingBackground_ImageOpened(object sender, RoutedEventArgs e)
+        {
+            FadeIn(sender as Image);
+        }
+
+        private void NowPlayingBackground_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            // Keep the current background on screen if the new image could not be loaded
+            if (ReferenceEquals(sender, _pendingBackground))
+            {
+                _pendingBackground = null;
+            }
+        }
+
+        private void FadeIn(Image incoming)
+        {
+            if (incoming == null || !ReferenceEquals(incoming, _pendingBackground)) return;
+
+            _pendingBackground = null;
+            _isBackgroundAVisible = ReferenceEquals(incoming, NowPlayingBackgroundA);
+
+            Image outgoing = _isBackgroundAVisible ? NowPlayingBackgroundB : NowPlayingBackgroundA;
+
+            // A new storyboard hands off from the values the running one reached, so it never jumps
+            var crossFade = new Storyboard();
+            crossFade.Children.Add(CreateOpacityAnimation(incoming, BackgroundOpacity));
+            crossFade.Children.Add(CreateOpacityAnimation(outgoing, 0));
+            crossFade.Completed += (s, e) =>
+            {
+                if (!ReferenceEquals(_crossFade, crossFade)) return; // a later fade already took over
+
+                // Make the animated values local ones so the storyboard can be released
+                crossFade.Stop();
+                incoming.Opacity = BackgroundOpacity;
+                outgoing.Opacity = 0;
+                _crossFade = null;
+            };
+
+            _crossFade = crossFade;
+            crossFade.Begin();
+        }
+
+        private static DoubleAnimation CreateOpacityAnimation(Image target, double to)
+        {
+            var animation = new DoubleAnimation
+            {
+                To = to,
+                Duration = new Duration(CrossFadeDuration),
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
+
+            Storyboard.SetTarget(animation, target);
+            Storyboard.SetTargetProperty(animation, "Opacity");
+
+            return animation;
+        }
+
         #endregion
     }
 }

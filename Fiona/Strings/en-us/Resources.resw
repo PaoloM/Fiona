@@ -254,4 +254,28 @@
   <data name="Settings_SupportLink.NavigateUri" xml:space="preserve">
     <value>mailto:support@fionamusic.app</value>
   </data>
+  <data name="ServerPrompt_Title" xml:space="preserve">
+    <value>Can't find your music server</value>
+  </data>
+  <data name="ServerPrompt_Message" xml:space="preserve">
+    <value>Fiona looked for a Logitech Media Server on your network but didn't find one. Enter its address below, or search again.</value>
+  </data>
+  <data name="ServerPrompt_NotReachable" xml:space="preserve">
+    <value>Fiona couldn't reach a server at that address. Check the address and try again.</value>
+  </data>
+  <data name="ServerPrompt_NotFound" xml:space="preserve">
+    <value>Fiona still couldn't find a server. Enter its address below.</value>
+  </data>
+  <data name="ServerPrompt_Placeholder" xml:space="preserve">
+    <value>for example 192.168.1.10, or 192.168.1.10:9002</value>
+  </data>
+  <data name="ServerPrompt_Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="ServerPrompt_SearchAgain" xml:space="preserve">
+    <value>Search again</value>
+  </data>
+  <data name="ServerPrompt_Close" xml:space="preserve">
+    <value>Close Fiona</value>
+  </data>
 </root>
