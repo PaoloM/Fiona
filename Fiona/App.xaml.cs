@@ -173,6 +173,10 @@ namespace Fiona
                 FionaDataService.GetAllArtists();
                 FionaDataService.GetAllFavorites();
             });
+
+            // A player belongs to one server at a time, so if this is a change of server the old
+            // registration has to be given up before the new one is made.
+            await LocalPlayerService.RestartAsync();
         }
 
         private async Task<string> GetSlimServerIPAsync()

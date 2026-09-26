@@ -62,9 +62,23 @@ namespace Fiona.ViewModels
                 return;
             }
 
-            //TODO maybe provide a "preferred player" selection in Settings
-            Player cp = ap.Players.FirstOrDefault(p => p.IsPlaying) // the one playing now
-                ?? ap.Players[0];                                   // or the first, if none is
+            // Whatever is already selected wins: refreshing happens for reasons that have nothing
+            // to do with the user - a player connecting, say - and moving their selection out from
+            // under them sends the next command they press to a different player entirely.
+            // The list is deserialized afresh each time, so match on the id and not the reference.
+            Player cp = null;
+            string selectedId = FionaDataService.CurrentPlayer == null ? null : FionaDataService.CurrentPlayer.ID;
+            if (!string.IsNullOrEmpty(selectedId))
+            {
+                cp = ap.Players.FirstOrDefault(p => p.ID == selectedId);
+            }
+
+            if (cp == null)
+            {
+                //TODO maybe provide a "preferred player" selection in Settings
+                cp = ap.Players.FirstOrDefault(p => p.IsPlaying) // the one playing now
+                    ?? ap.Players[0];                            // or the first, if none is
+            }
 
             CurrentPlayer = cp;
             OnPropertyChanged(nameof(CurrentPlayer));

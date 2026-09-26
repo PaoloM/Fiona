@@ -5,6 +5,7 @@
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:genTemplate="http://schemas.microsoft.com/appx/developer/windowsTemplateStudio"
+xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
 xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
   IgnorableNamespaces="uap mp genTemplate">
 
@@ -72,5 +73,8 @@ xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
 
   <Capabilities>
     <Capability Name="internetClient"/>
-    <Capability Name="privateNetworkClientServer"/></Capabilities>
+    <Capability Name="privateNetworkClientServer"/>
+    <!-- Keeps the local player playing while Fiona is not the foreground app -->
+    <uap3:Capability Name="backgroundMediaPlayback"/>
+  </Capabilities>
 </Package>

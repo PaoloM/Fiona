@@ -35,6 +35,20 @@ namespace Fiona.Views
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
             ViewModel.Initialize(shellFrame, navigationView, KeyboardAccelerators);
 
+            // Registering as a player takes a round trip or two, so the local player is usually
+            // absent from the first list the server gives us and has to be picked up afterwards.
+            LocalPlayerService.ConnectionChanged += OnLocalPlayerConnectionChanged;
+
+        }
+
+        /// <summary>
+        /// The local player appearing in or leaving the server's list changes what the picker should
+        /// show. Arrives from the protocol client's own task, so it has to be marshalled before it
+        /// touches the view model - refreshing builds a DispatcherTimer, which needs the UI thread.
+        /// </summary>
+        private async void OnLocalPlayerConnectionChanged(object sender, EventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ViewModel.RefreshPlayers());
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)

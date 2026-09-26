@@ -52,6 +52,46 @@ namespace Fiona.ViewModels
             }
         }
 
+        private bool _isLocalPlayerEnabled;
+
+        /// <summary>
+        /// Whether this machine registers itself with the server as a player. Toggling it connects
+        /// or disconnects there and then, so the player appears in - or leaves - every controller's
+        /// list without restarting anything.
+        /// </summary>
+        public bool IsLocalPlayerEnabled
+        {
+            get { return _isLocalPlayerEnabled; }
+
+            set
+            {
+                if (_isLocalPlayerEnabled == value) return;
+
+                SetProperty(ref _isLocalPlayerEnabled, value);
+
+                // Nothing here waits on the connection: registering takes a round trip, and the
+                // toggle should not sit there looking stuck while it happens.
+                Task ignored = LocalPlayerService.SetEnabledAsync(value);
+            }
+        }
+
+        private string _localPlayerName;
+
+        public string LocalPlayerName
+        {
+            get { return _localPlayerName; }
+
+            set
+            {
+                if (_localPlayerName == value) return;
+
+                SetProperty(ref _localPlayerName, value);
+
+                // Empty would leave the player nameless in the list, so the machine name stands in.
+                if (!string.IsNullOrWhiteSpace(value)) LocalPlayerService.PlayerName = value;
+            }
+        }
+
         public SettingsViewModel()
         {
         }
@@ -59,6 +99,14 @@ namespace Fiona.ViewModels
         public async Task InitializeAsync()
         {
             VersionDescription = GetVersionDescription();
+
+            // Straight to the fields: going through the properties would read as a change made here
+            // and push the saved values back at the player as though they were new.
+            _isLocalPlayerEnabled = LocalPlayerService.IsEnabled;
+            _localPlayerName = LocalPlayerService.PlayerName;
+            OnPropertyChanged(nameof(IsLocalPlayerEnabled));
+            OnPropertyChanged(nameof(LocalPlayerName));
+
             await Task.CompletedTask;
         }
 

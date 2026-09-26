@@ -10,6 +10,7 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 
 ## What's new?
 
+* This PC can now be a player itself, so you can listen on the machine Fiona is running on
 * Fiona asks for your server's address when it cannot find one on the network, instead of coming up empty
 * Much faster and more reliable server discovery
 * Artist images in the Now Playing page now crossfade
@@ -23,6 +24,7 @@ A [Squeezebox/Logitech Media Server](https://www.mysqueezebox.com/download) cont
 * Autodiscover and connect to your Logitech Media Server/Squeezebox, or enter its address yourself
 * Navigate your music library by album and artist
 * Individual queues for all your connected players
+* Use this PC as a player, with its own queue like any other Squeezebox
 * Now Playing page with artist images
 * 3rd party apps/plugins almost completely supported
 * Radio support
@@ -40,6 +42,7 @@ v.Next
 
 * Full 3rd party app/plugin support
 * More animations and transitions
+* Local player: gapless playback, and media key support
 
 ## Tested plugins
 
@@ -52,6 +55,7 @@ These plugins have been tested and are working per spec:
 
 ## Known issues
 
+1. The local player does not play gapless, and cannot be part of a synchronised group
 1. Some info in the artis profiles are rendered as numbers instead of text https://github.com/PaoloM/Fiona/issues/4
 1. The personalization setting "Windows default" sets the colors to the app dark mode, not the Windows' one (is it really an issue?)
 1. Navigating back from album/artist details to the main lists does not bring you back to the previous scroll location https://github.com/PaoloM/Fiona/issues/5
@@ -75,6 +79,12 @@ Fixed:
 * The player picker stayed empty when the server was only found after the window had opened: the shell sits outside the navigation frame, so re-navigating did not refresh it
 * Navigating to an album by ID threw when the library was not loaded
 * Ending the LAN sweep early raised one exception per queued probe - around 190 of them per successful sweep
+
+New - use this PC as a player:
+
+* Switch it on in Settings and this machine registers itself with your server as a player, with its own queue, alongside any real hardware. Fiona and any other Squeezebox controller can then play to it
+* Rename it in Settings, or from any controller
+* Available for as long as Fiona is running, and it keeps playing while the app is in the background
 
 Also:
 

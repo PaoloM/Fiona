@@ -278,4 +278,25 @@
   <data name="ServerPrompt_Close" xml:space="preserve">
     <value>Close Fiona</value>
   </data>
+  <data name="Settings_LocalPlayer" xml:space="preserve">
+    <value>Local player</value>
+  </data>
+  <data name="Settings_LocalPlayer_Toggle.Header" xml:space="preserve">
+    <value>Use this PC as a player</value>
+  </data>
+  <data name="Settings_LocalPlayer_Toggle.OnContent" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="Settings_LocalPlayer_Toggle.OffContent" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Settings_LocalPlayer_Description.Text" xml:space="preserve">
+    <value>This PC appears in your server's player list, so Fiona or any other Squeezebox controller can play music on it. It stays available for as long as Fiona is running.</value>
+  </data>
+  <data name="Settings_LocalPlayer_Name.Header" xml:space="preserve">
+    <value>Player name</value>
+  </data>
+  <data name="Settings_LocalPlayer_Name.PlaceholderText" xml:space="preserve">
+    <value>the name shown in your player list</value>
+  </data>
 </root>
