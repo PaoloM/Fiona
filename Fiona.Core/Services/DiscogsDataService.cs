@@ -50,46 +50,80 @@ namespace Fiona.Core.Services
                 return $"{RemoteUrl}{entity}/{id}";
         }
 
-        private static HttpClient client = new HttpClient();
+        // Reached synchronously from view models, so an unresponsive Discogs would otherwise hold
+        // the UI for the HttpClient default of 100 seconds.
+        private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(15);
+
+        private static HttpClient client = CreateClient();
+
+        /// <summary>
+        /// The user agent is set once here rather than before each request. Adding it per call
+        /// appended another copy every time, so the header grew for the life of the process:
+        /// DefaultRequestHeaders.Add on a list-valued header adds to the list.
+        /// </summary>
+        private static HttpClient CreateClient()
+        {
+            var created = new HttpClient { Timeout = RequestTimeout };
+            created.DefaultRequestHeaders.Add("User-Agent", Fiona.Core.Helpers.APIKeys.UserAgent);
+            return created;
+        }
+
+        /// <summary>
+        /// Artist artwork and biographies are a nicety. Discogs being slow, rate-limiting us or
+        /// answering with something unexpected should cost the extra information and nothing more.
+        /// </summary>
+        private static string Fetch(string url)
+        {
+            try
+            {
+                HttpResponseMessage response = client.GetAsync(url).Result;
+                if (!response.IsSuccessStatusCode) return null;
+
+                using (HttpContent c = response.Content)
+                {
+                    return c.ReadAsStringAsync().Result;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
         private static IEnumerable<T> SearchDiscogs<T>(string param)
         {
             string url = $"{QueryUrl(param)}&key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
-            client.DefaultRequestHeaders.Add("User-Agent", Fiona.Core.Helpers.APIKeys.UserAgent);
+            string res = Fetch(url);
+            if (res == null) return new List<T>();
 
-            var response = client.GetAsync(url);
-            string res = "";
-
-            using (HttpContent c = response.Result.Content)
+            try
             {
-                Task<string> result = c.ReadAsStringAsync();
-                res = result.Result;
-            }
+                JObject o = JObject.Parse(res);
+                JToken results = o["results"];
+                if (results == null || results.Type == JTokenType.Null) return new List<T>();
 
-            JObject o = JObject.Parse(res);
-            var jsonResult = o["results"];
-            var outval = JsonConvert.DeserializeObject<IEnumerable<T>>(jsonResult.ToString());
-            return outval;
+                return JsonConvert.DeserializeObject<IEnumerable<T>>(results.ToString());
+            }
+            catch (JsonException)
+            {
+                return new List<T>();
+            }
         }
 
         private static T QueryDiscogsEntity<T>(string entitytype, string id)
         {
             string url = $"{EntityUrl(entitytype, id)}?key={Fiona.Core.Helpers.APIKeys.DiscogsConsumerKey}&secret={Fiona.Core.Helpers.APIKeys.DiscogsConsumerSecret}";
-            client.DefaultRequestHeaders.Add("User-Agent", Fiona.Core.Helpers.APIKeys.UserAgent);
+            string res = Fetch(url);
+            if (res == null) return default(T);
 
-            var response = client.GetAsync(url);
-            string res = "";
-
-            using (HttpContent c = response.Result.Content)
+            try
             {
-                Task<string> result = c.ReadAsStringAsync();
-                res = result.Result;
+                return JsonConvert.DeserializeObject<T>(JObject.Parse(res).ToString());
             }
-
-            JObject o = JObject.Parse(res);
-            var jsonResult = o; //["results"];
-            var outval = JsonConvert.DeserializeObject<T>(jsonResult.ToString());
-            return outval;
+            catch (JsonException)
+            {
+                return default(T);
+            }
         }
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using Fiona.Core.Services;
 using Fiona.Services;
 using Fiona.ViewModels;
 using Windows.ApplicationModel.Core;
@@ -39,6 +40,19 @@ namespace Fiona.Views
             // absent from the first list the server gives us and has to be picked up afterwards.
             LocalPlayerService.ConnectionChanged += OnLocalPlayerConnectionChanged;
 
+            // Failed requests are reported rather than thrown, so somebody has to show them.
+            FionaDataService.RequestFailed += OnServerRequestFailed;
+
+        }
+
+        /// <summary>
+        /// Arrives from whichever thread made the request, so it has to be marshalled before it
+        /// reaches anything bound to the UI.
+        /// </summary>
+        private async void OnServerRequestFailed(object sender, string reason)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                () => ViewModel.ShowServerProblem(reason));
         }
 
         /// <summary>
@@ -93,6 +107,19 @@ namespace Fiona.Views
         private const double BackgroundOpacity = 0.2;
         private static readonly TimeSpan CrossFadeDuration = TimeSpan.FromMilliseconds(1200);
 
+        // The slow scale and drift over each still. Nothing ever sits at scale 1: the smaller end
+        // is already overscanned, so the drift cannot pull an edge into view.
+        private const double PanScaleFrom = 1.06;
+        private const double PanScaleTo = 1.18;
+
+        // Half the total travel, in pixels, each way from centre. Stays well inside the 3% of width
+        // that the smaller scale hides, at every window size we can be given.
+        private const double PanDrift = 24;
+
+        // Deliberately longer than the time an image is on screen, so it is always still moving
+        // when it hands over. A pan that reaches its end first would visibly park.
+        private static readonly TimeSpan PanDuration = TimeSpan.FromSeconds(26);
+
         // True when NowPlayingBackgroundA is the image currently visible.
         private bool _isBackgroundAVisible;
 
@@ -101,11 +128,33 @@ namespace Fiona.Views
 
         private Storyboard _crossFade;
 
+        // One per background image: the outgoing image keeps panning through the dissolve, so its
+        // animation cannot be stopped until the fade is over.
+        private Storyboard _panA;
+        private Storyboard _panB;
+
+        // Alternates the direction so consecutive images do not drift the same way.
+        private int _panDirection;
+
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ShellViewModel.ArtistImage))
             {
                 CrossFadeArtistBackground();
+            }
+            else if (e.PropertyName == nameof(ShellViewModel.NowPlayingPageVisibility))
+            {
+                // These run on the composition thread and repeat for as long as the app is up.
+                // Nothing is looking at them while the page is closed.
+                if (ViewModel.NowPlayingPageVisibility == Visibility.Visible)
+                {
+                    StartPan(_isBackgroundAVisible ? NowPlayingBackgroundA : NowPlayingBackgroundB);
+                }
+                else
+                {
+                    StopPan(NowPlayingBackgroundA);
+                    StopPan(NowPlayingBackgroundB);
+                }
             }
         }
 
@@ -151,6 +200,8 @@ namespace Fiona.Views
 
             Image outgoing = _isBackgroundAVisible ? NowPlayingBackgroundB : NowPlayingBackgroundA;
 
+            StartPan(incoming);
+
             // A new storyboard hands off from the values the running one reached, so it never jumps
             var crossFade = new Storyboard();
             crossFade.Children.Add(CreateOpacityAnimation(incoming, BackgroundOpacity));
@@ -164,10 +215,82 @@ namespace Fiona.Views
                 incoming.Opacity = BackgroundOpacity;
                 outgoing.Opacity = 0;
                 _crossFade = null;
+
+                // Invisible by now, so resetting its transform cannot be seen
+                StopPan(outgoing);
             };
 
             _crossFade = crossFade;
             crossFade.Begin();
+        }
+
+        /// <summary>
+        /// Starts one image on a fresh pan, from the near end of the scale and off centre in the
+        /// direction it is about to travel, so the movement is continuous across the dissolve.
+        /// </summary>
+        private void StartPan(Image target)
+        {
+            CompositeTransform transform = target?.RenderTransform as CompositeTransform;
+            if (transform == null) return;
+
+            StopPan(target);
+
+            double dx = (_panDirection % 2 == 0) ? PanDrift : -PanDrift;
+            double dy = (_panDirection % 4 < 2) ? PanDrift / 2 : -PanDrift / 2;
+            _panDirection++;
+
+            transform.ScaleX = PanScaleFrom;
+            transform.ScaleY = PanScaleFrom;
+            transform.TranslateX = -dx;
+            transform.TranslateY = -dy;
+
+            // Ping-pongs rather than ending: an artist Discogs has only one picture for never gets
+            // a second fade, and a pan that finished would leave the page completely still.
+            var pan = new Storyboard { AutoReverse = true, RepeatBehavior = RepeatBehavior.Forever };
+            pan.Children.Add(CreateTransformAnimation(target, "ScaleX", PanScaleTo));
+            pan.Children.Add(CreateTransformAnimation(target, "ScaleY", PanScaleTo));
+            pan.Children.Add(CreateTransformAnimation(target, "TranslateX", dx));
+            pan.Children.Add(CreateTransformAnimation(target, "TranslateY", dy));
+
+            if (ReferenceEquals(target, NowPlayingBackgroundA))
+                _panA = pan;
+            else
+                _panB = pan;
+
+            pan.Begin();
+        }
+
+        private void StopPan(Image target)
+        {
+            Storyboard pan = ReferenceEquals(target, NowPlayingBackgroundA) ? _panA : _panB;
+            if (pan == null) return;
+
+            pan.Stop();
+
+            if (ReferenceEquals(target, NowPlayingBackgroundA))
+                _panA = null;
+            else
+                _panB = null;
+        }
+
+        /// <summary>
+        /// Targets the render transform by property path, which is what keeps this off the UI
+        /// thread: an animation reaching a layout property would run there instead.
+        /// </summary>
+        private static DoubleAnimation CreateTransformAnimation(Image target, string property, double to)
+        {
+            var animation = new DoubleAnimation
+            {
+                To = to,
+                Duration = new Duration(PanDuration),
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            Storyboard.SetTarget(animation, target);
+            Storyboard.SetTargetProperty(animation,
+                "(UIElement.RenderTransform).(CompositeTransform." + property + ")");
+
+            return animation;
         }
 
         private static DoubleAnimation CreateOpacityAnimation(Image target, double to)

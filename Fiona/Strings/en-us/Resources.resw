@@ -278,6 +278,9 @@
   <data name="ServerPrompt_Close" xml:space="preserve">
     <value>Close Fiona</value>
   </data>
+  <data name="Shell_ServerProblem" xml:space="preserve">
+    <value>Can't reach your music server: {0}</value>
+  </data>
   <data name="Settings_LocalPlayer" xml:space="preserve">
     <value>Local player</value>
   </data>

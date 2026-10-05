@@ -18,4 +18,12 @@
    <ItemGroup>
      <Folder Include="Properties\" />
    </ItemGroup>
+
+   <ItemGroup>
+     <!-- The wire format and the JSON-RPC parsing are internal, and they are exactly the parts
+          worth testing: a wrong byte offset does not fail to compile. -->
+     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+       <_Parameter1>Fiona.Core.Tests</_Parameter1>
+     </AssemblyAttribute>
+   </ItemGroup>
 </Project>

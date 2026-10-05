@@ -119,6 +119,36 @@ namespace Fiona.ViewModels
             set => SetProperty(ref _NowPlayingPageVisibility, value);
         }
 
+        private string _ServerMessage = "";
+
+        /// <summary>
+        /// What went wrong the last time we spoke to the server. Queries answer with nothing rather
+        /// than throwing, so without showing this an unreachable server looks exactly like an empty
+        /// library - which is the confusion this whole path exists to prevent.
+        /// </summary>
+        public string ServerMessage
+        {
+            get => _ServerMessage;
+            set => SetProperty(ref _ServerMessage, value);
+        }
+
+        private Visibility _ServerMessageVisibility = Visibility.Collapsed;
+        public Visibility ServerMessageVisibility
+        {
+            get => _ServerMessageVisibility;
+            set => SetProperty(ref _ServerMessageVisibility, value);
+        }
+
+        /// <summary>
+        /// Call on the UI thread: the data service reports failures from whichever thread made the
+        /// request.
+        /// </summary>
+        public void ShowServerProblem(string reason)
+        {
+            ServerMessage = string.Format("Shell_ServerProblem".GetLocalized(), reason);
+            ServerMessageVisibility = Visibility.Visible;
+        }
+
         private Visibility _SetupPageVisibility = Visibility.Collapsed;
         public Visibility SetupPageVisibility
         {
@@ -149,7 +179,10 @@ namespace Fiona.ViewModels
 
         private int CurrentArtistImageIndex = 0;
         private int Tick = 0;
-        private int NextImageDuration = 5;
+        // Seconds an artist image stays up, on a one second tick. Longer than it used to be
+        // because the image now moves while it is there: a six second cut was too short to read as
+        // anything but a flicker, and too short for a pan to go anywhere.
+        private int NextImageDuration = 19;
 
         private DispatcherTimer dispatcherTimer;
 
@@ -171,7 +204,25 @@ namespace Fiona.ViewModels
             dispatcherTimer.Start();
         }
 
+        /// <summary>
+        /// A failure in here used to close the app: an exception out of a DispatcherTimer tick is
+        /// unhandled, and this runs every second, reaching both the server and Discogs as it goes.
+        /// There is nothing useful to do about one failed tick except let the next one try again.
+        /// </summary>
         void dispatcherTimer_Tick(object sender, object e)
+        {
+            try
+            {
+                UpdateNowPlaying();
+            }
+            catch (Exception)
+            {
+                // Swallowed on purpose. The next tick is a second away, and a transient failure
+                // reaching the server is not worth interrupting someone over.
+            }
+        }
+
+        private void UpdateNowPlaying()
         {
             // move to the next artist image in the Now Playing screen
             if (++Tick > NextImageDuration)
@@ -189,6 +240,14 @@ namespace Fiona.ViewModels
             }
 
             CurrentPlayerStatus = FionaDataService.GetPlayerStatus(this.CurrentPlayer);
+
+            // The server did not answer, or answered with nothing usable. Everything below reads
+            // this status, and leaving the last known state on screen beats blanking it over one
+            // failed poll.
+            if (CurrentPlayerStatus == null) return;
+
+            // Answering at all means whatever was wrong no longer is.
+            ServerMessageVisibility = Visibility.Collapsed;
 
             if (CurrentPlayerStatus.Mode == PlayerMode.play)
                 IsPlayingGlyph = "\xE103";
@@ -214,8 +273,10 @@ namespace Fiona.ViewModels
 
                         ca = ca.Trim();
 
-                        // look in the local artists list
-                        var aa = (from a in FionaDataService.AllArtists.Artists where a.Name == ca select a);
+                        // look in the local artists list, which may not have loaded yet
+                        ArtistList cached = FionaDataService.AllArtists;
+                        List<Artist> known = cached == null ? null : cached.Artists;
+                        var aa = (from a in known ?? new List<Artist>() where a.Name == ca select a);
                         if (aa.Count<Artist>() > 0)
                         {
                             var artist = aa.First<Artist>();
@@ -227,7 +288,7 @@ namespace Fiona.ViewModels
                                 artist.Images = new List<string>();
                                 ArtistImageList.Clear();
 
-                                if (da.Images.Count > 0)
+                                if (da.Images != null && da.Images.Count > 0)
                                 {
                                     foreach (var i in da.Images)
                                     {
@@ -252,7 +313,7 @@ namespace Fiona.ViewModels
                             if (da != null)
                             {
                                 ArtistImageList.Clear();
-                                if (da.Images.Count > 0)
+                                if (da.Images != null && da.Images.Count > 0)
                                 {
                                     foreach (var i in da.Images)
                                     {

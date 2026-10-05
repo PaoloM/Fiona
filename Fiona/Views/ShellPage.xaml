@@ -256,8 +256,18 @@
                 <FontIcon Height="19" VerticalAlignment="Top" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE0A6;" />
             </Button>
             <!--  Two stacked backgrounds: the incoming image fades in while the outgoing one fades out (see ShellPage.xaml.cs)  -->
-            <Image x:Name="NowPlayingBackgroundA" Margin="-16" HorizontalAlignment="Center" VerticalAlignment="Top" ImageFailed="NowPlayingBackground_ImageFailed" ImageOpened="NowPlayingBackground_ImageOpened" Opacity="0" Stretch="UniformToFill" />
-            <Image x:Name="NowPlayingBackgroundB" Margin="-16" HorizontalAlignment="Center" VerticalAlignment="Top" ImageFailed="NowPlayingBackground_ImageFailed" ImageOpened="NowPlayingBackground_ImageOpened" Opacity="0" Stretch="UniformToFill" />
+            <Image x:Name="NowPlayingBackgroundA" Margin="-16" HorizontalAlignment="Center" VerticalAlignment="Top" ImageFailed="NowPlayingBackground_ImageFailed" ImageOpened="NowPlayingBackground_ImageOpened" Opacity="0" RenderTransformOrigin="0.5,0.5" Stretch="UniformToFill">
+                <!--  Animated in code behind: the slow scale and drift that gives the stills some motion  -->
+                <Image.RenderTransform>
+                    <CompositeTransform />
+                </Image.RenderTransform>
+            </Image>
+            <Image x:Name="NowPlayingBackgroundB" Margin="-16" HorizontalAlignment="Center" VerticalAlignment="Top" ImageFailed="NowPlayingBackground_ImageFailed" ImageOpened="NowPlayingBackground_ImageOpened" Opacity="0" RenderTransformOrigin="0.5,0.5" Stretch="UniformToFill">
+                <!--  Animated in code behind: the slow scale and drift that gives the stills some motion  -->
+                <Image.RenderTransform>
+                    <CompositeTransform />
+                </Image.RenderTransform>
+            </Image>
             <StackPanel Margin="64,0,0,64" HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal">
                 <Image Width="160" Height="160" HorizontalAlignment="Left" Source="{x:Bind ViewModel.NowPlayingAlbumArt, Mode=OneWay}" Stretch="UniformToFill" />
                 <StackPanel Margin="32,0,0,0" VerticalAlignment="Center" Orientation="Vertical">
@@ -275,6 +285,15 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom">
             <StackPanel Orientation="Vertical">
+                <!--  Shown only when the server stops answering; a query that works hides it again  -->
+                <TextBlock
+                    Margin="12,4,12,0"
+                    Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}"
+                    Style="{ThemeResource CaptionTextBlockStyle}"
+                    Text="{x:Bind ViewModel.ServerMessage, Mode=OneWay}"
+                    TextWrapping="Wrap"
+                    Visibility="{x:Bind ViewModel.ServerMessageVisibility, Mode=OneWay}" />
+
                 <ComboBox
                     x:Name="PlayersComboBox"
                     Margin="0,16,0,0"

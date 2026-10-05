@@ -13,16 +13,10 @@ namespace Fiona.Core.Services.SlimProto
     /// LMS controller - Fiona included - can drive it with no further work.
     ///
     /// This speaks SlimProto on TCP 3483, a different protocol from the JSON-RPC the rest of the
-    /// app uses for control. The framing is asymmetric, which is easy to get wrong:
+    /// app uses for control, and a binary one. The packet layouts live in
+    /// <see cref="SlimProtoPackets"/>, which is where to look before changing any of them.
     ///
-    ///   server -> client:  [u16 length][4-byte opcode][payload]   length counts opcode + payload
-    ///   client -> server:  [4-byte opcode][u32 length][payload]   length counts payload only
-    ///
-    /// Every multi-byte field is big-endian. The struct layouts in the comments below are taken
-    /// field for field from squeezelite's slimproto.h, which is the reference implementation;
-    /// the byte offsets are what matter, so check them against that file before changing any.
-    ///
-    /// Audio is not handled here - see <see cref="ILocalAudioSink"/>. The server hands us an HTTP
+        /// Audio is not handled here - see <see cref="ILocalAudioSink"/>. The server hands us an HTTP
     /// request to fetch the audio with, and we pass a URL built from it to the sink.
     /// </summary>
     public class SlimProtoClient
@@ -250,25 +244,11 @@ namespace Fiona.Core.Services.SlimProto
 
         #region strm - the command that does nearly everything
 
-        // struct strm_packet, offsets from the start of the packet, opcode included:
-        //   0  opcode[4]          13 transition_period
-        //   4  command            14 transition_type
-        //   5  autostart          15 flags
-        //   6  format             16 output_threshold
-        //   7  pcm_sample_size    17 slaves
-        //   8  pcm_sample_rate    18 replay_gain (u32)
-        //   9  pcm_channels       22 server_port (u16)
-        //  10  pcm_endianness     24 server_ip (u32)
-        //  11  threshold          28 request string, to the end of the packet
-        //  12  spdif_enable
-        private const int StrmHeaderLength = 28;
-        private const int StrmReplayGainOffset = 18;
-
         private void HandleStrm(byte[] packet)
         {
-            if (packet.Length < StrmHeaderLength) return;
+            if (packet.Length < SlimProtoPackets.StrmHeaderLength) return;
 
-            switch ((char)packet[4])
+            switch (SlimProtoPackets.StrmCommand(packet))
             {
                 case 's':
                     StartStream(packet);
@@ -284,7 +264,7 @@ namespace Fiona.Core.Services.SlimProto
                     // replay_gain doubles as the interval to pause for. Only an immediate pause is
                     // acknowledged, which is the case the server waits on.
                     _sink.Pause();
-                    if (BigEndian.ReadUInt32(packet, StrmReplayGainOffset) == 0) SendStat("STMp");
+                    if (SlimProtoPackets.StrmReplayGain(packet) == 0) SendStat("STMp");
                     break;
 
                 case 'u':
@@ -295,7 +275,7 @@ namespace Fiona.Core.Services.SlimProto
                 case 't':
                     // A ping. replay_gain carries the server's own timestamp, which has to come
                     // back untouched or the server cannot measure the round trip.
-                    SendStat("STMt", BigEndian.ReadUInt32(packet, StrmReplayGainOffset));
+                    SendStat("STMt", SlimProtoPackets.StrmReplayGain(packet));
                     break;
 
                 case 'a':
@@ -310,9 +290,9 @@ namespace Fiona.Core.Services.SlimProto
             // The server expects the previous stream acknowledged as gone before a new one starts.
             SendStat("STMf");
 
-            _autostart = packet[5] - '0';
+            _autostart = SlimProtoPackets.StrmAutostart(packet);
 
-            Uri stream = BuildStreamUri(packet);
+            Uri stream = SlimProtoPackets.StreamUri(packet, _serverHost, ServerWebPort);
             if (stream == null)
             {
                 SendStat("STMn"); // nothing we can fetch, so do not leave the server waiting
@@ -338,106 +318,37 @@ namespace Fiona.Core.Services.SlimProto
             }
         }
 
-        /// <summary>
-        /// Turns the HTTP request the server embedded in a strm into a URL the sink can fetch. The
-        /// request looks like "GET /stream.mp3?player=xx HTTP/1.0" followed by headers we have no
-        /// use for, since the sink makes its own request.
-        /// </summary>
-        private Uri BuildStreamUri(byte[] packet)
-        {
-            string request = Encoding.ASCII.GetString(packet, StrmHeaderLength, packet.Length - StrmHeaderLength);
-
-            int endOfLine = request.IndexOf('\r');
-            string requestLine = endOfLine >= 0 ? request.Substring(0, endOfLine) : request;
-
-            string[] parts = requestLine.Split(' ');
-            if (parts.Length < 2) return null;
-
-            string target = parts[1];
-
-            Uri absolute;
-            if (target.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                && Uri.TryCreate(target, UriKind.Absolute, out absolute))
-            {
-                return absolute;
-            }
-
-            // A zero address means "the server you are already talking to".
-            string host = _serverHost;
-            if (packet[24] != 0 || packet[25] != 0 || packet[26] != 0 || packet[27] != 0)
-            {
-                host = packet[24] + "." + packet[25] + "." + packet[26] + "." + packet[27];
-            }
-
-            int port = BigEndian.ReadUInt16(packet, 22);
-            if (port == 0) port = ServerWebPort;
-
-            Uri uri;
-            string url = "http://" + host + ":" + port.ToString() + target;
-            return Uri.TryCreate(url, UriKind.Absolute, out uri) ? uri : null;
-        }
-
         #endregion
 
         #region audg, aude, setd
 
-        // struct audg_packet: 0 opcode[4], 4 old_gainL, 8 old_gainR, 12 adjust, 13 preamp,
-        //                     14 gainL, 18 gainR. Gains are 16.16 fixed point, 65536 = unity.
         private void HandleAudg(byte[] packet)
         {
-            if (packet.Length < 22) return;
-
-            bool adjust = packet[12] != 0;
-            if (!adjust)
-            {
-                _sink.SetVolume(1.0);
-                return;
-            }
-
-            uint left = BigEndian.ReadUInt32(packet, 14);
-            uint right = BigEndian.ReadUInt32(packet, 18);
-
-            // One output, so the two channels collapse to the louder of the pair. That loses a
-            // balance setting, which we have already told the server we do not have.
-            double gain = Math.Max(left, right) / 65536.0;
-            _sink.SetVolume(Math.Min(1.0, Math.Max(0.0, gain)));
+            _sink.SetVolume(SlimProtoPackets.AudgVolume(packet));
         }
 
-        // struct aude_packet: 0 opcode[4], 4 enable_spdif, 5 enable_dac.
         private void HandleAude(byte[] packet)
         {
-            if (packet.Length < 6) return;
-
-            // Either flag means "make sound". Reading only one of them is a trap: the reference
-            // implementation keys off enable_spdif and ignores enable_dac, but we told the server
-            // we have no digital out, so that is the flag it is entitled to leave clear.
-            _sink.SetOutputEnabled(packet[4] != 0 || packet[5] != 0);
+            _sink.SetOutputEnabled(SlimProtoPackets.AudeOutputEnabled(packet));
         }
 
-        // struct setd_packet: 0 opcode[4], 4 id, 5 data. id 0 is the player name: with no data the
-        // server is asking what we call ourselves, with data it is renaming us.
+        /// <summary>
+        /// The server either asks what we are called or tells us what to be called; a name it sends
+        /// is kept, and either way it wants the answer back.
+        /// </summary>
         private void HandleSetd(byte[] packet)
         {
-            if (packet.Length < 5 || packet[4] != 0) return;
+            string name;
+            if (!SlimProtoPackets.TryReadSetdName(packet, out name)) return;
 
-            if (packet.Length > 5)
-            {
-                string name = Encoding.UTF8.GetString(packet, 5, packet.Length - 5).TrimEnd('\0');
-                if (!string.IsNullOrEmpty(name)) _playerName = name;
-            }
+            if (name != null) _playerName = name;
 
             SendSetdName();
         }
 
         private void SendSetdName()
         {
-            byte[] name = Encoding.UTF8.GetBytes(_playerName ?? string.Empty);
-
-            var payload = new byte[1 + name.Length + 1]; // id, name, terminator
-            payload[0] = 0;
-            Array.Copy(name, 0, payload, 1, name.Length);
-
-            FireAndForget(SendAsync("SETD", payload));
+            FireAndForget(SendAsync("SETD", SlimProtoPackets.SetdName(_playerName)));
         }
 
         #endregion
@@ -485,60 +396,21 @@ namespace Fiona.Core.Services.SlimProto
                 + "HasPolarityInversion=0,Balance=0,Firmware=" + _firmwareVersion
                 + ",MaxSampleRate=48000,mp3,flc,aac,alc";
 
-            byte[] caps = Encoding.ASCII.GetBytes(capabilities);
-
-            // struct HELO_packet is 44 bytes, so the payload is 36 plus the capability string:
-            //   0  opcode[4]   10 mac[6]              34 bytes_received_H
-            //   4  length      16 uuid[16]            38 bytes_received_L
-            //   8  deviceid    32 wlan_channellist    42 lang[2]
-            //   9  revision
-            // Offsets below are payload-relative, so 8 less than the struct's.
-            var payload = new byte[36 + caps.Length];
-
-            payload[0] = 12; // deviceid 12 = squeezeplay, which is what software players use
-            payload[1] = 0;  // revision
-            Array.Copy(_mac, 0, payload, 2, 6);
-            // uuid stays zero: the server does not require one
-            BigEndian.Write(payload, 24, (ushort)(reconnect ? 0x4000 : 0x0000)); // wlan_channellist
-            // bytes_received stays zero: no audio has been received on this connection
-            payload[34] = (byte)'E';
-            payload[35] = (byte)'N';
-            Array.Copy(caps, 0, payload, 36, caps.Length);
-
-            await SendAsync("HELO", payload);
+            await SendAsync("HELO", SlimProtoPackets.Helo(_mac, reconnect, capabilities));
         }
 
         private void SendStat(string eventCode, uint serverTimestamp = 0)
         {
-            // struct STAT_packet. Offsets are payload-relative, so 8 less than the struct's:
-            //   0  event[4]                 25 jiffies
-            //   4  num_crlf                 29 output_buffer_size
-            //   5  mas_initialized          33 output_buffer_fullness
-            //   6  mas_mode                 37 elapsed_seconds
-            //   7  stream_buffer_size       41 voltage
-            //  11  stream_buffer_fullness   43 elapsed_milliseconds
-            //  15  bytes_received_H         47 server_timestamp
-            //  19  bytes_received_L         51 error_code
-            //  23  signal_strength
-            var payload = new byte[53];
-
-            Encoding.ASCII.GetBytes(eventCode, 0, 4, payload, 0);
-
             double fraction = Math.Min(1.0, Math.Max(0.0, _sink.BufferFill));
             var fill = (uint)(NominalBufferSize * fraction);
 
-            BigEndian.Write(payload, 7, NominalBufferSize);
-            BigEndian.Write(payload, 11, fill);
-            // bytes_received stays zero: the sink fetches the audio itself, so we never count it
-            BigEndian.Write(payload, 23, (ushort)0xFFFF); // wired, so full signal strength
-            BigEndian.Write(payload, 25, (uint)_jiffies.ElapsedMilliseconds);
-            BigEndian.Write(payload, 29, NominalBufferSize);
-            BigEndian.Write(payload, 33, fill);
-
-            TimeSpan position = _sink.Position;
-            BigEndian.Write(payload, 37, (uint)position.TotalSeconds);
-            BigEndian.Write(payload, 43, (uint)position.TotalMilliseconds);
-            BigEndian.Write(payload, 47, serverTimestamp);
+            byte[] payload = SlimProtoPackets.Stat(
+                eventCode,
+                NominalBufferSize,
+                fill,
+                (uint)_jiffies.ElapsedMilliseconds,
+                _sink.Position,
+                serverTimestamp);
 
             FireAndForget(SendAsync("STAT", payload));
         }
@@ -568,10 +440,7 @@ namespace Fiona.Core.Services.SlimProto
 
         private async Task SendAsync(string opcode, byte[] payload)
         {
-            var packet = new byte[8 + payload.Length];
-            Encoding.ASCII.GetBytes(opcode, 0, 4, packet, 0);
-            BigEndian.Write(packet, 4, (uint)payload.Length);
-            Array.Copy(payload, 0, packet, 8, payload.Length);
+            byte[] packet = SlimProtoPackets.Frame(opcode, payload);
 
             await _sendLock.WaitAsync();
             try

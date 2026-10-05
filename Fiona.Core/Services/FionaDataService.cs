@@ -35,6 +35,22 @@ namespace Fiona.Core.Services
         public static FavoriteList AllFavorites { get; set; }
 
         /// <summary>
+        /// Raised when a request does not come back with a usable answer, carrying something short
+        /// enough to show a person. Queries return nothing rather than throwing, so without this a
+        /// caller cannot tell an unreachable server from an empty library.
+        ///
+        /// Raised on whichever thread made the request, which is not necessarily the UI one -
+        /// marshal before touching anything bound to the UI.
+        /// </summary>
+        public static event EventHandler<string> RequestFailed;
+
+        /// <summary>
+        /// False from the moment a request fails until one succeeds again. Starts true so a freshly
+        /// started app does not claim to be offline before it has tried anything.
+        /// </summary>
+        public static bool IsServerReachable { get; private set; } = true;
+
+        /// <summary>
         /// Drops the cached library, so the next read fetches it afresh. Needed whenever the
         /// server changes: the albums and artists of the old one say nothing about the new one.
         /// </summary>
@@ -503,29 +519,129 @@ namespace Fiona.Core.Services
             else
             {
                 //TODO authentication
-                var content = new StringContent(msg, Encoding.UTF8, "application/json");
-                // send the message and wait for the response
-                var response = client.PostAsync(url, content);
-                // read the response
-                string res = "";
-               
-                using (HttpContent c = response.Result.Content)
-                {
-                    Task<string> result = c.ReadAsStringAsync();
-                    res = result.Result;
-                }
-              
-                JObject o = JObject.Parse(res);
-                var jsonResult = o["result"];
-                string so = jsonResult.ToString();
-                
-                //HACK convert loop_loop into item_loop
-                so = so.Replace("loop_loop", "item_loop");
+                string body;
 
-                var outval = JsonConvert.DeserializeObject<T>(so);
-                return outval;
+                try
+                {
+                    var content = new StringContent(msg, Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        ReportFailure("the server answered " + ((int)response.StatusCode).ToString()
+                            + " " + response.ReasonPhrase);
+                        return default(T);
+                    }
+
+                    using (HttpContent c = response.Content)
+                    {
+                        body = c.ReadAsStringAsync().Result;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Unreachable, refused, timed out, name no longer resolving: all the same to a
+                    // caller, which can only carry on with nothing. This must not be allowed out.
+                    // Callers include XAML bindings and a timer that ticks every second, so letting
+                    // an exception through here does not fail a request, it closes the app.
+                    ReportFailure(Innermost(ex).Message);
+                    return default(T);
+                }
+
+                T value;
+                string error;
+                if (!TryReadResult(body, out value, out error))
+                {
+                    ReportFailure(error);
+                    return default(T);
+                }
+
+                IsServerReachable = true;
+                return value;
             }
         }
+
+        /// <summary>
+        /// Takes the result out of a JSON-RPC answer, or says why it could not. Kept apart from the
+        /// request so it can be tested: every step here was once unguarded, and a server answering
+        /// with an error, with an HTML error page, or with nothing at all closed the app rather
+        /// than failing one request.
+        /// </summary>
+        internal static bool TryReadResult<T>(string body, out T value, out string error)
+        {
+            value = default(T);
+            error = null;
+
+            if (string.IsNullOrWhiteSpace(body))
+            {
+                error = "the server sent an empty response";
+                return false;
+            }
+
+            JObject o;
+            try
+            {
+                o = JObject.Parse(body);
+            }
+            catch (JsonException)
+            {
+                // Typically a proxy or web server error page, arriving where JSON was expected.
+                error = "the server sent something that is not JSON";
+                return false;
+            }
+
+            JToken failure = o["error"];
+            if (failure != null && failure.Type != JTokenType.Null)
+            {
+                error = "the server reported an error: " + failure.ToString();
+                return false;
+            }
+
+            JToken result = o["result"];
+            if (result == null || result.Type == JTokenType.Null)
+            {
+                error = "the server sent no result";
+                return false;
+            }
+
+            //HACK convert loop_loop into item_loop
+            string json = result.ToString().Replace("loop_loop", "item_loop");
+
+            try
+            {
+                value = JsonConvert.DeserializeObject<T>(json);
+            }
+            catch (JsonException ex)
+            {
+                error = "the server result did not fit a " + typeof(T).Name + ": " + ex.Message;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// A blocking wait wraps whatever went wrong in an AggregateException, sometimes twice over,
+        /// and "One or more errors occurred" tells a person nothing at all.
+        /// </summary>
+        private static Exception Innermost(Exception ex)
+        {
+            while (ex.InnerException != null)
+            {
+                ex = ex.InnerException;
+            }
+
+            return ex;
+        }
+
+        private static void ReportFailure(string reason)
+        {
+            IsServerReachable = false;
+
+            EventHandler<string> handler = RequestFailed;
+            if (handler != null) handler(null, reason);
+        }
+
         #endregion
     }
 }

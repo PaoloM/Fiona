@@ -49,6 +49,8 @@ namespace Fiona.Core.Models
             get
             {
                 string iconglyph = "\u0042"; // default, just to make sure
+                if (string.IsNullOrEmpty(ModelName)) return iconglyph;
+
                 switch (ModelName.ToLower())
                 {
                     case "hifiberry": iconglyph = "\u0055"; break;
